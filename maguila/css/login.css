@@ -13,6 +13,8 @@ body {
     background: url('../imagens/login.png') no-repeat center right fixed;
     background-size: cover;
     position: relative;
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 body::before {
@@ -30,9 +32,7 @@ body::before {
     position: relative;
     width: 400px;
     padding: 40px;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(7px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.8);
     border-radius: 20px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.1);
