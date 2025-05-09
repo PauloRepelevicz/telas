@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página com Header Fixo</title>
+    <link rel="stylesheet" href="css/teste.css">
+</head>
+<body>
+    <!-- Header Fixo -->
+    <header class="fixed-header">
+        <nav>
+            <ul>
+                <!-- CADASTRO -->
+                <li class="dropdown">
+                    <a href="#">CADASTRO</a>
+                    <div class="dropdown-content">
+                        <a href="#" data-section="cliente">Cliente</a>
+                        <a href="#" data-section="funcionario">Funcionário</a>
+                    </div>
+                </li>
+                <!-- FINANCEIRO -->
+                <li class="dropdown">
+                    <a href="#">FINANCEIRO</a>
+                    <div class="dropdown-content">
+                        <a href="#" data-section="relatorio">Relatório</a>
+                        <a href="#" data-section="receita">Adicionar Receita</a>
+                        <a href="#" data-section="despesa">Adicionar Despesa</a>
+                    </div>
+                </li>
+                <!-- ESTOQUE -->
+                <li>
+                    <a href="#" data-section="estoque">ESTOQUE</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Conteúdo Principal (Main) -->
+    <main>
+        <!-- Background com Blur e Escurecido -->
+        <div class="background-image"></div>
+        
+        <!-- Conteúdo Dinâmico -->
+        <div class="content-box" id="content-box">
+            <h1>Selecione uma opção no menu</h1>
+        </div>
+    </main>
+
+    <script src="teste.js"></script>
+</body>
+</html>
