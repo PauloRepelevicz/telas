@@ -94,9 +94,17 @@
       <section id="cadFuncionario" class="card" style="display:none;">
         <h2>Cadastrar Funcionário</h2>
         <input type="text" placeholder="Nome completo" />
-        <input type="text" placeholder="Cargo" />
+        <input type="text" id="cpf" placeholder="CPF" maxlength="14">
+        <input type="text" placeholder="Código Funcionário" />
         <input type="email" placeholder="Email" />
-        <input type="tel" placeholder="Telefone" />
+        <input type="text" placeholder="Cargo" />
+        <input type="text" placeholder="Cargo" />
+        <select name="genero" required>
+          <option value="" disabled selected>Gênero</option>
+          <option value="M">Masculino (M)</option>
+          <option value="F">Feminino (F)</option>
+        </select>
+        <input type="tel" id="telefone" placeholder="Telefone" maxlength="15">
         <button>Cadastrar Funcionário</button>
       </section>
 
@@ -130,7 +138,7 @@
   </div>
 
   <footer>
-    <img src="imagens/ccmlogo-removebg-preview.png" class="ccmlogo" alt="">
+    <img src="imagens/ccmlogo.jpeg" class="ccmlogo" alt="">
     <img src="imagens/estadologo.png" class="estadologo" alt="">
   
     <p>© 2025 MAGUILA - Sistema de Mercado</p>
