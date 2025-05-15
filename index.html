@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MAGUILA - Sistema de Mercado</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="shortcut icon" type="image/jp" href="imagens/UI.png"/>
   
 </head>
 <body>
@@ -98,7 +99,11 @@
         <input type="text" placeholder="Código Funcionário" />
         <input type="email" placeholder="Email" />
         <input type="text" placeholder="Cargo" />
-        <input type="text" placeholder="Cargo" />
+        <input type="text" id="cep" placeholder="CEP" maxlength="9" />
+        <input type="text" id="logradouro" placeholder="Rua" />
+        <input type="text" id="bairro" placeholder="Bairro" />
+        <input type="text" id="cidade" placeholder="Cidade" />
+        <input type="text" id="uf" placeholder="Estado" maxlength="2" />
         <select name="genero" required>
           <option value="" disabled selected>Gênero</option>
           <option value="M">Masculino (M)</option>
@@ -142,7 +147,7 @@
     <img src="imagens/estadologo.png" class="estadologo" alt="">
   
     <p>© 2025 MAGUILA - Sistema de Mercado</p>
-    <p>Sistema feito por: PFP´S Enterprises</p>
+    <p>Sistema feito por: PFP'S Enterprises</p>
     <p><a href="#">Termos de Serviço</a> | <a href="#">Política de Privacidade</a></p>
   </footer>
 
