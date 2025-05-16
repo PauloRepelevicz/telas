@@ -18,8 +18,8 @@ function toggleSidebar() {
   }
 
   // Dados fictícios para o gráfico de vendas
-  const vendasData = [500, 700, 600, 800, 900, 1100];
-  const meses = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+  const vendasData = [500, 700, 600, 800, 900, 1100, 700, 600, 800, 900, 1100, 700, 600, 800];
+  const meses = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'];
 
   // Criando gráfico de vendas
   const ctx = document.getElementById('graficoVendas').getContext('2d');
@@ -40,6 +40,37 @@ function toggleSidebar() {
     const row = button.closest('tr');
     row.remove();
   }
+
+  function editarproduto(botao) {
+    const linha = botao.closest('tr');
+    const celulas = linha.cells;
+    
+    // Se já está em modo edição, não faz nada
+    if (botao.textContent === 'Salvar') return;
+    
+    // Converte células para inputs
+    for (let i = 0; i < celulas.length - 1; i++) {
+        celulas[i].innerHTML = `<input value="${celulas[i].textContent}">`;
+    }
+    
+    // Altera o botão para Salvar
+    botao.textContent = 'Salvar';
+    botao.onclick = function() { salvarEdicao(this); };
+}
+
+function salvarEdicao(botao) {
+    const linha = botao.closest('tr');
+    const celulas = linha.cells;
+    
+    // Salva os valores dos inputs
+    for (let i = 0; i < celulas.length - 1; i++) {
+        celulas[i].textContent = celulas[i].querySelector('input').value;
+    }
+    
+    // Restaura o botão Editar
+    botao.textContent = 'Editar';
+    botao.onclick = function() { editarProduto(this); };
+}
 
   function buscarProduto() {
     const filter = document.getElementById('buscaProduto').value.toLowerCase();
@@ -69,7 +100,7 @@ function toggleSidebar() {
         <td>${nome}</td>
         <td>${quantidade}</td>
         <td>${preco}</td>
-        <td><button onclick="excluirProduto(this)">Excluir</button></td>
+        <td><button onclick="excluirProduto(this)">Excluir</button><button onclick="editarproduto(this)">Editar</button></td>
       `;
 
       // Limpar campos do formulário
@@ -208,3 +239,42 @@ function toggleSidebar() {
   function demitir() {
     document.getElementById('formfunc').style.display = 'none';
   }
+
+  document.getElementById('telefone1').addEventListener('input', function(e) {
+    // Remove tudo que não é número
+    let value = e.target.value.replace(/\D/g, '');
+    
+    // Aplica a máscara
+    if (value.length > 0) {
+      value = '(' + value;
+    }
+    if (value.length > 3) {
+      value = value.substring(0, 3) + ') ' + value.substring(3);
+    }
+    if (value.length > 10) {
+      value = value.substring(0, 10) + '-' + value.substring(10);
+    }
+    
+    // Limita ao tamanho máximo do formato (99) 99999-9999 (15 caracteres)
+    if (value.length > 15) {
+      value = value.substring(0, 15);
+    }
+    
+    e.target.value = value;
+  });
+
+  document.getElementById("cpf1").addEventListener("input", function(e) {
+    // Remove tudo que não é dígito
+    let value = e.target.value.replace(/\D/g, "");
+    
+    // Limita a 11 caracteres (CPF tem 11 dígitos)
+    if (value.length > 11) value = value.slice(0, 11);
+    
+    // Adiciona os pontos e hífen DURANTE a digitação
+    value = value.replace(/(\d{3})(\d)/, "$1.$2"); // Primeiro ponto
+    value = value.replace(/(\d{3})\.(\d{3})(\d)/, "$1.$2.$3"); // Segundo ponto
+    value = value.replace(/(\d{3})\.(\d{3})\.(\d{3})(\d)/, "$1.$2.$3-$4"); // Hífen
+    
+    e.target.value = value;
+  });
+

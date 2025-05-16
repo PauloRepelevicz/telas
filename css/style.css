@@ -6,7 +6,7 @@
   }
 
   body {
-    background-color: #F1C35B;
+    background-color: #f3d89b;
     color: #333;
     }
 
@@ -94,7 +94,7 @@
     padding: 2rem;
   }
 
-  .card {
+  .card{
     background-color: #fff;
     padding: 1rem;
     margin-bottom: 1rem;
@@ -115,7 +115,7 @@
     width: 100%;
     max-width: 500px;
     border-radius: 5px;
-    border: 1px solid #ddd;
+    border: 1px solid  #a77603;
   }
 
   table {

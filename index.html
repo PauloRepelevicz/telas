@@ -47,12 +47,12 @@
             <tr><th>Produto</th><th>Quantidade</th><th>Preço (R$)</th><th>Ações</th></tr>
           </thead>
           <tbody id="tabelaEstoque">
-            <tr><td>Arroz</td><td>50</td><td>5.99</td><td><button onclick="excluirProduto(this)">Excluir</button></td></tr>
-            <tr><td>Feijão</td><td>30</td><td>4.79</td><td><button onclick="excluirProduto(this)">Excluir</button></td></tr>
-            <tr><td>Açúcar</td><td>70</td><td>3.49</td><td><button onclick="excluirProduto(this)">Excluir</button></td></tr>
-            <tr><td>Óleo</td><td>20</td><td>6.59</td><td><button onclick="excluirProduto(this)">Excluir</button></td></tr>
-            <tr><td>Sal</td><td>90</td><td>2.10</td><td><button onclick="excluirProduto(this)">Excluir</button></td></tr>
-            <tr><td>Leite</td><td>45</td><td>4.99</td><td><button onclick="excluirProduto(this)">Excluir</button></td></tr>
+            <tr><td>Arroz</td><td>50</td><td>5.99</td><td><button onclick="excluirProduto(this)">Excluir</button><button onclick="editarproduto(this)">Editar</button></td></tr>
+            <tr><td>Feijão</td><td>30</td><td>4.79</td><td><button onclick="excluirProduto(this)">Excluir</button><button onclick="editarproduto(this)">Editar</button></td></tr>
+            <tr><td>Açúcar</td><td>70</td><td>3.49</td><td><button onclick="excluirProduto(this)">Excluir</button><button onclick="editarproduto(this)">Editar</button></td></tr>
+            <tr><td>Óleo</td><td>20</td><td>6.59</td><td><button onclick="excluirProduto(this)">Excluir</button><button onclick="editarproduto(this)">Editar</button></td></tr>
+            <tr><td>Sal</td><td>90</td><td>2.10</td><td><button onclick="excluirProduto(this)">Excluir</button><button onclick="editarproduto(this)">Editar</button></td></tr>
+            <tr><td>Leite</td><td>45</td><td>4.99</td><td><button onclick="excluirProduto(this)">Excluir</button><button onclick="editarproduto(this)">Editar</button></td></tr>
           </tbody>
         </table>
       </section>
@@ -124,8 +124,10 @@
         <h2>Cadastrar Cliente</h2>
         <input type="text" placeholder="Nome completo" />
         <input type="email" placeholder="Email" />
-        <input type="tel" placeholder="Telefone" />
-        <textarea placeholder="Endereço completo"></textarea>
+        <input type="tel" id="telefone1" placeholder="Telefone" maxlength="15">
+        <input type="text" id="cpf1" placeholder="CPF" maxlength="14">
+        <input type="text" placeholder="Endereço Completo"/>
+        <!-- <textarea placeholder="Endereço completo"></textarea> -->
         <button>Cadastrar Cliente</button>
       </section>
 
