@@ -11,11 +11,10 @@
 <body>
 
   <header>
-    <h1>Sistema de Mercado MAGUILA</h1>
+    <h1>Sistema de Mercado Maguila</h1>
     <img src="imagens/UI.png" alt="">
     <button class="toggle-btn" onclick="toggleSidebar()">☰ Menu</button>
   </header>
-
   <div class="container">
     <nav class="sidebar" id="sidebar">
       <h2>Menu</h2>
@@ -29,7 +28,6 @@
         <li onclick="mostrarSecao('ultimasVendas')">Últimas Vendas</li>
       </ul>
     </nav>
-
     <main class="main">
 
       <!-- DASHBOARD -->
@@ -96,7 +94,6 @@
         <h2>Cadastrar Funcionário</h2>
         <input type="text" placeholder="Nome completo" />
         <input type="text" id="cpf" placeholder="CPF" maxlength="14">
-        <input type="text" placeholder="Código Funcionário" />
         <input type="email" placeholder="Email" />
         <input type="text" placeholder="Cargo" />
         <input type="text" id="cep" placeholder="CEP" maxlength="9" />
@@ -110,7 +107,16 @@
           <option value="F">Feminino (F)</option>
         </select>
         <input type="tel" id="telefone" placeholder="Telefone" maxlength="15">
-        <button>Cadastrar Funcionário</button>
+        <button id="cadfunc" onclick="mostrarfuncionarionovo()">Cadastrar Funcionário</button>
+        
+      </section>
+      <section id="formfunc" class="card" style="display:none;">
+        <h2>Novo Funcionário Cadastrado com Sucesso!</h2>
+        <div id="resultado"></div>
+        <input type="text" id="nomefunc" placeholder="Nome Completo" />
+        <input type="number" id="cargofunc" placeholder="Cargo" />
+        <input type="number" id="emailfunc" placeholder="Email" />
+        <button onclick="demitir()">Manda pro Caraio</button>
       </section>
 
       <!-- CLIENTE -->

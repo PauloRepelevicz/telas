@@ -6,9 +6,9 @@
   }
 
   body {
-    background-color: #f4f4f4;
+    background-color: #F1C35B;
     color: #333;
-  }
+    }
 
   header {
     background-color: #333;
@@ -27,7 +27,7 @@
     display: flex;
     justify-content: space-between; /* Distancia entre as imagens */
     align-items: center; /* Alinha verticalmente */
-    height: 80px; /* Altura do footer */
+    height: 100px; /* Altura do footer */
   }
 
   footer img{
@@ -35,12 +35,15 @@
     height: auto;
   }
 
-  .logoccm{
-    margin-left: 100%; 
+  .ccmlogo{
+    margin-left: 95%; 
   }
 
-  .logoestado{
-    margin-right: 100%; 
+  .estadologo{
+    left: 45px; 
+    margin-top: 0%;
+    position: absolute;
+    height: 50px ; 
   }
 
   .container {
@@ -49,7 +52,7 @@
   }
 
   .sidebar {
-    width: 250px;
+    width: 275px;
     background-color: #2c2c2c;
     color: #fff;
     min-height: 100vh;

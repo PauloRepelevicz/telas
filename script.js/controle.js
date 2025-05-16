@@ -183,3 +183,28 @@ function toggleSidebar() {
       }
     }
   });
+
+  // Variável para armazenar o último ID gerado
+  let ultimoId = 0;
+        
+  // Função para gerar novo ID
+  function gerarNovoId() {
+      ultimoId += 1; // Incrementa o ID
+      return ultimoId;
+  }
+  
+  // Evento de clique do botão
+  document.getElementById('cadfunc').addEventListener('click', function() {
+      const novoId = gerarNovoId();
+      document.getElementById('resultado').innerHTML = `
+          <p>ID: <strong>${novoId}</strong></p>
+      `;
+  });
+
+  function mostrarfuncionarionovo() {
+    document.getElementById('formfunc').style.display = 'block';
+  }
+
+  function demitir() {
+    document.getElementById('formfunc').style.display = 'none';
+  }
