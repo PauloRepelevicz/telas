@@ -43,6 +43,16 @@
         <input type="text" id="buscaProduto" placeholder="Buscar produto..." onkeyup="buscarProduto()" />
         <button onclick="mostrarFormularioProduto()">Adicionar Produto</button>
         <table>
+          <!-- FORMULÁRIO DE CADASTRO DE PRODUTO -->
+      <section id="formProduto" class="card" style="display:none;">
+        <h2>Cadastrar Novo Produto</h2>
+        <input type="text" id="nomeProduto" placeholder="Nome do Produto" />
+        <input type="number" id="quantidadeProduto" placeholder="Quantidade" />
+        <input type="number" id="precoProduto" placeholder="Preço (R$)" />
+        <button onclick="adicionarProduto()">Cadastrar Produto</button>
+        <button onclick="fecharFormularioProduto()">Cancelar</button>
+      </section>
+      
           <thead>
             <tr><th>Produto</th><th>Quantidade</th><th>Preço (R$)</th><th>Ações</th></tr>
           </thead>
@@ -57,15 +67,7 @@
         </table>
       </section>
 
-      <!-- FORMULÁRIO DE CADASTRO DE PRODUTO -->
-      <section id="formProduto" class="card" style="display:none;">
-        <h2>Cadastrar Novo Produto</h2>
-        <input type="text" id="nomeProduto" placeholder="Nome do Produto" />
-        <input type="number" id="quantidadeProduto" placeholder="Quantidade" />
-        <input type="number" id="precoProduto" placeholder="Preço (R$)" />
-        <button onclick="adicionarProduto()">Cadastrar Produto</button>
-        <button onclick="fecharFormularioProduto()">Cancelar</button>
-      </section>
+      
 
       <!-- FINANCEIRO -->
       <section id="financeiro" class="card" style="display:none;">
