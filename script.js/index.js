@@ -18,7 +18,7 @@ function toggleSidebar() {
   }
 
   // Dados fictícios para o gráfico de vendas
-  const vendasData = [500, 700, 600, 800, 900, 1100, 1300, 1400, 1250, 1000, 1100, 1200, 1400, 1500];
+  const vendasData = [1000, 2000, 3500, 4700, 4300, 6000, 6500, 8000, 8100, 10200, 11000, 11100, 13000, 13500];
   const meses = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'];
 
   // Criando gráfico de vendas
