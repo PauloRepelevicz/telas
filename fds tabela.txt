@@ -59,3 +59,20 @@ CREATE TABLE IF NOT EXISTS vendas(
     FOREIGN KEY (cliente_id) REFERENCES clientes(id),
     FOREIGN KEY (funcionario_id) REFERENCES funcionarios(id)
 );
+
+CREATE TABLE notas_fiscais (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    numero INTEGER NOT NULL,
+    serie TEXT NOT NULL DEFAULT '1',
+    chave_acesso TEXT UNIQUE,
+    venda_id INTEGER NOT NULL,
+    data_emissao DATETIME DEFAULT CURRENT_TIMESTAMP,
+    data_saida DATETIME,
+    tipo_operacao INTEGER DEFAULT 1, -- 1=saída, 2=entrada
+    status TEXT DEFAULT 'EMITIDA', -- EMITIDA, CANCELADA, CONTINGENCIA
+    natureza_operacao TEXT DEFAULT 'VENDA',
+    codigo_nfe TEXT,
+    xml TEXT,
+    pdf BLOB,
+    FOREIGN KEY (venda_id) REFERENCES vendas(id)
+);
