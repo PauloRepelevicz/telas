@@ -100,3 +100,25 @@ CREATE TABLE historico (
     FOREIGN KEY (id_venda) REFERENCES venda(id_venda) ON DELETE CASCADE,
     FOREIGN KEY (id_produto) REFERENCES produtos(id_produto) ON DELETE RESTRICT
 );
+
+/*insert into produto (nome, descricao, preco_custo, preco_venda, quantidade_estoque, data_validade)
+VALUES ('Arroz', 'Saco de Arroz 1 KG', 3.59, 5.99, 50, 20/05/2026);
+
+insert into produto (nome, descricao, preco_custo, preco_venda, quantidade_estoque, data_validade)
+VALUES ('Feijão', 'Saco de Feijão 1 KG', 2.80, 4.79, 30, 03/06/2026);
+
+insert into produto (nome, descricao, preco_custo, preco_venda, quantidade_estoque, data_validade)
+VALUES ('Açúcar', 'Pacote de Açúcar 5 KG', 1.50, 3.49, 70, 04/02/2026);
+
+insert into produto (nome, descricao, preco_custo, preco_venda, quantidade_estoque, data_validade)
+VALUES ('Óleo', 'Frasco de Óleo 500ML', 4.30, 6.59, 20, 01/07/26);
+
+insert into produto (nome, descricao, preco_custo, preco_venda, quantidade_estoque, data_validade)
+VALUES ('Sal', 'Pacote de Sal 5 KG', 0.50, 2.10, 90, 16/08/2025);
+
+insert into produto (nome, descricao, preco_custo, preco_venda, quantidade_estoque, data_validade)
+VALUES ('Leite', 'Garrafa de Leite', 1, 4.99, 45, 02/09/2025);*/
+
+--select nome, quantidade_estoque, preco_venda from produto WHERE nome LIKE :termo || '%' ORDER BY nome LIMIT 20;
+
+select nome, quantidade_estoque, preco_venda FROM produto ORDER BY nome;
