@@ -5,12 +5,17 @@ CREATE TABLE IF NOT EXISTS funcionario(
      telefone VARCHAR(15),
      email VARCHAR(100),
      data_nascimento DATE,
-     endereco TEXT
+     cep INTEGER,
+  	 bairro VARCHAR(30),
+  	 rua VARCHAR(30),
+  	 estado VARCHAR(2),
+     genero VARCHAR(2),
+     cargo 	VARCHAR(30),
 );
 CREATE TABLE IF NOT EXISTS cliente(
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
     nome VARCHAR(100) NOT NULL,
-    cpf VARCHAR(14) NOT NULL UNIQUE,
+    cpf VARCHAR(14) NOT NULL UNIQUE,	
     telefone VARCHAR(15),
     data_nascimento DATE,
     endereco TEXT
@@ -100,6 +105,27 @@ CREATE TABLE historico (
     FOREIGN KEY (id_venda) REFERENCES venda(id_venda) ON DELETE CASCADE,
     FOREIGN KEY (id_produto) REFERENCES produtos(id_produto) ON DELETE RESTRICT
 );
+
+/*INNER JOIN livros 	on emprestimos.id_livro=livros.id_livro*/
+
+select nome, quantidade_estoque, preco_venda FROM produto ORDER BY nome;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*insert into produto (nome, descricao, preco_custo, preco_venda, quantidade_estoque, data_validade)
 VALUES ('Arroz', 'Saco de Arroz 1 KG', 3.59, 5.99, 50, 20/05/2026);
