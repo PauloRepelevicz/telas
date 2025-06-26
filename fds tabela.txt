@@ -86,9 +86,9 @@ CREATE TABLE historico (
     hist_id INTEGER PRIMARY KEY AUTOINCREMENT,
     ven_id INTEGER NOT NULL,
     prod_id INTEGER NOT NULL,
-    hist_quantidade INTEGER NOT NULL CHECK(quantidade > 0),
-    hist_preco_unitario REAL NOT NULL CHECK(preco_unitario > 0),
-    hist_subtotal REAL NOT NULL CHECK(subtotal > 0),
+    hist_quantidade INTEGER NOT NULL CHECK(hist_quantidade > 0),
+    hist_preco_unitario REAL NOT NULL CHECK(hist_preco_unitario > 0),
+    hist_subtotal REAL NOT NULL CHECK(hist_subtotal > 0),
     
     FOREIGN KEY (ven_id) REFERENCES vendas(ven_id) ON DELETE CASCADE,
     FOREIGN KEY (prod_id) REFERENCES produtos(prod_id) ON DELETE RESTRICT
