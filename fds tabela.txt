@@ -1,131 +1,102 @@
 CREATE TABLE IF NOT EXISTS funcionario(
-	 id INTEGER PRIMARY KEY AUTOINCREMENT,
-     nome VARCHAR(100) not NULL,
-     cpf VARCHAR(14) NOT NULL UNIQUE,
-     telefone VARCHAR(15),
-     email VARCHAR(100),
-     data_nascimento DATE,
-     cep INTEGER,
-  	 bairro VARCHAR(30),
-  	 rua VARCHAR(30),
-  	 estado VARCHAR(2),
-     genero VARCHAR(2),
-     cargo 	VARCHAR(30),
+	 id_func INTEGER PRIMARY KEY AUTOINCREMENT,
+     nome_func VARCHAR(100) not NULL,
+     cpf_func VARCHAR(14) NOT NULL UNIQUE,
+     telefone_func VARCHAR(15),
+     email_func VARCHAR(100),
+     data_nascimento_func DATE,
+     cep_func INTEGER,
+  	 bairro_func VARCHAR(30),
+  	 rua_func VARCHAR(30),
+  	 estado_func VARCHAR(2),
+     genero_func VARCHAR(2),
+     cargo_func	VARCHAR(30)
 );
 CREATE TABLE IF NOT EXISTS cliente(
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome VARCHAR(100) NOT NULL,
-    cpf VARCHAR(14) NOT NULL UNIQUE,	
-    telefone VARCHAR(15),
-    data_nascimento DATE,
-    endereco TEXT
+	id_cli INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome_cli VARCHAR(100) NOT NULL,
+    cpf_cli VARCHAR(14) NOT NULL UNIQUE,	
+    telefone_cli VARCHAR(15),
+    data_nascimento_cli DATE,
+    endereco_cli TEXT
 	
 );
 
 CREATE TABLE IF NOT EXISTS categoria(
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome TEXT NOT NULL,
-    descricao TEXT
+	id_cat INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome_cat TEXT NOT NULL,
+    descricao_cat TEXT
 );
 
 CREATE TABLE IF NOT EXISTS produto(
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome TEXT NOT NULL,
-    descricao TEXT,
-    codigo_barras TEXT UNIQUE,
-    preco_custo REAL NOT NULL,
-    preco_venda REAL NOT NULL,
-    quantidade_estoque INTEGER DEFAULT 0,
-    categoria_id INTEGER,
-    fornecedor_id INTEGER,
-    data_validade DATE,
-    unidade_medida TEXT,
-    FOREIGN KEY (categoria_id) REFERENCES categorias(id),
-    FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id)
+	id_prod INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome_prod TEXT NOT NULL,
+    descricao_prod TEXT,
+    codigo_barras_prod TEXT UNIQUE,
+    preco_custo_prod REAL NOT NULL,
+    preco_venda_prod REAL NOT NULL,
+  	quantidade_estoque_prod INTEGER DEFAULT 0,
+    id_cat INTEGER,
+    id_forn INTEGER,
+    data_validade_prod DATE,
+    unidade_medida_prod TEXT,
+    FOREIGN KEY (id_cat) REFERENCES categorias(id_cat),
+    FOREIGN KEY (id_forn) REFERENCES fornecedores(id_forn)
 );
 
 CREATE TABLE IF NOT EXISTS fornecedor(
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome TEXT NOT NULL,
-    cnpj TEXT UNIQUE,
-    telefone TEXT,
-    email TEXT,
-    endereco TEXT
+	id_forn INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome_forn TEXT NOT NULL,
+    cnpj_forn TEXT UNIQUE,
+    telefone_forn TEXT,
+    email_forn TEXT,
+    endereco_forn TEXT
 );
 
 CREATE TABLE IF NOT EXISTS vendas(
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
-    data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
-    cliente_id INTEGER,
-    funcionario_id INTEGER,
-    total REAL NOT NULL,
-    forma_pagamento TEXT,
-    status TEXT DEFAULT 'finalizada',
-    FOREIGN KEY (cliente_id) REFERENCES clientes(id),
-    FOREIGN KEY (funcionario_id) REFERENCES funcionarios(id)
+	id_ven INTEGER PRIMARY KEY AUTOINCREMENT,
+    data_hora_ven DATETIME DEFAULT CURRENT_TIMESTAMP,
+    id_cli INTEGER,
+    id_func INTEGER,
+    total_ven REAL NOT NULL,
+    forma_pagamento_ven TEXT,
+    status_ven TEXT DEFAULT 'finalizada',
+    FOREIGN KEY (id_cli) REFERENCES clientes(id_cli),
+    FOREIGN KEY (id_func) REFERENCES funcionarios(id_func)
 );
 
 CREATE TABLE IF NOT EXISTS notas_fiscais (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    numero INTEGER NOT NULL,
-    serie TEXT NOT NULL DEFAULT '1',
-    chave_acesso TEXT UNIQUE,
-    venda_id INTEGER NOT NULL,
-    data_emissao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    data_saida DATETIME,
-    tipo_operacao INTEGER DEFAULT 1, -- 1=saída, 2=entrada
-    status TEXT DEFAULT 'EMITIDA', -- EMITIDA, CANCELADA, CONTINGENCIA
-    natureza_operacao TEXT DEFAULT 'VENDA',
-    codigo_nfe TEXT,
-    xml TEXT,
-    pdf BLOB,
-    FOREIGN KEY (venda_id) REFERENCES vendas(id)
-);
-
-CREATE TABLE venda (
-    id_venda INTEGER PRIMARY KEY AUTOINCREMENT,
-    data_venda DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    id_cliente INTEGER,
-    valor_total REAL NOT NULL CHECK(valor_total >= 0),
-    forma_pagamento TEXT NOT NULL CHECK(forma_pagamento IN ('dinheiro', 'cartao_credito', 'cartao_debito', 'pix', 'transferencia', 'outro')),
-    status TEXT NOT NULL CHECK(status IN ('pendente', 'concluida', 'cancelada', 'devolvida')) DEFAULT 'concluida',
-    observacoes TEXT,
-    
-    FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente) ON DELETE SET NULL
+    id_not INTEGER PRIMARY KEY AUTOINCREMENT,
+    numero_not INTEGER NOT NULL,
+    serie_not TEXT NOT NULL DEFAULT '1',
+    chave_acesso_not TEXT UNIQUE,
+    id_ven INTEGER NOT NULL,
+    data_emissao_not DATETIME DEFAULT CURRENT_TIMESTAMP,
+    data_saida_not DATETIME,
+    tipo_operacao_not INTEGER DEFAULT 1, -- 1=saída, 2=entrada
+    status_not TEXT DEFAULT 'EMITIDA', -- EMITIDA, CANCELADA, CONTINGENCIA
+    natureza_operacao_not TEXT DEFAULT 'VENDA',
+    codigo_nfe_not TEXT,
+    xml_not TEXT,
+    pdf_not BLOB,
+    FOREIGN KEY (id_ven) REFERENCES vendas(id_ven)
 );
 
 CREATE TABLE historico (
-    id_historico INTEGER PRIMARY KEY AUTOINCREMENT,
-    id_venda INTEGER NOT NULL,
-    id_produto INTEGER NOT NULL,
-    quantidade INTEGER NOT NULL CHECK(quantidade > 0),
-    preco_unitario REAL NOT NULL CHECK(preco_unitario > 0),
-    subtotal REAL NOT NULL CHECK(subtotal > 0),
+    id_hist INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_ven INTEGER NOT NULL,
+    id_prod INTEGER NOT NULL,
+    quantidade_hist INTEGER NOT NULL CHECK(quantidade > 0),
+    preco_unitario_hist REAL NOT NULL CHECK(preco_unitario > 0),
+    subtotal_hist REAL NOT NULL CHECK(subtotal > 0),
     
-    FOREIGN KEY (id_venda) REFERENCES venda(id_venda) ON DELETE CASCADE,
-    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto) ON DELETE RESTRICT
+    FOREIGN KEY (id_ven) REFERENCES vendas(id_ven) ON DELETE CASCADE,
+    FOREIGN KEY (id_prod) REFERENCES produtos(id_prod) ON DELETE RESTRICT
 );
 
 /*INNER JOIN livros 	on emprestimos.id_livro=livros.id_livro*/
 
-select nome, quantidade_estoque, preco_venda FROM produto ORDER BY nome;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+select nome_prod, quantidade_estoque_prod, preco_venda_prod FROM produto ORDER BY nome;
 
 /*insert into produto (nome, descricao, preco_custo, preco_venda, quantidade_estoque, data_validade)
 VALUES ('Arroz', 'Saco de Arroz 1 KG', 3.59, 5.99, 50, 20/05/2026);
@@ -147,7 +118,7 @@ VALUES ('Leite', 'Garrafa de Leite', 1, 4.99, 45, 02/09/2025);*/
 
   --select nome, quantidade_estoque, preco_venda from produto WHERE nome LIKE :termo || '%' ORDER BY nome LIMIT 20;
 
-select nome, quantidade_estoque, preco_venda FROM produto ORDER BY nome;
+select nome_prod, quantidade_estoque_prod, preco_venda_prod FROM produto ORDER BY nome;
 
 /*Arrumar coisas faltando no Banco de dados (ex: funcionario q n tem a parte de genero presente do front end)
 Arrumar front end para estar certo com o BD (ex: nao usamos banco de dados relacional na area de adicionar produto)
