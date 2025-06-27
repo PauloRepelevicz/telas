@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS notas_fiscais (
     FOREIGN KEY (ven_id) REFERENCES vendas(ven_id)
 );
 
-CREATE TABLE historico (
+CREATE TABLE IF NOT EXISTS historico (
     hist_id INTEGER PRIMARY KEY AUTOINCREMENT,
     ven_id INTEGER NOT NULL,
     prod_id INTEGER NOT NULL,
