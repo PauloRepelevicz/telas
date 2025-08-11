@@ -1,204 +1,134 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
+Skip to content
+Files
+Commands
+Search
+Packager files
+Config files
+5s
+ • 
+38 minutes ago
+Enable "Accessible Terminal" in Workspace Settings to use a screen reader with the shell.
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.erro) {
+                        document.getElementById('endereco').value = data.logradouro;
+                        document.getElementById('bairro').value = data.bairro;
+                        document.getElementById('cidade').value = data.localidade;
+                        document.getElementById('estado').value = data.uf;
+                        this.value = cep.replace(/(\d{5})(\d{3})/, "$1-$2");
+                    }
+                })
+                .catch(error => console.error('Erro ao buscar CEP:', error));
+        }
+    });
 
-const app = express();
-const port = process.env.PORT || 3000;
+    clienteForm.addEventListener('submit', function (e) {
+        e.preventDefault();
 
-// Configurações
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
+        const clienteData = {
+            nome: document.getElementById('nome').value.trim(),
+            cpf: document.getElementById('cpf').value.trim(),
+            telefone: document.getElementById('telefone').value.trim(),
+            email: document.getElementById('email')?.value.trim(),
+            data_nascimento: document.getElementById('dataNasc').value,
+            logradouro: document.getElementById('endereco').value.trim(),
+            numero: document.getElementById('numero').value.trim(),
+            bairro: document.getElementById('bairro').value.trim(),
+            cidade: document.getElementById('cidade').value.trim(),
+            estado: document.getElementById('estado').value.trim(),
+            cep: document.getElementById('cep').value.trim(),
+            complemento: document.getElementById('complemento').value.trim(),
+            observacoes: document.getElementById('observacoes').value.trim()
+            
+        };
 
-// Middleware para CORS
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-});
+        if (!clienteData.nome || !clienteData.cpf) {
+            alert('Nome e CPF são obrigatórios!');
+            return;
+        }
 
-// Conexão com o banco de dados
-const db = new sqlite3.Database('./database.db', (err) => {
-    if (err) {
-        console.error('Erro ao conectar ao banco de dados:', err.message);
+        if (!validarCPF(clienteData.cpf)) {
+            alert('CPF inválido!');
+            return;
+        }
+
+        if (clienteData.telefone && !validarTelefone(clienteData.telefone)) {
+            alert('Telefone inválido!');
+            return;
+        }
+
+        if (clienteData.email && !validarEmail(clienteData.email)) {
+            alert('E-mail inválido!');
+            return;
+        }
+
+        fetch('/clientes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(clienteData)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.error) });
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Cliente cadastrado com sucesso! ID: ' + data.id);
+                clienteForm.reset();
+                listarClientes();
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao cadastrar cliente: ' + error.message);
+            });
+    });
+const express = require("express");
+                    .json({ message: "Erro ao buscar clientes." });
+            }
+            res.json(rows); // Retorna os clientes encontrados ou um array vazio
+        });
     } else {
-        console.log('Conectado ao banco de dados SQLite.');
-        db.run(`PRAGMA foreign_keys = ON`);
-    }
-});
+        // Se CPF não foi passado, retorna todos os clientes
+        const query = `SELECT * FROM clientes`;
 
-// Rotas para Clientes
-app.post('/clientes', (req, res) => {
-    const { nome, cpf, telefone, data_nascimento, endereco } = req.body;
-
-    if (!nome || !cpf) {
-        return res.status(400).json({ error: 'Nome e CPF são obrigatórios.' });
-    }
-
-    // Primeiro insere o endereço
-    const enderecoQuery = `INSERT INTO endereco 
-        (end-_id, end_log, end_num, end_bairro, end_cid, end_cep) 
-        VALUES (?, ?, ?, ?, ?)`;
-    
-    db.run(enderecoQuery, [
-        endereco.logradouro,
-        endereco.numero,
-        endereco.bairro,
-        endereco.cidade,
-        endereco.cep
-    ], function(err) {
-        if (err) {
-            return res.status(500).json({ error: 'Erro ao cadastrar endereço.' });
-        }
-
-        const endId = this.lastID;
-        
-        // Depois insere o cliente com a referência ao endereço
-        const clienteQuery = `INSERT INTO cliente 
-            (cli_id, cli_nome, cli_cpf, cli_telefone, cli_data_nascimento, end_id) 
-            VALUES (?, ?, ?, ?, ?)`;
-        
-        db.run(clienteQuery, [
-            nome,
-            cpf,
-            telefone,
-            data_nascimento,
-            endId
-        ], function(err) {
+        db.all(query, (err, rows) => {
             if (err) {
-                // Se der erro no cliente, remove o endereço inserido
-                db.run(`DELETE FROM endereco WHERE end_id = ?`, [endId]);
-                if (err.message.includes('UNIQUE constraint failed')) {
-                    return res.status(400).json({ error: 'CPF já cadastrado.' });
-                }
-                return res.status(500).json({ error: 'Erro ao cadastrar cliente.' });
+                console.error(err);
+                return res
+                    .status(500)
+                    .json({ message: "Erro ao buscar clientes." });
             }
-            
-            res.status(201).json({ 
-                id: this.lastID,
-                message: 'Cliente cadastrado com sucesso.'
-            });
+            res.json(rows); // Retorna todos os clientes
         });
-    });
-});
-
-app.get('/clientes', (req, res) => {
-    const { nome } = req.query;
-    let query = `
-        SELECT c.*, e.end_log, e.end_num, e.end_bairro, e.end_cid, e.end_cep 
-        FROM cliente c
-        LEFT JOIN endereco e ON c.end_id = e.end_id
-    `;
-    let params = [];
-
-    if (nome) {
-        query += ` WHERE c.cli_nome LIKE ?`;
-        params.push(`%${nome}%`);
     }
+});
 
-    query += ` ORDER BY c.cli_nome ASC`;
+// Atualizar cliente
+app.put("/clientes/cpf/:cpf", (req, res) => {
+    const { cpf } = req.params;
+    const { nome, email, telefone, endereco } = req.body;
 
-    db.all(query, params, (err, rows) => {
+    const query = `UPDATE clientes SET nome = ?, email = ?, telefone = ?, endereco = ? WHERE cpf = ?`;
+    db.run(query, [nome, email, telefone, endereco, cpf], function (err) {
         if (err) {
-            console.error(err);
-            return res.status(500).json({ error: 'Erro ao buscar clientes.' });
+            return res.status(500).send("Erro ao atualizar cliente.");
         }
-        res.json(rows);
+        if (this.changes === 0) {
+            return res.status(404).send("Cliente não encontrado.");
+        }
+        res.send("Cliente atualizado com sucesso.");
     });
 });
 
-app.put('/clientes/:id', (req, res) => {
-    const { id } = req.params;
-    const { nome, telefone, data_nascimento, endereco } = req.body;
-
-    if (!nome) {
-        return res.status(400).json({ error: 'Nome é obrigatório.' });
-    }
-
-    // Primeiro atualiza o cliente
-    const clienteQuery = `UPDATE cliente SET 
-        cli_nome = ?, 
-        cli_telefone = ?, 
-        cli_data_nascimento = ? 
-        WHERE cli_id = ?`;
-    
-    db.run(clienteQuery, [nome, telefone, data_nascimento, id], function(err) {
-        if (err) {
-            return res.status(500).json({ error: 'Erro ao atualizar cliente.' });
-        }
-
-        // Depois atualiza o endereço
-        const enderecoQuery = `UPDATE endereco SET
-            end_log = ?,
-            end_num = ?,
-            end_bairro = ?,
-            end_cid = ?,
-            end_cep = ?
-            WHERE end_id = (
-                SELECT end_id FROM cliente WHERE cli_id = ?
-            )`;
-        
-        db.run(enderecoQuery, [
-            endereco.logradouro,
-            endereco.numero,
-            endereco.bairro,
-            endereco.cidade,
-            endereco.cep,
-            id
-        ], function(err) {
-            if (err) {
-                return res.status(500).json({ error: 'Erro ao atualizar endereço.' });
-            }
-            res.json({ message: 'Cliente e endereço atualizados com sucesso.' });
-        });
-    });
+// Teste para verificar se o servidor está rodando
+app.get("/", (req, res) => {
+    res.send("Servidor está rodando e tabelas criadas!");
 });
 
-app.delete('/clientes/:id', (req, res) => {
-    const { id } = req.params;
-    
-    // Primeiro obtém o end_id para deletar depois
-    db.get(`SELECT end_id FROM cliente WHERE cli_id = ?`, [id], (err, row) => {
-        if (err) {
-            return res.status(500).json({ error: 'Erro ao buscar cliente.' });
-        }
-        
-        if (!row) {
-            return res.status(404).json({ error: 'Cliente não encontrado.' });
-        }
-        
-        const endId = row.end_id;
-        
-        // Deleta o cliente
-        db.run(`DELETE FROM cliente WHERE cli_id = ?`, [id], function(err) {
-            if (err) {
-                return res.status(500).json({ error: 'Erro ao remover cliente.' });
-            }
-            
-            // Depois deleta o endereço
-            db.run(`DELETE FROM endereco WHERE end_id = ?`, [endId], function(err) {
-                if (err) {
-                    console.error('Erro ao remover endereço:', err);
-                }
-                res.json({ message: 'Cliente removido com sucesso.' });
-            });
-        });
-    });
-});
-
-// Rota para servir a página HTML
-app.get('/clientes/html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'html', 'cliente.html'));
-});
-
-// Rota raiz
-app.get('/', (req, res) => {
-    res.send('Sistema de Mercado Maguila - API está rodando!');
-});
-
-// Iniciar servidor
+// Iniciando o servidor
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
-    console.log(`Acesse: http://localhost:${port}/clientes/html`);
 });
+
