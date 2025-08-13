@@ -11,13 +11,20 @@ CREATE TABLE IF NOT EXISTS funcionario(
      FOREIGN KEY (end_id) REFERENCES endereco(end_id)
 );
 CREATE TABLE IF NOT EXISTS cliente(
-	cli_id INTEGER PRIMARY KEY AUTOINCREMENT,
+	  cli_id INTEGER PRIMARY KEY AUTOINCREMENT,
     cli_nome VARCHAR(100) NOT NULL,
-    cli_cpf VARCHAR(14) NOT NULL UNIQUE,	
+    cli_cpf VARCHAR(14) NOT NULL UNIQUE,
     cli_telefone VARCHAR(15),
     cli_data_nascimento DATE,
-	end_id INTEGER,
-  	FOREIGN KEY (end_id) REFERENCES endereco(end_id)
+    cli_email TEXT NOT NULL,	
+    cli_logradouro TEXT,
+    cli_numero INTEGER,
+    cli_bairro TEXT,
+    cli_cidade TEXT,
+    cli_estado,
+    cli_cep VARCHAR(10),
+    cli_complemento TEXT,
+    cli_observacoes TEXT
 );
 
 CREATE TABLE IF NOT EXISTS categoria(
@@ -92,15 +99,6 @@ CREATE TABLE IF NOT EXISTS historico (
     FOREIGN KEY (ven_id) REFERENCES vendas(ven_id) ON DELETE CASCADE,
     FOREIGN KEY (prod_id) REFERENCES produtos(prod_id) ON DELETE RESTRICT
 );
-
-CREATE TABLE IF NOT EXISTS endereco (
-  end_id INTEGER PRIMARY KEY AUTOINCREMENT,
-  end_log TEXT,
-  end_num INTEGER,
-  end_bairro TEXT,
-  end_cid TEXT,
-  end_cep INTEGER
-  );
 
 /*INNER JOIN livros 	on emprestimos.id_livro=livros.id_livro*/
 
