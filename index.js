@@ -59,7 +59,7 @@ app.post('/clientes', (req, res) => {
         return res.status(400).send('Nome e CPF são obrigatórios.');
     }
 
-    const query = `INSERT INTO clientes (nome, cpf, telefone, email, data_nascimento, logradouro, numero, bairro, cidade, estado, cep, complemento, observacoes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO clientes (cli_nome, cli_cpf, cli_telefone, cli_data_nascimento, cli_email, cli_logradouro, cli_numero, cli_bairro, cli_cidade, cli_estado, cli_cep, cli_complemento, cli_observacoes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     db.run(query, [nome, cpf, telefone, email, data_nascimento, logradouro, numero, bairro, cidade, estado, cep, complemento, observacoes], function (err) {
         if (err) {
             return res.status(500).send('Erro ao cadastrar cliente.');
