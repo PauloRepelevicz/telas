@@ -53,7 +53,7 @@ db.serialize(() => {
 
 // Cadastrar cliente
 app.post('/clientes', (req, res) => {
-    const { nome, cpf, email, telefone, endereco } = req.body;
+    const { nome, cpf, telefone, email, data_nascimento, logradouro, numero, bairro, cidade, estado, cep, complemento, observacoes } = req.body; 
 
     if (!nome || !cpf) {
         return res.status(400).send('Nome e CPF são obrigatórios.');
