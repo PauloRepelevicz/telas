@@ -41,6 +41,7 @@ async function cadastrarCliente(event) {
 }
 // Função para listar todos os clientes ou buscar clientes por CPF
 async function listarClientes() {
+    console.log("Voce é viado")
     const cpf = document.getElementById('cpf').value.trim();  // Pega o valor do CPF digitado no input
 
     let url = '/clientes';  // URL padrão para todos os clientes
@@ -49,7 +50,7 @@ async function listarClientes() {
         // Se CPF foi digitado, adiciona o parâmetro de consulta
         url += `?cpf=${cpf}`;
     }
-
+    console.log("Voce é viado 2")
     try {
         const response = await fetch(url);
         const clientes = await response.json();

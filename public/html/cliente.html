@@ -141,9 +141,27 @@
       
           <div class="form-actions">
             <button type="button" onclick="cadastrarCliente(event)" class="btn-submit">Cadastrar</button>
-            <button type="reset" class="btn-reset">Limpar</button>
+            <button type="reset" onclick="limpaCliente()" class="btn-reset">Limpar</button>
           </div>
         </form>
+        <h2>Consultar Cliente</h2> 
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Endereço</th>
+            </tr>
+        </thead>
+        <tbody id="tabela-clientes">
+            <!-- Linhas serão preenchidas pelo JavaScript -->
+        </tbody>
+    </table>
+    <button type="button" onclick="listarClientes()" class="btn-submit">Listar Clientes</button>
       </section>
     </main>
   </div>
