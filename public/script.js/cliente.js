@@ -1,11 +1,12 @@
 async function cadastrarCliente(event) {
     event.preventDefault();
+    alert("asdf");
 
     const cliente = {
         nome: document.getElementById('nome').value,
         cpf: document.getElementById('cpf').value,
         telefone: document.getElementById('telefone').value,
-        email: document.getElementById('email')?.value,
+        email: document.getElementById('email').value,
         data_nascimento: document.getElementById('dataNasc').value,
         logradouro: document.getElementById('endereco').value,
         numero: document.getElementById('numero').value,
@@ -35,7 +36,7 @@ async function cadastrarCliente(event) {
         }
     } catch (err) {
         console.error("Erro na solicitação:", err);
-        alert("Erro ao cadastrar cliente.");
+        alert("Erro ao cadastrar cliente.?");
     }
 }
 // Função para listar todos os clientes ou buscar clientes por CPF
