@@ -1,6 +1,5 @@
 async function cadastrarCliente(event) {
     event.preventDefault();
-    alert("asdf");
 
     const cliente = {
         nome: document.getElementById("nome").value,
@@ -36,30 +35,25 @@ async function cadastrarCliente(event) {
         }
     } catch (err) {
         console.error("Erro na solicitação:", err);
-        alert("Erro ao cadastrar cliente.?");
+        alert("Erro ao cadastrar cliente.");
     }
 }
-// Função para listar todos os clientes ou buscar clientes por CPF
+
+// ----------------- LISTAR CLIENTES -----------------
 async function listarClientes() {
-    console.log("Voce é viado");
-    const cpf = document.getElementById("cpf").value.trim(); // Pega o valor do CPF digitado no input
+    const cpf = document.getElementById("cpf").value.trim();
+    let url = "/clientes";
 
-    let url = "/clientes"; // URL padrão para todos os clientes
+    if (cpf) url += `?cpf=${cpf}`;
 
-    if (cpf) {
-        // Se CPF foi digitado, adiciona o parâmetro de consulta
-        url += `?cpf=${cpf}`;
-    }
-    console.log("Voce é viado 2");
     try {
         const response = await fetch(url);
         const clientes = await response.json();
 
         const tabela = document.getElementById("tabela-clientes");
-        tabela.innerHTML = ""; // Limpa a tabela antes de preencher
+        tabela.innerHTML = "";
 
         if (clientes.length === 0) {
-            // Caso não encontre clientes, exibe uma mensagem
             tabela.innerHTML =
                 '<tr><td colspan="6">Nenhum cliente encontrado.</td></tr>';
         } else {
@@ -68,10 +62,10 @@ async function listarClientes() {
                 linha.innerHTML = `
                     <td>${cliente.cli_id}</td>
                     <td>${cliente.cli_nome}</td>
-                    <td>${cliente.cli_cpf}</td>
+                    <td>${formatarCPF(cliente.cli_cpf)}</td>
                     <td>${cliente.cli_email}</td>
-                    <td>${cliente.cli_telefone}</td>
-                    <td>${cliente.cli_cep}</td>
+                    <td>${formatarTelefone(cliente.cli_telefone || "")}</td>
+                    <td>${formatarCEP(cliente.cli_cep || "")}</td>
                 `;
                 tabela.appendChild(linha);
             });
@@ -80,7 +74,8 @@ async function listarClientes() {
         console.error("Erro ao listar clientes:", error);
     }
 }
-// Função para atualizar as informações do cliente
+
+// ----------------- ATUALIZAR CLIENTE -----------------
 async function atualizarCliente() {
     const nome = document.getElementById("nome").value;
     const cpf = document.getElementById("cpf").value;
@@ -88,13 +83,7 @@ async function atualizarCliente() {
     const telefone = document.getElementById("telefone").value;
     const endereco = document.getElementById("endereco").value;
 
-    const clienteAtualizado = {
-        nome,
-        email,
-        telefone,
-        endereco,
-        cpf,
-    };
+    const clienteAtualizado = { nome, email, telefone, endereco, cpf };
 
     try {
         const response = await fetch(`/clientes/cpf/${cpf}`, {
@@ -124,3 +113,74 @@ async function limpaCliente() {
     document.getElementById("telefone").value = "";
     document.getElementById("endereco").value = "";
 }
+
+// ----------------- FORMATAÇÕES -----------------
+
+// CPF
+function formatarCPF(cpf) {
+    return cpf
+        .replace(/\D/g, "")
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+}
+document.getElementById("cpf").addEventListener("input", (e) => {
+    e.target.value = formatarCPF(e.target.value);
+});
+
+// CEP
+function formatarCEP(cep) {
+    return cep
+        .replace(/\D/g, "")
+        .replace(/(\d{5})(\d)/, "$1-$2")
+        .slice(0, 9);
+}
+document.getElementById("cep").addEventListener("input", async (e) => {
+    e.target.value = formatarCEP(e.target.value);
+
+    const cep = e.target.value.replace(/\D/g, "");
+    if (cep.length === 8) {
+        try {
+            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            const data = await response.json();
+            if (!data.erro) {
+                document.getElementById("endereco").value = data.logradouro || "";
+                document.getElementById("bairro").value = data.bairro || "";
+                document.getElementById("cidade").value = data.localidade || "";
+                document.getElementById("estado").value = data.uf || "";
+            }
+        } catch (err) {
+            console.error("Erro ao buscar CEP:", err);
+        }
+    }
+});
+
+// TELEFONE
+function formatarTelefone(tel) {
+    tel = tel.replace(/\D/g, "");
+    if (tel.length <= 10) {
+        return tel.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+    } else {
+        return tel.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
+    }
+}
+document.getElementById("telefone").addEventListener("input", (e) => {
+    e.target.value = formatarTelefone(e.target.value);
+});
+
+// VALIDAR DATA DE NASCIMENTO
+document.getElementById("dataNasc").addEventListener("change", (e) => {
+    const dataNasc = new Date(e.target.value);
+    const hoje = new Date();
+    let idade = hoje.getFullYear() - dataNasc.getFullYear();
+    const mes = hoje.getMonth() - dataNasc.getMonth();
+
+    if (mes < 0 || (mes === 0 && hoje.getDate() < dataNasc.getDate())) {
+        idade--;
+    }
+
+    if (idade < 18) {
+        alert("O cliente deve ter pelo menos 18 anos.");
+        e.target.value = "";
+    }
+});
