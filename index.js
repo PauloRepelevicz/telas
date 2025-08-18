@@ -79,8 +79,8 @@ app.post("/clientes", (req, res) => {
             nome,
             cpf,
             telefone,
-            email,
             data_nascimento,
+            email,
             logradouro,
             numero,
             bairro,
@@ -108,7 +108,7 @@ app.get("/clientes", (req, res) => {
     const cpf = req.query.cpf || ""; // Recebe o CPF da query string (se houver)
     if (cpf) {
         // Se CPF foi passado, busca clientes que possuam esse CPF ou parte dele
-        const query = `SELECT * FROM clientes WHERE cpf LIKE ?`;
+        const query = `SELECT * FROM clientes WHERE cli_cpf LIKE ?`;
 
         db.all(query, [`%${cpf}%`], (err, rows) => {
             if (err) {
