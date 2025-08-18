@@ -9,11 +9,29 @@ async function cadastrarFunc(event) {
         cargo: document.getElementById('cargo').value,
         email: document.getElementById('email').value,
         data_nascimento: document.getElementById('dataNasc').value,
+        genero: document.getElementById('genero').value,
         logradouro: document.getElementById('endereco').value,
         numero: document.getElementById('numero').value,
         bairro: document.getElementById('bairro').value,
         cidade: document.getElementById('cidade').value,
         estado: document.getElementById('estado').value,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
         cep: document.getElementById('cep').value,
         complemento: document.getElementById('complemento').value,
         observacoes: document.getElementById('observacoes').value
@@ -66,11 +84,11 @@ async function listarFuncionarios() {
             funcionarios.forEach(funcionario => {
                 const linha = document.createElement('tr');
                 linha.innerHTML = `
-                    <td>${funcionario.id}</td>
-                    <td>${funcionario.nome}</td>
-                    <td>${funcionario.cpf}</td>
-                    <td>${funcionario.email}</td>
-                    <td>${funcionario.telefone}</td>
+                    <td>${funcionario.func_id}</td>
+                    <td>${funcionario.func_nome}</td>
+                    <td>${funcionario.func_cpf}</td>
+                    <td>${funcionario.func_email}</td>
+                    <td>${funcionario.func_telefone}</td>
                 `;
                 tabela.appendChild(linha);
             });
