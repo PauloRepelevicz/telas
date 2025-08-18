@@ -145,8 +145,8 @@
           </div>
         </form>
         <h2>Consultar Cliente</h2> 
-    
-    <table>
+        <button type="button" onclick="listarClientes()" class="btn-submit">Listar Clientes</button>
+        <table border="1">
         <thead>
             <tr>
                 <th>ID</th>
@@ -154,14 +154,14 @@
                 <th>CPF</th>
                 <th>Email</th>
                 <th>Telefone</th>
-                <th>Endereço</th>
+                <th>CEP</th>
             </tr>
         </thead>
         <tbody id="tabela-clientes">
             <!-- Linhas serão preenchidas pelo JavaScript -->
         </tbody>
     </table>
-    <button type="button" onclick="listarClientes()" class="btn-submit">Listar Clientes</button>
+   
       </section>
     </main>
   </div>
