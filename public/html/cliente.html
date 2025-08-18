@@ -19,12 +19,10 @@
       <h2>Menu</h2>
       <ul>
         <a href="../index.html"class="links"><li>Dashboard</li></a>
-        <a href="estoque.html"><li class=links>Estoque</li></a>
-        <a href="financeiro.html"><li class=links>Financeiro</li></a>
-        <a href="funcionario.html"><li class=links>Cadastro de Funcionário</li></a>
-        <li class="links">Cadastro de Cliente</li></a>
-        
-        
+        <a href="estoque.html" class=links><li>Estoque</li></a>
+        <a href="financeiro.html" class=links><li>Financeiro</li></a>
+        <a href="funcionario.html" class=links><li>Cadastro de Funcionário</li></a>
+        <a class="links"><li>Cadastro de Cliente</li></a>
       </ul> 
     </nav>
     <main class="main">
@@ -54,9 +52,6 @@
               
               <input type="radio" id="feminino" name="genero" value="feminino">
               <label for="feminino">Feminino</label>
-              
-              <input type="radio" id="outro" name="genero" value="outro">
-              <label for="outro">Outro</label>
             </div>
           </div>
       
@@ -146,7 +141,7 @@
         </form>
         <h2>Consultar Cliente</h2> 
         <button type="button" onclick="listarClientes()" class="btn-submit">Listar Clientes</button>
-        <table border="1">
+        <table border="1" class="table-clientes">
         <thead>
             <tr>
                 <th>ID</th>
