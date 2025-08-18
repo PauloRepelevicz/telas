@@ -1,11 +1,12 @@
-async function cadastrarCliente(event) {
+async function cadastrarFunc(event) {
     event.preventDefault();
     alert("asdf");
 
-    const cliente = {
+    const funcionario = {
         nome: document.getElementById('nome').value,
         cpf: document.getElementById('cpf').value,
         telefone: document.getElementById('telefone').value,
+        cargo: document.getElementById('cargo').value,
         email: document.getElementById('email').value,
         data_nascimento: document.getElementById('dataNasc').value,
         logradouro: document.getElementById('endereco').value,
@@ -19,108 +20,109 @@ async function cadastrarCliente(event) {
     };
 
     try {
-        const response = await fetch('/clientes', {
+        const response = await fetch('/funcionario', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(cliente)
+            body: JSON.stringify(funcionario)
         });
 
         const result = await response.json();
         if (response.ok) {
-            alert("Cliente cadastrado com sucesso!");
-            document.getElementById("cliente-form").reset();
+            alert("Funcionário cadastrado com sucesso!");
+            document.getElementById("func-Form").reset();
         } else {
             alert(`Erro: ${result.message}`);
         }
     } catch (err) {
         console.error("Erro na solicitação:", err);
-        alert("Erro ao cadastrar cliente.?");
+        alert("Erro ao cadastrar Funcionário.?");
     }
 }
-// Função para listar todos os clientes ou buscar clientes por CPF
-async function listarClientes() {
+// Função para listar todos os funcionários ou buscar funcionários por CPF
+async function listarFuncionarios() {
     console.log("Voce é viado")
     const cpf = document.getElementById('cpf').value.trim();  // Pega o valor do CPF digitado no input
 
-    let url = '/clientes';  // URL padrão para todos os clientes
+    let url = '/funcionarios';  // URL padrão para todos os funcionarios
 
     if (cpf) {
         // Se CPF foi digitado, adiciona o parâmetro de consulta
         url += `?cpf=${cpf}`;
     }
-    console.log("Voce é viado 2")
+    console.log("Voce é viado 1000")
     try {
         const response = await fetch(url);
-        const clientes = await response.json();
+        const funcionarios = await response.json();
 
-        const tabela = document.getElementById('tabela-clientes');
+        const tabela = document.getElementById('tabela-funcionarios');
         tabela.innerHTML = ''; // Limpa a tabela antes de preencher
 
-        if (clientes.length === 0) {
-            // Caso não encontre clientes, exibe uma mensagem
-            tabela.innerHTML = '<tr><td colspan="6">Nenhum cliente encontrado.</td></tr>';
+        if (funcionarios.length === 0) {
+            // Caso não encontre funcionários, exibe uma mensagem
+            tabela.innerHTML = '<tr><td colspan="6">Nenhum funcionário encontrado.</td></tr>';
         } else {
-            clientes.forEach(cliente => {
+            funcionarios.forEach(funcionario => {
                 const linha = document.createElement('tr');
                 linha.innerHTML = `
-                    <td>${cliente.id}</td>
-                    <td>${cliente.nome}</td>
-                    <td>${cliente.cpf}</td>
-                    <td>${cliente.email}</td>
-                    <td>${cliente.telefone}</td>
+                    <td>${funcionario.id}</td>
+                    <td>${funcionario.nome}</td>
+                    <td>${funcionario.cpf}</td>
+                    <td>${funcionario.email}</td>
+                    <td>${funcionario.telefone}</td>
                 `;
                 tabela.appendChild(linha);
             });
         }
     } catch (error) {
-        console.error('Erro ao listar clientes:', error);
+        console.error('Erro ao listar funcionários:', error);
     }
 }
-// Função para atualizar as informações do cliente
-async function atualizarCliente() {
+// Função para atualizar as informações do Funcionário
+async function atualizarFuncionario() {
     const nome = document.getElementById('nome').value;
     const cpf = document.getElementById('cpf').value;
     const email = document.getElementById('email').value;
     const telefone = document.getElementById('telefone').value;
     const endereco = document.getElementById('endereco').value;
 
-    const clienteAtualizado = {
+    const funcionarioAtualizado = {
         nome,
         email,
         telefone,
+        cargo,
         endereco,
         cpf
     };
 
     try {
-        const response = await fetch(`/clientes/cpf/${cpf}`, {
+        const response = await fetch(`/funcionario/cpf/${cpf}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(clienteAtualizado)
+            body: JSON.stringify(funcionarioAtualizado)
         });
 
         if (response.ok) {
-            alert('Cliente atualizado com sucesso!');
+            alert('Funcionário atualizado com sucesso!');
         } else {
             const errorMessage = await response.text();
-            alert('Erro ao atualizar cliente: ' + errorMessage);
+            alert('Erro ao atualizar Funcionário: ' + errorMessage);
         }
     } catch (error) {
-        console.error('Erro ao atualizar cliente:', error);
-        alert('Erro ao atualizar cliente.');
+        console.error('Erro ao atualizar Funcionário:', error);
+        alert('Erro ao atualizar Funcionário.');
     }
 }
 
 
-async function limpaCliente() {
+async function limpaFunc() {
     document.getElementById('nome').value = '';
     document.getElementById('cpf').value = '';
     document.getElementById('email').value = '';
     document.getElementById('telefone').value = '';
+    document.getElementById('cargo').value = '';
     document.getElementById('endereco').value = '';
-
 }

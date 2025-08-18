@@ -64,23 +64,23 @@ app.post("/clientes", (req, res) => {
         estado,
         cep,
         complemento,
-        observacoes,
+        observacoes
     } = req.body;
 
     if (!nome || !cpf) {
         return res.status(400).send("Nome e CPF são obrigatórios.");
     }
-
+    
     const query = `INSERT INTO clientes (cli_nome, cli_cpf, cli_telefone, cli_data_nascimento, cli_email, cli_logradouro, cli_numero, cli_bairro, cli_cidade, cli_estado, cli_cep, cli_complemento, cli_observacoes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-
+    
     db.run(
         query,
         [
             nome,
             cpf,
             telefone,
-            data_nascimento,
             email,
+            data_nascimento,
             logradouro,
             numero,
             bairro,
@@ -88,14 +88,14 @@ app.post("/clientes", (req, res) => {
             estado,
             cep,
             complemento,
-            observacoes,
+            observacoes
         ],
-
+        
         function (err) {
             if (err) {
                 return res.status(500).send("Erro ao cadastrar cliente.1");
             }
-            res.status(201).json({
+            res.status(201).send({
                 id: this.lastID,
                 message: "Cliente cadastrado com sucesso.",
             });
@@ -108,7 +108,7 @@ app.get("/clientes", (req, res) => {
     const cpf = req.query.cpf || ""; // Recebe o CPF da query string (se houver)
     if (cpf) {
         // Se CPF foi passado, busca clientes que possuam esse CPF ou parte dele
-        const query = `SELECT * FROM clientes WHERE cli_cpf LIKE ?`;
+        const query = `SELECT * FROM clientes WHERE cpf LIKE ?`;
 
         db.all(query, [`%${cpf}%`], (err, rows) => {
             if (err) {
@@ -116,13 +116,14 @@ app.get("/clientes", (req, res) => {
                 return res
                     .status(500)
                     .json({ message: "Erro ao buscar clientes." });
+                
             }
             res.json(rows); // Retorna os clientes encontrados ou um array vazio
         });
     } else {
         // Se CPF não foi passado, retorna todos os clientes
         const query = `SELECT * FROM clientes`;
-
+        
         db.all(query, (err, rows) => {
             if (err) {
                 console.error(err);
@@ -140,7 +141,7 @@ app.put("/clientes/cpf/:cpf", (req, res) => {
     const { cpf } = req.params;
     const { nome, email, telefone, endereco } = req.body;
 
-    const query = `UPDATE clientes SET cli_nome = ?, cli_email = ?, cli_telefone = ?, cli_endereco = ? WHERE cli_cpf = ?`;
+    const query = `UPDATE clientes SET nome = ?, email = ?, telefone = ?, endereco = ? WHERE cpf = ?`;
     db.run(query, [nome, email, telefone, endereco, cpf], function (err) {
         if (err) {
             return res.status(500).send("Erro ao atualizar cliente.");
