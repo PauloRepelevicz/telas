@@ -162,3 +162,123 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
+
+// Cadastrar funcionario
+app.post("/funcionario", (req, res) => {
+    console.log("Recebendo requisição de cadastro de Funcionário");
+    const {
+        
+        nome,
+        cpf,
+        telefone,
+        cargo,
+        email,
+        data_nascimento,
+        genero,
+        logradouro,
+        numero,
+        bairro,
+        cidade,
+        estado,
+        cep,
+        complemento,
+        observacoes
+    } = req.body;
+
+    if (!nome || !cpf) {
+        return res.status(400).send("Nome e CPF são obrigatórios.");
+    }
+
+    const query = `INSERT INTO funcionario (func_id, func_nome, func_cpf, func_telefone, func_email, func_datanascimento, func_genero, func_cargo, end_id, func_cidade, func_estado, func_cep, func_complemento, func_observacoes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+    db.run(
+        query,
+        [
+            nome,
+            cpf,
+            telefone,
+            cargo,
+            email,
+            data_nascimento,
+            genero,
+            logradouro,
+            numero,
+            bairro,
+            cidade,
+            estado,
+            cep,
+            complemento,
+            observacoes
+        ],
+
+        function (err) {
+            if (err) {
+                return res.status(500).send("Erro ao cadastrar funcionario.");
+            }
+            res.status(201).send({
+                id: this.lastID,
+                message: "Funcionário cadastrado com sucesso.",
+            });
+        },
+    );
+});
+// // Listar funcionarios
+// // Endpoint para listar todos os funcionários ou buscar por CPF
+// app.get("/funcionario", (req, res) => {
+//     const cpf = req.query.cpf || ""; // Recebe o CPF da query string (se houver)
+//     if (cpf) {
+//         // Se CPF foi passado, busca clientes que possuam esse CPF ou parte dele
+//         const query = `SELECT * FROM funcionario WHERE cpf LIKE ?`;
+
+//         db.all(query, [`%${cpf}%`], (err, rows) => {
+//             if (err) {
+//                 console.error(err);
+//                 return res
+//                     .status(500)
+//                     .json({ message: "Erro ao buscar funcionários." });
+//             }
+//             res.json(rows); // Retorna os funcionarios encontrados ou um array vazio
+//         });
+//     } else {
+//         // Se CPF não foi passado, retorna todos os funcionarios
+//         const query = `SELECT * FROM funcionario`;
+
+//         db.all(query, (err, rows) => {
+//             if (err) {
+//                 console.error(err);
+//                 return res
+//                     .status(500)
+//                     .json({ message: "Erro ao buscar funcionarios." });
+//             }
+//             res.json(rows); // Retorna todos os funcionarios
+//         });
+//     }
+// });
+
+// // Atualizar funcionario
+// app.put("/funcionario/cpf/:cpf", (req, res) => {
+//     const { cpf } = req.params;
+//     const { nome, email, telefone, endereco } = req.body;
+
+//     const query = `UPDATE funcionario SET nome = ?, email = ?, telefone = ?, endereco = ? WHERE cpf = ?`;
+//     db.run(query, [nome, email, telefone, endereco, cpf], function (err) {
+//         if (err) {
+//             return res.status(500).send("Erro ao atualizar funcionário.");
+//         }
+//         if (this.changes === 0) {
+//             return res.status(404).send("funcionário não encontrado.");
+//         }
+//         res.send("funcionario atualizado com sucesso.");
+//     });
+// });
+
+
+// Teste para verificar se o servidor está rodando
+app.get("/", (req, res) => {
+    res.send("Servidor está rodando e tabelas criadas!");
+});
+
+// Iniciando o servidor
+app.listen(port, () => {
+    console.log(`Servidor rodando na porta ${port}`);
+});
