@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS funcionario(
      func_nome VARCHAR(100) not NULL,
      func_cpf VARCHAR(14) NOT NULL UNIQUE,
      func_telefone VARCHAR(15),
-     func_emaIL VARCHAR(100),
+     func_email VARCHAR(100),
      func_datanascimento DATE,
      func_genero VARCHAR(2),
      func_cargo	VARCHAR(30),

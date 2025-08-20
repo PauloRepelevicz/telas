@@ -40,7 +40,26 @@ db.serialize(() => {
         cli_observacoes TEXT
         )
     `);
-
+    db.run(`
+    CREATE TABLE IF NOT EXISTS funcionario(
+         func_id INTEGER PRIMARY KEY AUTOINCREMENT,
+         func_nome VARCHAR(100) NOT NULL,
+         func_cpf VARCHAR(14) NOT NULL UNIQUE,
+         func_telefone VARCHAR(15),
+         func_email VARCHAR(100),
+         func_datanascimento DATE,
+         func_genero VARCHAR(2),
+         func_cargo	VARCHAR(30),
+         func_logradouro TEXT,
+         func_numero INTEGER,
+         func_bairro TEXT,
+         func_cidade TEXT,
+         func_estado TEXT,
+         func_cep VARCHAR(10),
+         func_complemento TEXT,
+         func_observacoes TEXT
+         )
+    `);
     console.log("Tabelas criadas com sucesso.");
 });
 
@@ -153,21 +172,20 @@ app.put("/clientes/cpf/:cpf", (req, res) => {
     });
 });
 
-// Teste para verificar se o servidor está rodando
-app.get("/", (req, res) => {
-    res.send("Servidor está rodando e tabelas criadas!");
-});
 
-// Iniciando o servidor
-app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
-});
+
+
+
+
+///////////////////////////// Rotas para Funcionarios /////////////////////////////
+///////////////////////////// Rotas para Funcionarios /////////////////////////////
+///////////////////////////// Rotas para Funcionarios /////////////////////////////
+
 
 // Cadastrar funcionario
 app.post("/funcionario", (req, res) => {
     console.log("Recebendo requisição de cadastro de Funcionário");
     const {
-        
         nome,
         cpf,
         telefone,
@@ -189,7 +207,7 @@ app.post("/funcionario", (req, res) => {
         return res.status(400).send("Nome e CPF são obrigatórios.");
     }
 
-    const query = `INSERT INTO funcionario (func_id, func_nome, func_cpf, func_telefone, func_email, func_datanascimento, func_genero, func_cargo, end_id, func_cidade, func_estado, func_cep, func_complemento, func_observacoes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO funcionario (func_nome, func_cpf, func_telefone, func_email, func_datanascimento, func_genero,func_logradouro, func_numero, func_bairro, func_cargo, func_cidade, func_estado, func_cep, func_complemento, func_observacoes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     db.run(
         query,
@@ -213,7 +231,7 @@ app.post("/funcionario", (req, res) => {
 
         function (err) {
             if (err) {
-                return res.status(500).send("Erro ao cadastrar funcionario.");
+                return res.status(500).send("Erro ao cadastrar funcionario..");
             }
             res.status(201).send({
                 id: this.lastID,
