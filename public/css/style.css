@@ -181,13 +181,22 @@ footer img {
 }
 
 .btn-submit,
-.btn-reset {
+.btn-reset,
+.btn-update {
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 4px;
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s;
+}
+
+.btn-update {
+  background-color: #007BFF;
+  color: white;
+}
+.btn-update:hover{
+  background-color: #0056b3
 }
 
 .btn-submit {
@@ -226,7 +235,7 @@ footer img {
   background-color: #fff;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .table-clientes th {
@@ -248,7 +257,8 @@ footer img {
 }
 
 .table-clientes tr:hover {
-  background-color: #f3d89b40; /* tom puxando pro seu amarelo do fundo */
+  background-color: #f3d89b40;
+  /* tom puxando pro seu amarelo do fundo */
   transition: 0.3s;
 }
 
