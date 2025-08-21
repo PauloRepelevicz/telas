@@ -1,38 +1,3 @@
-// // Listar funcionarios
-// // Endpoint para listar todos os funcionários ou buscar por CPF
-// app.get("/funcionario", (req, res) => {
-//     const cpf = req.query.cpf || ""; // Recebe o CPF da query string (se houver)
-//     if (cpf) {
-//         // Se CPF foi passado, busca clientes que possuam esse CPF ou parte dele
-//         const query = `SELECT * FROM funcionario WHERE cpf LIKE ?`;
-
-//         db.all(query, [`%${cpf}%`], (err, rows) => {
-//             if (err) {
-//                 console.error(err);
-//                 return res
-//                     .status(500)
-//                     .json({ message: "Erro ao buscar funcionários." });
-//             }
-//             res.json(rows); // Retorna os funcionarios encontrados ou um array vazio
-//         });
-//     } else {
-//         // Se CPF não foi passado, retorna todos os funcionarios
-//         const query = `SELECT * FROM funcionario`;
-
-//         db.all(query, (err, rows) => {
-//             if (err) {
-//                 console.error(err);
-//                 return res
-//                     .status(500)
-//                     .json({ message: "Erro ao buscar funcionarios." });
-//             }
-//             res.json(rows); // Retorna todos os funcionarios
-//         });
-//     }
-// });
-
-
-
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -194,12 +159,12 @@ app.get("/clientes", (req, res) => {
 // Atualizar cliente
 app.put("/clientes/cpf/:cpf", (req, res) => {
     const { cpf } = req.params;
-    const { nome, email, telefone, endereco } = req.body;
+    const { nome, telefone, email, data_nascimento, logradouro, numero, bairro, cidade, estado, cep, complemento, observacoes } = req.body;
 
-    const query = `UPDATE clientes SET cli_nome = ?, cli_email = ?, cli_telefone = ?, cli_endereco = ? WHERE cli_cpf = ?`;
-    db.run(query, [nome, email, telefone, endereco, cpf], function (err) {
+    const query = `UPDATE clientes SET cli_nome = ?, cli_telefone = ?, cli_email = ?, cli_data_nascimento = ?, cli_logradouro = ?, cli_numero = ?, cli_bairro = ?, cli_cidade = ?, cli_estado = ?, cli_cep = ?, cli_complemento = ?, cli_observacoes = ? WHERE cli_cpf = ?`;
+    db.run(query, [nome, telefone, email, data_nascimento, logradouro, numero, bairro, cidade, estado, cep, complemento, observacoes, cpf], function (err) {
         if (err) {
-            return res.status(500).send("Erro ao atualizar cliente.");
+            return res.status(500).send("eErro ao atualizar cliente.");
         }
         if (this.changes === 0) {
             return res.status(404).send("Cliente não encontrado.");
