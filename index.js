@@ -164,7 +164,7 @@ app.put("/clientes/cpf/:cpf", (req, res) => {
     const query = `UPDATE clientes SET cli_nome = ?, cli_telefone = ?, cli_email = ?, cli_data_nascimento = ?, cli_logradouro = ?, cli_numero = ?, cli_bairro = ?, cli_cidade = ?, cli_estado = ?, cli_cep = ?, cli_complemento = ?, cli_observacoes = ? WHERE cli_cpf = ?`;
     db.run(query, [nome, telefone, email, data_nascimento, logradouro, numero, bairro, cidade, estado, cep, complemento, observacoes, cpf], function (err) {
         if (err) {
-            return res.status(500).send("eErro ao atualizar cliente.");
+            return res.status(500).send("e??Erro ao atualizar cliente.");
         }
         if (this.changes === 0) {
             return res.status(404).send("Cliente não encontrado.");
@@ -277,22 +277,23 @@ app.get("/funcionario", (req, res) => {
 });
 
 
-// // Atualizar funcionario
-// app.put("/funcionario/cpf/:cpf", (req, res) => {
-//     const { cpf } = req.params;
-//     const { nome, email, telefone, endereco } = req.body;
+// Atualizar funcionário
+app.put("/funcionario/cpf/:cpf", (req, res) => {
+    const { cpf } = req.params;
+    const { nome, telefone, email, data_nascimento, cargo, logradouro, numero, bairro, cidade, estado, cep, complemento, observacoes } = req.body;
 
-//     const query = `UPDATE funcionario SET nome = ?, email = ?, telefone = ?, endereco = ? WHERE cpf = ?`;
-//     db.run(query, [nome, email, telefone, endereco, cpf], function (err) {
-//         if (err) {
-//             return res.status(500).send("Erro ao atualizar funcionário.");
-//         }
-//         if (this.changes === 0) {
-//             return res.status(404).send("funcionário não encontrado.");
-//         }
-//         res.send("funcionario atualizado com sucesso.");
-//     });
-// });
+    const query = `UPDATE funcionario SET func_nome = ?, func_telefone = ?, func_email = ?, func_datanascimento = ?, func_cargo = ?, func_logradouro = ?, func_numero = ?, func_bairro = ?, func_cidade = ?, func_estado = ?, func_cep = ?, func_complemento = ?, func_observacoes = ? WHERE func_cpf = ?`;
+    db.run(query, [nome, telefone, email, data_nascimento, cargo, logradouro, numero, bairro, cidade, estado, cep, complemento, observacoes, cpf], function (err) {
+        if (err) {
+            return res.status(500).send("EEEEEErro ao atualizar funcionário.");
+        }
+        if (this.changes === 0) {
+            return res.status(404).send("Funcionário não encontrado.");
+        }
+        res.send("Funcionário atualizado com sucesso.");
+    });
+});
+
 
 
 // Teste para verificar se o servidor está rodando
