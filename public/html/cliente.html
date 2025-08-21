@@ -36,7 +36,7 @@
       
           <div class="form-group">
             <label for="cpf">CPF:</label>
-            <input type="text" id="cpf" name="cpf" required placeholder="000.000.000-00">
+            <input type="text" id="cpf" name="cpf" required placeholder="000.000.000-00" maxlength="14">
           </div>
       
           <div class="form-group">
@@ -62,7 +62,7 @@
       
           <div class="form-group">
             <label for="telefone">Telefone:</label>
-            <input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000" required>
+            <input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000" required maxlength="15">
           </div>
       
           <div class="form-group">
@@ -138,6 +138,7 @@
             <button type="button" onclick="cadastrarCliente(event)" class="btn-submit">Cadastrar</button>
             <button type="reset" onclick="limpaCliente()" class="btn-reset">Limpar</button>
             <button type="reset" onclick="atualizarCliente()" class="btn-update">Atualizar</button>
+            
           </div>
         </form>
         <h2>Consultar Cliente</h2> 
@@ -167,7 +168,8 @@
     <img src="../imagens/estadologo.png" alt="">
     <p>© 2025 MAGUILA - Sistema de Mercado</p>
     <p>Sistema feito por: PFP'S Enterprises</p>
-    <p><a href="#">Termos de Serviço</a> | <a href="#">Política de Privacidade</a></p>
+    <p><a href="#">Termos de Serviço</a>  
+    <a href="#">Política de Privacidade</a></p>
   </footer>
 
   <script src="../../index.js"></script>
