@@ -1,3 +1,39 @@
+// // Listar funcionarios
+// // Endpoint para listar todos os funcionários ou buscar por CPF
+// app.get("/funcionario", (req, res) => {
+//     const cpf = req.query.cpf || ""; // Recebe o CPF da query string (se houver)
+//     if (cpf) {
+//         // Se CPF foi passado, busca clientes que possuam esse CPF ou parte dele
+//         const query = `SELECT * FROM funcionario WHERE cpf LIKE ?`;
+
+//         db.all(query, [`%${cpf}%`], (err, rows) => {
+//             if (err) {
+//                 console.error(err);
+//                 return res
+//                     .status(500)
+//                     .json({ message: "Erro ao buscar funcionários." });
+//             }
+//             res.json(rows); // Retorna os funcionarios encontrados ou um array vazio
+//         });
+//     } else {
+//         // Se CPF não foi passado, retorna todos os funcionarios
+//         const query = `SELECT * FROM funcionario`;
+
+//         db.all(query, (err, rows) => {
+//             if (err) {
+//                 console.error(err);
+//                 return res
+//                     .status(500)
+//                     .json({ message: "Erro ao buscar funcionarios." });
+//             }
+//             res.json(rows); // Retorna todos os funcionarios
+//         });
+//     }
+// });
+
+
+
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
@@ -160,7 +196,7 @@ app.put("/clientes/cpf/:cpf", (req, res) => {
     const { cpf } = req.params;
     const { nome, email, telefone, endereco } = req.body;
 
-    const query = `UPDATE clientes SET nome = ?, email = ?, telefone = ?, endereco = ? WHERE cpf = ?`;
+    const query = `UPDATE clientes SET cli_nome = ?, cli_email = ?, cli_telefone = ?, cli_endereco = ? WHERE cli_cpf = ?`;
     db.run(query, [nome, email, telefone, endereco, cpf], function (err) {
         if (err) {
             return res.status(500).send("Erro ao atualizar cliente.");
@@ -207,7 +243,7 @@ app.post("/funcionario", (req, res) => {
         return res.status(400).send("Nome e CPF são obrigatórios.");
     }
 
-    const query = `INSERT INTO funcionario (func_nome, func_cpf, func_telefone, func_email, func_datanascimento, func_genero,func_logradouro, func_numero, func_bairro, func_cargo, func_cidade, func_estado, func_cep, func_complemento, func_observacoes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO funcionario (func_nome, func_cpf, func_telefone, func_email, func_datanascimento, func_genero, func_cargo, func_logradouro, func_numero, func_bairro, func_cidade, func_estado, func_cep, func_complemento, func_observacoes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     db.run(
         query,
@@ -215,10 +251,10 @@ app.post("/funcionario", (req, res) => {
             nome,
             cpf,
             telefone,
-            cargo,
             email,
             data_nascimento,
             genero,
+            cargo,
             logradouro,
             numero,
             bairro,
@@ -240,38 +276,41 @@ app.post("/funcionario", (req, res) => {
         },
     );
 });
-// // Listar funcionarios
-// // Endpoint para listar todos os funcionários ou buscar por CPF
-// app.get("/funcionario", (req, res) => {
-//     const cpf = req.query.cpf || ""; // Recebe o CPF da query string (se houver)
-//     if (cpf) {
-//         // Se CPF foi passado, busca clientes que possuam esse CPF ou parte dele
-//         const query = `SELECT * FROM funcionario WHERE cpf LIKE ?`;
 
-//         db.all(query, [`%${cpf}%`], (err, rows) => {
-//             if (err) {
-//                 console.error(err);
-//                 return res
-//                     .status(500)
-//                     .json({ message: "Erro ao buscar funcionários." });
-//             }
-//             res.json(rows); // Retorna os funcionarios encontrados ou um array vazio
-//         });
-//     } else {
-//         // Se CPF não foi passado, retorna todos os funcionarios
-//         const query = `SELECT * FROM funcionario`;
+// Listar funcionários
+// Endpoint para listar todos os funcionários ou buscar por CPF
+app.get("/funcionario", (req, res) => {
+    const cpf = req.query.cpf || ""; // Recebe o CPF da query string (se houver)
+    if (cpf) {
+        // Se CPF foi passado, busca funcionários que possuam esse CPF ou parte dele
+        const query = `SELECT * FROM funcionario WHERE func_cpf LIKE ?`;
 
-//         db.all(query, (err, rows) => {
-//             if (err) {
-//                 console.error(err);
-//                 return res
-//                     .status(500)
-//                     .json({ message: "Erro ao buscar funcionarios." });
-//             }
-//             res.json(rows); // Retorna todos os funcionarios
-//         });
-//     }
-// });
+        db.all(query, [`%${cpf}%`], (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res
+                    .status(500)
+                    .json({ message: "Erro ao buscar funcionários." });
+
+            }
+            res.json(rows); // Retorna os funcionários encontrados ou um array vazio
+        });
+    } else {
+        // Se CPF não foi passado, retorna todos os funcionários
+        const query = `SELECT * FROM funcionario`;
+
+        db.all(query, (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res
+                    .status(500)
+                    .json({ message: "Erro ao buscar funcionarios." });
+            }
+            res.json(rows); // Retorna todos os funcionários
+        });
+    }
+});
+
 
 // // Atualizar funcionario
 // app.put("/funcionario/cpf/:cpf", (req, res) => {
