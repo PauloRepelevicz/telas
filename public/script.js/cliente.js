@@ -77,13 +77,23 @@ async function listarClientes() {
 
 // ----------------- ATUALIZAR CLIENTE -----------------
 async function atualizarCliente() {
-    const nome = document.getElementById("nome").value;
-    const cpf = document.getElementById("cpf").value;
-    const email = document.getElementById("email").value;
-    const telefone = document.getElementById("telefone").value;
-    const endereco = document.getElementById("endereco").value;
 
-    const clienteAtualizado = { nome, email, telefone, endereco, cpf };
+    const cpf = document.getElementById("cpf").value;
+    
+    const clienteAtualizado = { 
+        nome: document.getElementById("nome").value,
+        telefone: document.getElementById("telefone").value,
+        email: document.getElementById("email").value,
+        data_nascimento: document.getElementById("dataNasc").value,
+        logradouro: document.getElementById("endereco").value,
+        numero: document.getElementById("numero").value,
+        bairro: document.getElementById("bairro").value,
+        cidade: document.getElementById("cidade").value,
+        estado: document.getElementById("estado").value,
+        cep: document.getElementById("cep").value,
+        complemento: document.getElementById("complemento").value,
+        observacoes: document.getElementById("observacoes").value
+    };
 
     try {
         const response = await fetch(`/clientes/cpf/${cpf}`, {
