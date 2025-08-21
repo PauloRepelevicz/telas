@@ -1,6 +1,6 @@
 async function cadastrarFunc(event) {
     event.preventDefault();
-    alert("LEOZAO VAI PEGA A ALESSANDRA E CASA COM ELA");
+    alert("LEOZAO VAI PEGA A ALESSANDRA E CASA COM ELA ELA É LINDINHA E O LEOZAO É UM BURRO E UM BURRO QUE É BURRO E BURRO E BURRO E BURRO E BURRO E BURRO E BURRO E BURRO E BURRO E BURRO E BURRO E BURRO ");
 
     const funcionario = {
         nome: document.getElementById('nomefunc').value,
@@ -122,7 +122,7 @@ async function atualizarFuncionario() {
             alert("Erro ao atualizar Funcionário: " + errorMessage);
         }
     } catch (error) {
-        console.error("Erro ao atualizar Funcionário:", error);
+        console.error("222Erro ao atualizar Funcionário:", error);
         alert("Erro ao atualizar Funcionário.");
     }
 }
