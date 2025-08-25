@@ -14,10 +14,10 @@ CREATE TABLE IF NOT EXISTS funcionario(
     func_estado TEXT,
     func_cep VARCHAR(10),
     func_complemento TEXT,
-    func_observacoes TEXT
+    func_observacoes TEXT)
 );
 CREATE TABLE IF NOT EXISTS clientes(
-	  cli_id INTEGER PRIMARY KEY AUTOINCREMENT,
+	cli_id INTEGER PRIMARY KEY AUTOINCREMENT,
     cli_nome VARCHAR(100) NOT NULL,
     cli_cpf VARCHAR(14) NOT NULL UNIQUE,
     cli_telefone VARCHAR(15),
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS clientes(
     cli_numero INTEGER,
     cli_bairro TEXT,
     cli_cidade TEXT,
-    cli_estado,
+    cli_estado TEXT,
     cli_cep VARCHAR(10),
     cli_complemento TEXT,
     cli_observacoes TEXT
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS fornecedor(
 );
 
 CREATE TABLE IF NOT EXISTS vendas(
-	ven_id INTEGER PRIMARY KEY AUTOINCREMENT,
+	  ven_id INTEGER PRIMARY KEY AUTOINCREMENT,
     ven_data_hora_ven DATETIME DEFAULT CURRENT_TIMESTAMP,
     cli_id INTEGER,
     func_id INTEGER,
