@@ -1,14 +1,20 @@
 CREATE TABLE IF NOT EXISTS funcionario(
-	 func_id INTEGER PRIMARY KEY AUTOINCREMENT,
-     func_nome VARCHAR(100) not NULL,
-     func_cpf VARCHAR(14) NOT NULL UNIQUE,
-     func_telefone VARCHAR(15),
-     func_email VARCHAR(100),
-     func_datanascimento DATE,
-     func_genero VARCHAR(2),
-     func_cargo	VARCHAR(30),
-  	 end_id INTEGER,
-     FOREIGN KEY (end_id) REFERENCES endereco(end_id)
+    func_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    func_nome VARCHAR(100) NOT NULL,
+    func_cpf VARCHAR(14) NOT NULL UNIQUE,
+    func_telefone VARCHAR(15),
+    func_email VARCHAR(100),
+    func_datanascimento DATE,
+    func_genero VARCHAR(2),
+    func_cargo	VARCHAR(30),
+    func_logradouro TEXT,
+    func_numero INTEGER,
+    func_bairro TEXT,
+    func_cidade TEXT,
+    func_estado TEXT,
+    func_cep VARCHAR(10),
+    func_complemento TEXT,
+    func_observacoes TEXT
 );
 CREATE TABLE IF NOT EXISTS clientes(
 	  cli_id INTEGER PRIMARY KEY AUTOINCREMENT,
