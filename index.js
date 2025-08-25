@@ -1,4 +1,3 @@
-
 const express = require("express");
 const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
@@ -61,6 +60,42 @@ db.serialize(() => {
          func_observacoes TEXT
          )
     `);
+    db.run(`
+    CREATE TABLE IF NOT EXISTS categoria(
+        cat_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        cat_nome VARCHAR(50) NOT NULL UNIQUE,
+        cat_descricao TEXT
+        )
+    `);
+    db.run(`
+    CREATE TABLE IF NOT EXISTS produto(
+        prod_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        prod_nome TEXT NOT NULL,
+        prod_descricao TEXT,
+        prod_codigo TEXT UNIQUE,
+        prod_preco_custo REAL NOT NULL,
+        prod_preco_venda REAL NOT NULL,
+        prod_quantidade_estoque INTEGER DEFAULT 0,
+        cat_id INTEGER,
+        forn_id INTEGER,
+        prod_data_validade DATE,
+        prod_unidade_medida TEXT,
+        prod_estoque_minimo REAL,
+        prod_status TEXT,
+        FOREIGN KEY (cat_id) REFERENCES categoria(cat_id),
+        FOREIGN KEY (forn_id) REFERENCES fornecedor(forn_id)
+        )
+    `);
+    db.run(`
+    CREATE TABLE IF NOT EXISTS fornecedor(
+        forn_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        forn_nome TEXT NOT NULL,
+        forn_cnpj TEXT UNIQUE,
+        forn_telefone TEXT,
+        forn_email TEXT
+        )
+    `);
+
     console.log("Tabelas criadas com sucesso.");
 });
 
@@ -84,15 +119,15 @@ app.post("/clientes", (req, res) => {
         estado,
         cep,
         complemento,
-        observacoes
+        observacoes,
     } = req.body;
 
     if (!nome || !cpf) {
         return res.status(400).send("Nome e CPF são obrigatórios.");
     }
-    
+
     const query = `INSERT INTO clientes (cli_nome, cli_cpf, cli_telefone, cli_data_nascimento, cli_email, cli_logradouro, cli_numero, cli_bairro, cli_cidade, cli_estado, cli_cep, cli_complemento, cli_observacoes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    
+
     db.run(
         query,
         [
@@ -108,9 +143,9 @@ app.post("/clientes", (req, res) => {
             estado,
             cep,
             complemento,
-            observacoes
+            observacoes,
         ],
-        
+
         function (err) {
             if (err) {
                 return res.status(500).send("Erro ao cadastrar cliente.1");
@@ -136,14 +171,13 @@ app.get("/clientes", (req, res) => {
                 return res
                     .status(500)
                     .json({ message: "Erro ao buscar clientes." });
-                
             }
             res.json(rows); // Retorna os clientes encontrados ou um array vazio
         });
     } else {
         // Se CPF não foi passado, retorna todos os clientes
         const query = `SELECT * FROM clientes`;
-        
+
         db.all(query, (err, rows) => {
             if (err) {
                 console.error(err);
@@ -159,29 +193,54 @@ app.get("/clientes", (req, res) => {
 // Atualizar cliente
 app.put("/clientes/cpf/:cpf", (req, res) => {
     const { cpf } = req.params;
-    const { nome, telefone, email, data_nascimento, logradouro, numero, bairro, cidade, estado, cep, complemento, observacoes } = req.body;
+    const {
+        nome,
+        telefone,
+        email,
+        data_nascimento,
+        logradouro,
+        numero,
+        bairro,
+        cidade,
+        estado,
+        cep,
+        complemento,
+        observacoes,
+    } = req.body;
 
     const query = `UPDATE clientes SET cli_nome = ?, cli_telefone = ?, cli_email = ?, cli_data_nascimento = ?, cli_logradouro = ?, cli_numero = ?, cli_bairro = ?, cli_cidade = ?, cli_estado = ?, cli_cep = ?, cli_complemento = ?, cli_observacoes = ? WHERE cli_cpf = ?`;
-    db.run(query, [nome, telefone, email, data_nascimento, logradouro, numero, bairro, cidade, estado, cep, complemento, observacoes, cpf], function (err) {
-        if (err) {
-            return res.status(500).send("e??Erro ao atualizar cliente.");
-        }
-        if (this.changes === 0) {
-            return res.status(404).send("Cliente não encontrado.");
-        }
-        res.send("Cliente atualizado com sucesso.");
-    });
+    db.run(
+        query,
+        [
+            nome,
+            telefone,
+            email,
+            data_nascimento,
+            logradouro,
+            numero,
+            bairro,
+            cidade,
+            estado,
+            cep,
+            complemento,
+            observacoes,
+            cpf,
+        ],
+        function (err) {
+            if (err) {
+                return res.status(500).send("e??Erro ao atualizar cliente.");
+            }
+            if (this.changes === 0) {
+                return res.status(404).send("Cliente não encontrado.");
+            }
+            res.send("Cliente atualizado com sucesso.");
+        },
+    );
 });
 
-
-
-
-
-
 ///////////////////////////// Rotas para Funcionarios /////////////////////////////
 ///////////////////////////// Rotas para Funcionarios /////////////////////////////
 ///////////////////////////// Rotas para Funcionarios /////////////////////////////
-
 
 // Cadastrar funcionario
 app.post("/funcionario", (req, res) => {
@@ -201,7 +260,7 @@ app.post("/funcionario", (req, res) => {
         estado,
         cep,
         complemento,
-        observacoes
+        observacoes,
     } = req.body;
 
     if (!nome || !cpf) {
@@ -227,7 +286,7 @@ app.post("/funcionario", (req, res) => {
             estado,
             cep,
             complemento,
-            observacoes
+            observacoes,
         ],
 
         function (err) {
@@ -256,7 +315,6 @@ app.get("/funcionario", (req, res) => {
                 return res
                     .status(500)
                     .json({ message: "Erro ao buscar funcionários." });
-
             }
             res.json(rows); // Retorna os funcionários encontrados ou um array vazio
         });
@@ -276,25 +334,72 @@ app.get("/funcionario", (req, res) => {
     }
 });
 
-
 // Atualizar funcionário
 app.put("/funcionario/cpf/:cpf", (req, res) => {
     const { cpf } = req.params;
-    const { nome, telefone, email, data_nascimento, cargo, logradouro, numero, bairro, cidade, estado, cep, complemento, observacoes } = req.body;
+    const {
+        nome,
+        telefone,
+        email,
+        data_nascimento,
+        cargo,
+        logradouro,
+        numero,
+        bairro,
+        cidade,
+        estado,
+        cep,
+        complemento,
+        observacoes,
+    } = req.body;
 
     const query = `UPDATE funcionario SET func_nome = ?, func_telefone = ?, func_email = ?, func_datanascimento = ?, func_cargo = ?, func_logradouro = ?, func_numero = ?, func_bairro = ?, func_cidade = ?, func_estado = ?, func_cep = ?, func_complemento = ?, func_observacoes = ? WHERE func_cpf = ?`;
-    db.run(query, [nome, telefone, email, data_nascimento, cargo, logradouro, numero, bairro, cidade, estado, cep, complemento, observacoes, cpf], function (err) {
-        if (err) {
-            return res.status(500).send("EEEEEErro ao atualizar funcionário.");
-        }
-        if (this.changes === 0) {
-            return res.status(404).send("Funcionário não encontrado.");
-        }
-        res.send("Funcionário atualizado com sucesso.");
-    });
+    db.run(
+        query,
+        [
+            nome,
+            telefone,
+            email,
+            data_nascimento,
+            cargo,
+            logradouro,
+            numero,
+            bairro,
+            cidade,
+            estado,
+            cep,
+            complemento,
+            observacoes,
+            cpf,
+        ],
+        function (err) {
+            if (err) {
+                return res
+                    .status(500)
+                    .send("EEEEEErro ao atualizar funcionário.");
+            }
+            if (this.changes === 0) {
+                return res.status(404).send("Funcionário não encontrado.");
+            }
+            res.send("Funcionário atualizado com sucesso.");
+        },
+    );
 });
 
+///////////////////////////// Rotas para Fornecedor /////////////////////////////
+///////////////////////////// Rotas para Fornecedor /////////////////////////////
+///////////////////////////// Rotas para Fornecedor /////////////////////////////
 
+// Cadastrar fornecedor
+
+app.post("/fornecedores", (req, res) =>
+    console.log("Recebendo requisição de cadastro de Fornecedor");
+    const{
+        nome,
+        cnpj,
+        telefone,
+        email,
+    }
 
 // Teste para verificar se o servidor está rodando
 app.get("/", (req, res) => {
