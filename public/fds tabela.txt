@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS funcionario(
     func_observacoes TEXT)
 );
 CREATE TABLE IF NOT EXISTS clientes(
-	cli_id INTEGER PRIMARY KEY AUTOINCREMENT,
+	  cli_id INTEGER PRIMARY KEY AUTOINCREMENT,
     cli_nome VARCHAR(100) NOT NULL,
     cli_cpf VARCHAR(14) NOT NULL UNIQUE,
     cli_telefone VARCHAR(15),
@@ -35,8 +35,8 @@ CREATE TABLE IF NOT EXISTS clientes(
 
 CREATE TABLE IF NOT EXISTS categoria(
 	cat_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    cat_nome TEXT NOT NULL,
-    cat_descricao TEXT
+  cat_nome TEXT NOT NULL,
+  cat_descricao TEXT
 );
 
 CREATE TABLE IF NOT EXISTS produto(
@@ -61,8 +61,7 @@ CREATE TABLE IF NOT EXISTS fornecedor(
     forn_cnpj TEXT UNIQUE,
     forn_telefone TEXT,
     forn_email TEXT,
-  	end_id INTEGER,
-  	FOREIGN KEY (end_id) REFERENCES endereco(end_id)
+    forn_end
 );
 
 CREATE TABLE IF NOT EXISTS vendas(
