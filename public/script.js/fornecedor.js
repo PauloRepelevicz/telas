@@ -46,24 +46,24 @@ async function listarFornecedor() {
 
   try {
       const response = await fetch(url);
-      const fornecedores = await response.json();
+      const fornecedor = await response.json();
 
       const tabela = document.getElementById("tabela-fornecedores");
       tabela.innerHTML = "";
 
-      if (clientes.length === 0) {
+      if (fornecedor.length === 0) {
           tabela.innerHTML =
               '<tr><td colspan="6">Nenhum fornecedor encontrado.</td></tr>';
       } else {
-          fornecedores.forEach((fornecedor) => {
+          fornecedor.forEach((fornecedor) => {
               const linha = document.createElement("tr");
               linha.innerHTML = `
-                  <td>${fornecedor.idforn}</td>
-                  <td>${fornecedor.nomeforn}</td>
-                  <td>${formatarCNPJ(fornecedor.cnpjforn)}</td>
-                  <td>${fornecedor.emailforn}</td>
-                  <td>${formatarTelefone(fornecedor.telefoneforn || "")}</td>
-                  <td>${formatarCEP(fornecedor.cepforn || "")}</td>
+                  <td>${fornecedor.forn_id}</td>
+                  <td>${fornecedor.forn_nome}</td>
+                  <td>${fornecedor.forn_cnpj}</td>
+                  <td>${fornecedor.forn_email}</td>
+                  <td>${formatarTelefone(fornecedor.forn_telefone || "")}</td>
+                  <td>${formatarCEP(fornecedor.forn_cep || "")}</td>
               `;
               tabela.appendChild(linha);
           });
@@ -75,10 +75,10 @@ async function listarFornecedor() {
 
 // ----------------- ATUALIZAR FORNECEDOR -----------------
 async function atualizarFornecedor() {
+    alert("asdf");
+    const cnpj = document.getElementById("cnpjforn").value;
 
-  const cnpj = document.getElementById("cnpjforn").value;
-
-  const fornecedorAtualizado = { 
+    const fornecedorAtualizado = { 
       nome: document.getElementById("nomeforn").value,
       telefone: document.getElementById("telefoneforn").value,
       email: document.getElementById("emailforn").value,
@@ -109,7 +109,7 @@ async function atualizarFornecedor() {
       }
   } catch (error) {
       console.error("Erro ao atualizar fornecedor:", error);
-      alert("Erro ao atualizar fornecedor.");
+      alert("Erro ao atualizar fornecedor.1111");
   }
 }
 
@@ -150,27 +150,6 @@ document.getElementById("cepforn").addEventListener("input", async (e) => {
   }
 });
 
-
-
-//CNPJ
-// TELEFONE
-function formatarCNPJ(CNPJ) {
-  CNPJ = CNPJ.replace(/\D/g, "");
-  if (CNPJ.length <= 18) {
-      return CNPJ.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
-  } else {
-      return CNPJ.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
-  }
-}
-document.getElementById("cnpjforn").addEventListener("input", (e) => {
-  e.target.value = formatarCNPJ(e.target.value);
-});
-
-
-
-
-
-
 // TELEFONE
 function formatarTelefone(tel) {
   tel = tel.replace(/\D/g, "");
@@ -183,3 +162,4 @@ function formatarTelefone(tel) {
 document.getElementById("telefoneforn").addEventListener("input", (e) => {
   e.target.value = formatarTelefone(e.target.value);
 });
+
