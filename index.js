@@ -446,6 +446,7 @@ app.post("/fornecedor", (req, res) => {
             cep,
             complemento,
             observacoes,
+            
         ],
 
         function (err) {
@@ -507,10 +508,10 @@ app.put("/fornecedor/cnpj/:cnpj", (req, res) => {
         estado,
         cep,
         complemento,
-        observacoes,
+        observacoes
     } = req.body;
 
-    const query = `UPDATE fornecedor SET forn_nome = ?, forn_telefone = ?, forn_email = ?, forn_datanascimento = ?, forn_cargo = ?, forn_logradouro = ?, forn_numero = ?, forn_bairro = ?, forn_cidade = ?, forn_estado = ?, forn_cep = ?, forn_complemento = ?, forn_observacoes = ? WHERE forn_cnpj = ?`;
+    const query = `UPDATE fornecedor SET forn_nome = ?, forn_telefone = ?, forn_email = ?, forn_logradouro = ?, forn_numero = ?, forn_bairro = ?, forn_cidade = ?, forn_estado = ?, forn_cep = ?, forn_complemento = ?, forn_observacoes = ? WHERE forn_cnpj = ?`;
     db.run(
         query,
         [
@@ -525,7 +526,7 @@ app.put("/fornecedor/cnpj/:cnpj", (req, res) => {
             cep,
             complemento,
             observacoes,
-            cnpj,
+            cnpj
         ],
         function (err) {
             if (err) {
@@ -540,13 +541,6 @@ app.put("/fornecedor/cnpj/:cnpj", (req, res) => {
         },
     );
 });
-
-
-
-
-
-
-
 
 
 
