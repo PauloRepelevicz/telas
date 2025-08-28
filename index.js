@@ -79,7 +79,7 @@ db.serialize(() => {
         cat_id INTEGER,
         forn_id INTEGER,
         prod_data_validade DATE,
-        prod_unidade_medida TEXT,
+        prod_medida TEXT,
         prod_estoque_minimo REAL,
         prod_status TEXT,
         FOREIGN KEY (cat_id) REFERENCES categoria(cat_id),
@@ -543,6 +543,131 @@ app.put("/fornecedor/cnpj/:cnpj", (req, res) => {
 });
 
 
+////////////////////////// Rotas para Produtos /////////////////////////////
+////////////////////////// Rotas para Produtos /////////////////////////////
+////////////////////////// Rotas para Produtos /////////////////////////////
+
+//Cadastrar produto
+// app.post("/produto", (req, res) => {
+//     console.log("Recebendo requisição de cadastro de Produto");
+//     const {
+//         nome,
+//         preco,
+//         descricao,
+//         categoria,
+//         quantidade_estoque,
+//         unidade_medida,
+//         estoque_emergencia,
+//         status,
+//     } = req.body;
+
+//     if (!nome || !cnpj) {
+//         return res.status(400).send("Nome e CNPJ são obrigatórios.");
+//     }
+
+//     const query = `INSERT INTO fornecedor (forn_nome, forn_cnpj, forn_telefone, forn_email, forn_logradouro, forn_numero, forn_bairro, forn_cidade, forn_estado, forn_cep, forn_complemento, forn_observacoes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+//     db.run(
+//         query,
+//         [
+//             nome,
+//             preco,
+//             descricao,
+//             categoria,
+//             quantidade_estoque,
+//             unidade_medida,
+//             estoque_emergencia,
+//             status,
+
+//         ],
+
+//         function (err) {
+//             if (err) {
+//                 return res.status(500).send("Erro ao cadastrar fornecedor..?!?!?!?!?");
+//             }
+//             res.status(201).send({
+//                 id: this.lastID,
+//                 message: "Fornecedor cadastrado com sucesso.",
+//             });
+//         },
+//     );
+// });
+
+
+// // Listar FORNECEDOR
+// // Endpoint para listar todos os fornecedores ou buscar por CNPJ
+// app.get("/fornecedor", (req, res) => {
+//     const cnpj = req.query.cnpj || ""; // Recebe o CNPJ da query string (se houver)
+//     if (cnpj) {
+//         // Se CNPJ foi passado, busca fornecedores que possuam esse CNPJ ?`;
+
+//         db.all(query, [`%${cnpj}%`], (err, rows) => {
+//             if (err) {
+//                 console.error(err);
+//                 return res
+//                     .status(500)
+//                     .json({ message: "Erro ao buscar fornecedores." });
+//             }
+//             res.json(rows); // Retorna os fornecedores encontrados ou um array vazio
+//         });
+//     } else {
+//             // Se CNPJ não foi passado, retorna todos os fornecedores
+//         const query = `SELECT * FROM fornecedor`;
+
+//         db.all(query, (err, rows) => {
+//             if (err) {
+//                 console.error(err);
+//                 return res
+//                     .status(500)
+//                     .json({ message: "Erro ao buscar fornecedores." });
+//             }
+//             res.json(rows); // Retorna todos os fornecedores
+//         });
+//     }
+// });
+
+// // Atualizar fornecedor
+// app.put("/fornecedor/cnpj/:cnpj", (req, res) => {
+//     const { cnpj } = req.params;
+//     const {
+//         nome,
+//         preco,
+//         descricao,
+//         categoria,
+//         quantidade_estoque,
+//         unidade_medida,
+//         estoque_emergencia,
+//         status,
+//     } = req.body;
+
+//     const query = `UPDATE fornecedor SET forn_nome = ?, forn_telefone = ?, forn_email = ?, forn_logradouro = ?, forn_numero = ?, forn_bairro = ?, forn_cidade = ?, forn_estado = ?, forn_cep = ?, forn_complemento = ?, forn_observacoes = ? WHERE forn_cnpj = ?`;
+//     db.run(
+//         query,
+//         [
+//             nome,
+//             preco,
+//             descricao,
+//             categoria,
+//             quantidade_estoque,
+//             unidade_medida,
+//             estoque_emergencia,
+//             status,
+//         ],
+//         function (err) {
+//             if (err) {
+//                 return res
+//                     .status(500)
+//                     .send("EEEEEErro ao atualizar fornecedor.");
+//             }
+//             if (this.changes === 0) {
+//                 return res.status(404).send("fornecedor não encontrado.");
+//             }
+//             res.send("fornecedor atualizado com sucesso.");
+//         },
+//     );
+// });
+
+
 
 // Teste para verificar se o servidor está rodando
 app.get("/", (req, res) => {
@@ -553,3 +678,4 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
+
