@@ -542,7 +542,127 @@ app.put("/fornecedor/cnpj/:cnpj", (req, res) => {
     );
 });
 
+////////////////////////// Rotas para Produtos /////////////////////////////
+////////////////////////// Rotas para Produtos /////////////////////////////
+////////////////////////// Rotas para Produtos /////////////////////////////
 
+//Cadastrar produto
+app.post("/produto", (req, res) => {
+    console.log("Recebendo requisição de cadastro de Produto");
+    const {
+        nome,
+        preco,
+        descricao,
+        categoria,
+        quantidade_estoque,
+        unidade_medida,
+        estoque_emergencia
+    } = req.body;
+
+    if (!nome || !categoria) {
+        return res.status(400).send("Nome e Categoria são obrigatórios.");
+    }
+
+    const query = `INSERT INTO fornecedor (prod_nome, prod_descricao, prod_codigo, prod_preco_custo, prod_preco_venda, prod_quantidade_estoque, cat_id, forn_id, prod_data_validade, prod_unidade_medida, prod_estoque_minimo, prod_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+    db.run(
+        query,
+        [
+            nome,
+            preco,
+            descricao,
+            categoria,
+            quantidade_estoque,
+            unidade_medida,
+            estoque_emergencia
+
+        ],
+
+        function (err) {
+            if (err) {
+                return res.status(500).send("Erro ao cadastrar produto..?!?!?!?!?");
+            }
+            res.status(201).send({
+                id: this.lastID,
+                message: "Produto cadastrado com sucesso.",
+            });
+        },
+    );
+});
+
+
+// Listar FORNECEDOR
+// Endpoint para listar todos os fornecedores ou buscar por CNPJ
+app.get("/fornecedor", (req, res) => {
+    const cnpj = req.query.cnpj || ""; // Recebe o CNPJ da query string (se houver)
+    if (cnpj) {
+        // Se CNPJ foi passado, busca fornecedores que possuam esse CNPJ ?`;
+
+        db.all(query, [`%${cnpj}%`], (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res
+                    .status(500)
+                    .json({ message: "Erro ao buscar fornecedores." });
+            }
+            res.json(rows); // Retorna os fornecedores encontrados ou um array vazio
+        });
+    } else {
+            // Se CNPJ não foi passado, retorna todos os fornecedores
+        const query = `SELECT * FROM fornecedor`;
+
+        db.all(query, (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res
+                    .status(500)
+                    .json({ message: "Erro ao buscar fornecedores." });
+            }
+            res.json(rows); // Retorna todos os fornecedores
+        });
+    }
+});
+
+// Atualizar fornecedor
+app.put("/fornecedor/cnpj/:cnpj", (req, res) => {
+    const { cnpj } = req.params;
+    const {
+        nome,
+        preco,
+        descricao,
+        categoria,
+        quantidade_estoque,
+        unidade_medida,
+        estoque_emergencia,
+        status,
+    } = req.body;
+
+    const query = `UPDATE fornecedor SET forn_nome = ?, forn_telefone = ?, forn_email = ?, forn_logradouro = ?, forn_numero = ?, forn_bairro = ?, forn_cidade = ?, forn_estado = ?, forn_cep = ?, forn_complemento = ?, forn_observacoes = ? WHERE forn_cnpj = ?`;
+    db.run(
+        query,
+        [
+            nome,
+            preco,
+            descricao,
+            categoria,
+            quantidade_estoque,
+            unidade_medida,
+            estoque_emergencia,
+            status,
+        ],
+        function (err) {
+            if (err) {
+                return res
+                    .status(500)
+                    .send("EEEEEErro ao atualizar fornecedor.");
+            }
+            if (this.changes === 0) {
+                return res.status(404).send("fornecedor não encontrado.");
+            }
+            res.send("fornecedor atualizado com sucesso.");
+        },
+    );
+});
 
 // Teste para verificar se o servidor está rodando
 app.get("/", (req, res) => {
