@@ -5,12 +5,10 @@ async function cadastrarProduto(event) {
         nome: document.getElementById("nomeprod").value,
         preco: parseFloat(document.getElementById("precoprod").value),
         descricao: document.getElementById("descricaoprod").value,
-        categoria: document.getElementById("categoriaprod").value,
-        quantidade_estoque: parseInt(document.getElementById("quantidadeprod").value),
+        categoria: document.getElementById("categoria").value,
+        quantidade_estoque: parseInt(document.getElementById("quantidade_estoque").value),
         unidade_medida: document.getElementById("unidademedidaprod").value,
-        estoque_emergencia: document.getElementById("prod_emergencia").value,
-        status: document.getElementById("prod_status").value,
-        fornecedor_id: parseInt(document.getElementById("fornecedoresSelecionado").value)
+        estoque_emergencia: parseInt(document.getElementById("emergenciaprod").value),
     };
     alert('fornecedor_id');
   
