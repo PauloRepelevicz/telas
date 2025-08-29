@@ -13,7 +13,7 @@ async function cadastrarProduto(event) {
     alert('fornecedor_id');
   
     try {
-        const response = await fetch('/produtos', {
+        const response = await fetch('/produto', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -33,7 +33,8 @@ async function cadastrarProduto(event) {
         alert("Erro ao cadastrar produto.");
     }
   }
-  function buscarFornededores() {
+  function buscarFornecedores() {
+      alert("asdf");
     fetch('/buscar-fornecedores')
         .then(response => {
             if (!response.ok) {
@@ -42,11 +43,11 @@ async function cadastrarProduto(event) {
             return response.json();
         })
         .then(servicos => {
-            const select = document.getElementById('fornecedoresSelecionado');
+            const select = document.getElementById('fornecedoresSelecionados');
             servicos.forEach(servico => {
                 const option = document.createElement('option');
-                option.value = servico.id; // Usa o id como valor
-                option.textContent = servico.nome; // Nome do serviço exibido
+                option.value = servico.forn_id; // Usa o id como valor
+                option.textContent = servico.forn_nome; // Nome do serviço exibido
                 select.appendChild(option);
             });
         })
@@ -56,7 +57,7 @@ async function cadastrarProduto(event) {
   }
   async function listarProdutos() {
     try {
-        const response = await fetch('/produtos');
+        const response = await fetch('/produto');
   
         if (response.ok) {
             const produtos = await response.json();
