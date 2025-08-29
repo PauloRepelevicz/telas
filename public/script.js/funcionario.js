@@ -1,6 +1,5 @@
 async function cadastrarFunc(event) {
     event.preventDefault();
-    alert("LEOZAO VAI PEGA A ALESSANDRA E CASA COM ELA ELA É LINDINHA E O LEOZAO É UM BURRO E UM BURRO QUE É BURRO E BURRO E BURRO E BURRO E BURRO E BURRO E BURRO E BURRO E BURRO E BURRO E BURRO E BURRO ");
 
     const funcionario = {
         nome: document.getElementById('nomefunc').value,
@@ -38,14 +37,14 @@ async function cadastrarFunc(event) {
         }
     } catch (err) {
         console.error("Erro na solicitação:", err);
-        alert("Erro ao cadastrar Funcionário.?");
+        alert("Erro ao cadastrar Funcionário.");
     }
 }
 
  
  // Função para listar todos os funcionários ou buscar funcionários por CPF
  async function listarFuncionarios() {
-     console.log("Leozao deu a bunda ")
+
      const cpf = document.getElementById('cpfunc').value.trim();  // Pega o valor do CPF digitado no input
 
      let url = '/funcionario';  // URL padrão para todos os funcionarios
@@ -54,7 +53,7 @@ async function cadastrarFunc(event) {
          // Se CPF foi digitado, adiciona o parâmetro de consulta
          url += `?cpf=${cpf}`;
      }
-     console.log("Voce é viado 1000")
+     
      try {
          const response = await fetch(url);
          const funcionarios = await response.json();
@@ -122,28 +121,10 @@ async function atualizarFuncionario() {
             alert("Erro ao atualizar Funcionário: " + errorMessage);
         }
     } catch (error) {
-        console.error("222Erro ao atualizar Funcionário:", error);
+        console.error("Erro ao atualizar Funcionário:", error);
         alert("Erro ao atualizar Funcionário.");
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 async function limpaFunc() {
@@ -154,3 +135,75 @@ async function limpaFunc() {
     document.getElementById('cargo').value = '';
     document.getElementById('endereco').value = '';
 }
+
+
+// ----------------- FORMATAÇÕES -----------------
+
+// CPF
+function formatarCPF(cpfunc) {
+    return cpfunc
+        .replace(/\D/g, "")
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+}
+document.getElementById("cpfunc").addEventListener("input", (e) => {
+    e.target.value = formatarCPF(e.target.value);
+});
+
+// CEP
+function formatarCEP(cepfunc) {
+    return cepfunc
+        .replace(/\D/g, "")
+        .replace(/(\d{5})(\d)/, "$1-$2")
+        .slice(0, 9);
+}
+document.getElementById("cepfunc").addEventListener("input", async (e) => {
+    e.target.value = formatarCEP(e.target.value);
+
+    const cepfunc = e.target.value.replace(/\D/g, "");
+    if (cepfunc.length === 8) {
+        try {
+            const response = await fetch(`https://viacep.com.br/ws/${cepfunc}/json/`);
+            const data = await response.json();
+            if (!data.erro) {
+                document.getElementById("enderecofunc").value = data.logradouro || "";
+                document.getElementById("bairrofunc").value = data.bairro || "";
+                document.getElementById("cidadefunc").value = data.localidade || "";
+                document.getElementById("estadofunc").value = data.uf || "";
+            }
+        } catch (err) {
+            console.error("Erro ao buscar CEP:", err);
+        }
+    }
+});
+
+// TELEFONE
+function formatarTelefone(telefonefunc) {
+    telefonefunc = telefonefunc.replace(/\D/g, "");
+    if (telefonefunc.length <= 10) {
+        return telefonefunc.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+    } else {
+        return telefonefunc.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
+    }
+}
+document.getElementById("telefonefunc").addEventListener("input", (e) => {
+    e.target.value = formatarTelefone(e.target.value);
+});
+
+// VALIDAR DATA DE NASCIMENTO
+document.getElementById("dataNascfunc").addEventListener("change", (e) => {
+    const dataNascfunc = new Date(e.target.value);
+    const hoje = new Date();
+    let idade = hoje.getFullYear() - dataNascfunc.getFullYear();
+    const mes = hoje.getMonth() - dataNascfunc.getMonth();
+
+    if (mes < 0 || (mes === 0 && hoje.getDate() < dataNascfunc.getDate())) {
+        idade--;
+    }
+
+    if (idade < 18) {
+        alert("O funcionario deve ter pelo menos 18 anos.");
+        e.target.value = "";
+    }
+});
