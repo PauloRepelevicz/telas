@@ -33,7 +33,7 @@ async function cadastrarForn(event) {
       }
   } catch (err) {
       console.error("Erro na solicitação:", err);
-      alert("Erro ao cadastrar fornecedorUUUUUUUU.");
+      alert("Erro ao cadastrar fornecedor.fornecedor.js");
   }
 }
 
@@ -75,7 +75,7 @@ async function listarFornecedor() {
 
 // ----------------- ATUALIZAR FORNECEDOR -----------------
 async function atualizarFornecedor() {
-    alert("asdf");
+    alert("dj marciano o mais brabo(estou no fornecedor.js)");
     const cnpj = document.getElementById("cnpjforn").value;
 
     const fornecedorAtualizado = { 
