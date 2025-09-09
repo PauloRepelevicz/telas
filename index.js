@@ -71,8 +71,8 @@ db.serialize(() => {
     CREATE TABLE IF NOT EXISTS produto(
         prod_id INTEGER PRIMARY KEY AUTOINCREMENT,
         prod_nome TEXT NOT NULL,
+        prod_codigo INTEGER UNIQUE,
         prod_descricao TEXT,
-        prod_codigo TEXT UNIQUE,
         prod_preco_venda REAL NOT NULL,
         prod_quantidade_estoque INTEGER DEFAULT 0,
         cat_nome TEXT NOT NULL,
@@ -87,7 +87,7 @@ db.serialize(() => {
     db.run(`
     CREATE TABLE IF NOT EXISTS fornecedor(
         forn_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        forn_nome TEXT NOT NULL,
+        forn_nome TEXT NOT NULL UNIQUE,
         forn_cnpj TEXT UNIQUE,
         forn_telefone TEXT,
         forn_email TEXT,
@@ -101,6 +101,20 @@ db.serialize(() => {
         forn_observacoes TEXT
         )
     `);
+    db.run(`
+    CREATE TABLE IF NOT EXISTS vendas(
+        ven_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ven_data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
+        cli_cpf INTEGER,
+        prod_quantidade_estoque INTEGER,
+        func_id INTEGER,
+        ven_total REAL NOT NULL,
+        ven_forma_pagamento TEXT,
+        ven_status TEXT DEFAULT 'finalizada',
+        FOREIGN KEY (cli_cpf) REFERENCES clientes(cli_cpf),
+        FOREIGN KEY (prod_quantidade_estoque) REFERENCES produto(prod_quantidade_estoque)
+        )
+    `);
 
     console.log("Tabelas criadas com sucesso.");
 });
@@ -109,7 +123,7 @@ db.serialize(() => {
 ///////////////////////////// Rotas para Clientes /////////////////////////////
 ///////////////////////////// Rotas para Clientes /////////////////////////////
 
-// Cadastrar cliente
+// Cadastrar cliente //
 app.post("/clientes", (req, res) => {
     console.log("Recebendo requisição de cadastro de cliente");
     const {
@@ -163,7 +177,7 @@ app.post("/clientes", (req, res) => {
         },
     );
 });
-// Listar clientes
+// Listar clientes //
 // Endpoint para listar todos os clientes ou buscar por CPF
 app.get("/clientes", (req, res) => {
     const cpf = req.query.cpf || ""; // Recebe o CPF da query string (se houver)
@@ -230,7 +244,7 @@ app.put("/clientes/cpf/:cpf", (req, res) => {
             cep,
             complemento,
             observacoes,
-            cpf
+            cpf,
         ],
         function (err) {
             if (err) {
@@ -376,13 +390,13 @@ app.put("/funcionario/cpf/:cpf", (req, res) => {
             cep,
             complemento,
             observacoes,
-            cpf
+            cpf,
         ],
         function (err) {
             if (err) {
                 return res
                     .status(500)
-                    .send("EEEEEErro ao atualizar funcionário.");
+                    .send("Erro ao atualizar funcionário.~~~~~~");
             }
             if (this.changes === 0) {
                 return res.status(404).send("Funcionário não encontrado.");
@@ -399,6 +413,7 @@ app.put("/funcionario/cpf/:cpf", (req, res) => {
 // Cadastrar fornecedor
 app.post("/fornecedor", (req, res) => {
     console.log("Recebendo requisição de cadastro de Fornecedor");
+
     const {
         nome,
         cnpj,
@@ -411,7 +426,7 @@ app.post("/fornecedor", (req, res) => {
         estado,
         cep,
         complemento,
-        observacoes
+        observacoes,
     } = req.body;
 
     if (!nome || !cnpj) {
@@ -434,14 +449,12 @@ app.post("/fornecedor", (req, res) => {
             estado,
             cep,
             complemento,
-            observacoes
+            observacoes,
         ],
 
         function (err) {
             if (err) {
-                return res
-                    .status(500)
-                    .send("Erro ao cadastrar fornecedor..?!?!?!?!?");
+                return res.status(500).send("Erro ao cadastrar fornecedor.");
             }
             res.status(201).send({
                 id: this.lastID,
@@ -455,10 +468,11 @@ app.post("/fornecedor", (req, res) => {
 // Endpoint para listar todos os fornecedores ou buscar por CNPJ
 app.get("/fornecedor", (req, res) => {
     const cnpj = req.query.cnpj || ""; // Recebe o CNPJ da query string (se houver)
-    if (cnpj) {
-        // Se CNPJ foi passado, busca fornecedores que possuam esse CNPJ ?`;
+        if (cnpj) {
+                // Se CNPJ foi passado, busca fornecedores que possuam esse CNPJ
+            const query = `SELECT * FROM fornecedor WHERE forn_cnpj LIKE ?`;
 
-        db.all(query, [`%${cnpj}%`], (err, rows) => {
+             db.all(query, [`%${cnpj}%`], (err, rows) => {
             if (err) {
                 console.error(err);
                 return res
@@ -497,7 +511,7 @@ app.put("/fornecedor/cnpj/:cnpj", (req, res) => {
         estado,
         cep,
         complemento,
-        observacoes
+        observacoes,
     } = req.body;
 
     const query = `UPDATE fornecedor SET forn_nome = ?, forn_telefone = ?, forn_email = ?, forn_logradouro = ?, forn_numero = ?, forn_bairro = ?, forn_cidade = ?, forn_estado = ?, forn_cep = ?, forn_complemento = ?, forn_observacoes = ? WHERE forn_cnpj = ?`;
@@ -515,13 +529,13 @@ app.put("/fornecedor/cnpj/:cnpj", (req, res) => {
             cep,
             complemento,
             observacoes,
-            cnpj
+            cnpj,
         ],
         function (err) {
             if (err) {
                 return res
                     .status(500)
-                    .send("EEEEEErro ao atualizar fornecedor.");
+                    .send("EEEEEErro ao atualizar fornecedor.111111111");
             }
             if (this.changes === 0) {
                 return res.status(404).send("fornecedor não encontrado.");
@@ -540,33 +554,34 @@ app.post("/produto", (req, res) => {
     console.log("Recebendo requisição de cadastro de Produto");
     const {
         nome,
-        descricao,
+        codigo,
         venda,
-        quantidade_estoque,
+        descricao,
         categoria,
-        fornecedor,
+        quantidade_estoque,
         unidade_medida,
-        estoque_emergencia
-
-    } = req.body
+        estoque_emergencia,
+        fornecedor,
+    } = req.body;
 
     if (!nome || !categoria) {
         return res.status(400).send("Nome e Categoria são obrigatórios.");
     }
 
-    const query = `INSERT INTO produto (prod_nome, prod_descricao, prod_preco_venda, prod_quantidade_estoque, cat_nome, forn_nome, prod_unidade_medida, prod_estoque_minimo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO produto (prod_nome, prod_codigo, prod_preco_venda, prod_descricao, cat_nome, prod_quantidade_estoque, prod_unidade_medida, prod_estoque_minimo, forn_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     db.run(
         query,
         [
             nome,
-            descricao,
+            codigo,
             venda,
-            quantidade_estoque,
+            descricao,
             categoria,
-            fornecedor,
+            quantidade_estoque,
             unidade_medida,
-            estoque_emergencia
+            estoque_emergencia,
+            fornecedor,
         ],
 
         function (err) {
@@ -607,13 +622,23 @@ app.get("/produto", (req, res) => {
                 console.error(err);
                 return res
                     .status(500)
-                    .json({ message: "Erro ao buscar produtosaaa." });
+                    .json({ message: "Erro ao buscar produtosindex.js." });
             }
             res.json(rows); // Retorna os produtos encontrados ou um array vazio
         });
     } else {
         // Se ID não foi passado, retorna todos os produtos
-        const query = `SELECT * FROM produto`;
+        const query = `SELECT
+                            produto.prod_id,
+                            produto.prod_nome,
+                            produto.prod_codigo,
+                            produto.prod_preco_venda,
+                            produto.prod_quantidade_estoque,
+                            produto.cat_nome,
+                            fornecedor.forn_nome AS forn_nome
+                            FROM produto
+                            JOIN fornecedor ON produto.forn_id = fornecedor.forn_id
+                            WHERE 1=1`;
 
         db.all(query, (err, rows) => {
             if (err) {
@@ -628,8 +653,8 @@ app.get("/produto", (req, res) => {
 });
 
 // Atualizar produto
-app.put("/produto/id/:id", (req, res) => {
-    const { id } = req.params;
+app.put("/produto/codigo/:codigo", (req, res) => {
+    const { codigo } = req.params;
     const {
         nome,
         venda,
@@ -638,10 +663,10 @@ app.put("/produto/id/:id", (req, res) => {
         quantidade_estoque,
         unidade_medida,
         estoque_emergencia,
-        fornecedor
+        fornecedor,
     } = req.body;
 
-    const query = `UPDATE produto SET prod_nome = ?, prod_preco_venda = ?, prod_descricao = ?, cat_nome = ?, prod_quantidade_estoque = ?, prod_unidade_medida = ?, prod_estoque_minimo = ?, forn_nome WHERE prod_id = ?`;
+    const query = `UPDATE produto SET prod_nome = ?, prod_preco_venda = ?, prod_descricao = ?, cat_nome = ?, prod_quantidade_estoque = ?, prod_unidade_medida = ?,                    prod_estoque_minimo = ?, forn_id = ? WHERE prod_codigo = ?`;
     db.run(
         query,
         [
@@ -653,13 +678,13 @@ app.put("/produto/id/:id", (req, res) => {
             unidade_medida,
             estoque_emergencia,
             fornecedor,
-            id
+            codigo,
         ],
         function (err) {
             if (err) {
                 return res
                     .status(500)
-                    .send("EEEEEErro ao atualizar fornecedor.");
+                    .send("EEEEEErro ao atualizar PRODUTO.JS");
             }
             if (this.changes === 0) {
                 return res.status(404).send("fornecedor não encontrado.");
@@ -669,12 +694,115 @@ app.put("/produto/id/:id", (req, res) => {
     );
 });
 
-// Teste para verificar se o servidor está rodando
-app.get("/", (req, res) => {
-    res.send("Servidor está rodando e tabelas criadas dentro da minha bunda!");
+///////////////////////////// Rotas para Vendas /////////////////////////////
+///////////////////////////// Rotas para Vendas /////////////////////////////
+///////////////////////////// Rotas para Vendas /////////////////////////////
+
+app.post("/vendas", (req, res) => {
+    const { cliente_cpf, itens } = req.body;
+
+    if (!cliente_cpf || !itens || itens.length === 0) {
+        return res.status(400).send("Dados da venda incompletos.");
+    }
+
+    const dataVenda = new Date().toISOString();
+
+    db.serialize(() => {
+        const insertSaleQuery = `INSERT INTO vendas (cli_cpf, prod_id, prod_quantidade_estoque, ven_data_hora) VALUES (?, ?, ?, ?)`;
+        const updateStockQuery = `UPDATE produto SET prod_quantidade_estoque = prod_quantidade_estoque - ? WHERE ven_id = ?`;
+
+        let erroOcorrido = false;
+
+        itens.forEach(({ idProduto, quantidade }) => {
+            if (!idProduto || !quantidade || quantidade <= 0) {
+                console.error(
+                    `Dados inválidos para o produto ID: ${idProduto}, quantidade: ${quantidade}`,
+                );
+                erroOcorrido = true;
+                return;
+            }
+
+            // Registrar a venda
+            db.run(
+                insertSaleQuery,
+                [cliente_cpf, idProduto, quantidade, dataVenda],
+                function (err) {
+                    if (err) {
+                        console.error("Erro ao registrar venda:", err.message);
+                        erroOcorrido = true;
+                    }
+                },
+            );
+
+            // Atualizar o estoque
+            db.run(updateStockQuery, [quantidade, idProduto], function (err) {
+                if (err) {
+                    console.error("Erro ao atualizar estoque:", err.message);
+                    erroOcorrido = true;
+                }
+            });
+        });
+
+        if (erroOcorrido) {
+            res.status(500).send("Erro ao processar a venda.");
+        } else {
+            res.status(201).send({ message: "Venda registrada com sucesso." });
+        }
+    });
 });
 
-// Iniciando o servidor
-app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
+app.get("/clientes/:cpf", (req, res) => {
+    const cpf = req.params.cpf;
+    db.get("SELECT * FROM clientes WHERE cli_cpf = ?", [cpf], (err, row) => {
+        if (err) {
+            res.status(500).json({ error: "Erro no servidor." });
+        } else if (!row) {
+            res.status(404).json({ error: "Cliente não encontrado." });
+        } else {
+            res.json(row);
+        }
+    });
 });
+app.get("/produtos_carrinho/:id", (req, res) => {
+    const id = req.params.id;
+    db.get("SELECT * FROM produtos WHERE id = ? ", [id], (err, row) => {
+        if (err) {
+            res.status(500).json({ error: "Erro no servidor." });
+        } else if (!row) {
+            res.status(404).json({ error: "Produto não encontrado.." });
+        } else {
+            res.json(row);
+        }
+    });
+});
+
+// ROTA PARA BUSCAR TODOS OS PRODUTOS PÁGINA DE VENDAS
+app.get("/buscar-produtos", (req, res) => {
+    db.all(
+        "SELECT prod_nome, prod_codigo, prod_quantidade_estoque FROM produto",
+        [],
+        (err, rows) => {
+            if (err) {
+                console.error("Erro ao buscar produtos:", err);
+                res.status(500).send("Erro ao buscar produtos");
+            } else {
+                res.json(rows); // Retorna os serviços em formato JSON
+            }
+        },
+    );
+});
+
+
+    ///////////////////////////// FIM /////////////////////////////
+    ///////////////////////////// FIM /////////////////////////////
+    ///////////////////////////// FIM /////////////////////////////
+
+    // Teste para verificar se o servidor está rodando
+    app.get('/', (req, res) => {
+        res.send('Servidor está rodando e tabelas criadas!');
+    });
+
+    // Iniciando o servidor
+    app.listen(port, () => {
+        console.log(`Servidor rodando na porta ${port}`);
+    });
