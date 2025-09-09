@@ -65,14 +65,14 @@ CREATE TABLE IF NOT EXISTS fornecedor(
 );
 
 CREATE TABLE IF NOT EXISTS vendas(
-	ven_id INTEGER PRIMARY KEY AUTOINCREMENT,
+	  ven_id INTEGER PRIMARY KEY AUTOINCREMENT,
     ven_data_hora_ven DATETIME DEFAULT CURRENT_TIMESTAMP,
-    cli_id INTEGER,
+    cli_cpf INTEGER,
     func_id INTEGER,
     ven_total REAL NOT NULL,
     ven_forma_pagamento TEXT,
     ven_status TEXT DEFAULT 'finalizada',
-    FOREIGN KEY (cli_id) REFERENCES clientes(cli_id),
+    FOREIGN KEY (cli_id) REFERENCES clientes(cli_cpf),
     FOREIGN KEY (func_id) REFERENCES funcionarios(func_id)
 );
 

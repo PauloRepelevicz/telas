@@ -1,18 +1,16 @@
 async function cadastrarProduto(event) {
     event.preventDefault();
-
     const produto = {
         nome: document.getElementById("nomeprod").value,
+        codigo: document.getElementById("codprod").value,
         venda: document.getElementById("precoprod").value,
         descricao: document.getElementById("descricaoprod").value,
         categoria: document.getElementById("categoriaprod").value,
         quantidade_estoque: document.getElementById("quantidadeprod").value,
         unidade_medida: document.getElementById("unidademedidaprod").value,
         estoque_emergencia: document.getElementById("emergenciaprod").value,
-        fornecedor: document.getElementById("fornecedoresSelecionados").value
-    }
-    alert("COCOOOOOOOOOOOOOOOOOOO");
-
+        fornecedor: document.getElementById("fornecedoresSelecionados").value,
+    };
     try {
         const response = await fetch("/produto", {
             method: "POST",
@@ -29,7 +27,7 @@ async function cadastrarProduto(event) {
         } else {
             alert(`Erro: ${result.message}`);
         }
-    alert("amem Jesus");
+        alert("amem Jesus");
     } catch (err) {
         console.error("Erro na solicitação:", err);
         alert("Erro ao cadastrar produto.estoque.js");
@@ -37,7 +35,6 @@ async function cadastrarProduto(event) {
 }
 
 function buscarFornecedores() {
-
     fetch("/fornecedor")
         .then((response) => {
             if (!response.ok) {
@@ -59,6 +56,7 @@ function buscarFornecedores() {
         });
 }
 
+// ----------------- LISTAR PRODUTOS ----------------- //
 async function listarProdutos() {
     try {
         const response = await fetch("/produto");
@@ -74,7 +72,8 @@ async function listarProdutos() {
                 linha.innerHTML = `
                     <td>${produto.prod_id}</td>
                     <td>${produto.prod_nome}</td>
-                    <td>${produto.prod_preco_venda.toFixed(2)}</td>
+                    <td>${produto.prod_codigo}</td>
+                    <td>${produto.prod_preco_venda}</td>
                     <td>${produto.cat_nome}</td>
                     <td>${produto.prod_quantidade_estoque}</td>
                     <td>${produto.forn_nome}</td>
@@ -90,14 +89,52 @@ async function listarProdutos() {
     }
 }
 
+// ----------------- LIMPAR CAMPO -----------------
+
 async function limpaform() {
-  document.getElementById("nomeprod").value = "";
-  document.getElementById("precoprod").value = "";
-  document.getElementById("descricaoprod").value = "";
-  document.getElementById("categoriaprod").value = "";
-  document.getElementById("quantidadeprod").value = "";
-  document.getElementById("emergenciaprod").value = "";
-  document.getElementById("unidademedidaprod").value = "";
-  document.getElementById("fornecedoresSelecionados").value = "";
+    document.getElementById("nomeprod").value = "";
+    document.getElementById("codprod").value = "";
+    document.getElementById("precoprod").value = "";
+    document.getElementById("descricaoprod").value = "";
+    document.getElementById("categoriaprod").value = "";
+    document.getElementById("quantidadeprod").value = "";
+    document.getElementById("emergenciaprod").value = "";
+    document.getElementById("unidademedidaprod").value = "";
+    document.getElementById("fornecedoresSelecionados").value = "";
 }
-a
+
+// ----------------- ATUALIZAR PRODUTO -----------------
+async function atualizarProduto() {
+    const codigo = document.getElementById("codprod").value;
+
+    const produtoAtualizado = {
+        nome: document.getElementById("nomeprod").value,
+        venda: document.getElementById("precoprod").value,
+        descricao: document.getElementById("descricaoprod").value,
+        categoria: document.getElementById("categoriaprod").value,
+        quantidade_estoque: document.getElementById("quantidadeprod").value,
+        unidade_medida: document.getElementById("unidademedidaprod").value,
+        estoque_emergencia: document.getElementById("emergenciaprod").value,
+        fornecedor: document.getElementById("fornecedoresSelecionados").value,
+    };
+
+    try {
+        const response = await fetch(`/produto/codigo/${codigo}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(produtoAtualizado),
+        });
+
+        if (response.ok) {
+            alert("Produto atualizado com sucesso!");
+        } else {
+            const errorMessage = await response.text();
+            alert("Erro ao atualizar Produto: " + errorMessage);
+        }
+    } catch (error) {
+        console.error("Erro ao atualizar Produto:", error);
+        alert("Erro ao atualizar Produto.11111111");
+    }
+}

@@ -6,6 +6,7 @@
   <title>MAGUILA - Cadastro de Produtos</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="shortcut icon" type="image/jp" href="../imagens/UI.png"/>
+  
 </head>
   <body onload="buscarFornecedores()">
   <header>
@@ -23,6 +24,7 @@
         <a href="funcionario.html" class="links"><li>Cadastro de Funcionário</li></a>
         <a href="cliente.html" class="links"><li>Cadastro de Cliente</li></a>
         <a href="fornecedor.html" class="links"><li>Cadastro de Fornecedor</li></a>
+        <a href="vendas.html" class="links"><li>Vendas</li></a>
       </ul> 
     </nav>
     <main class="main">
@@ -34,6 +36,7 @@
             <tr>
               <th>ID</th>
               <th>Nome</th>
+              <th>Código</th>
               <th>Preço</th>
               <th>Categoria</th>
               <th>Quantidade</th>
@@ -56,6 +59,10 @@
           <div class="form-group">
             <label for="nome">Nome do Produto:</label>
             <input type="text" id="nomeprod" name="nome" required>
+          </div>
+          <div class="form-group">
+            <label for="codigoprod">Código do Produto//</label>
+            <input type="text" id="codprod" name="codigo" required>
           </div>
 
           <div class="form-group">
@@ -133,6 +140,7 @@
   </footer>
 
   <script src="../script.js/estoque.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="/index.js"></script>
 
 </html>

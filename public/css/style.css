@@ -269,3 +269,88 @@ footer img {
   margin-bottom: 1rem;
   color: #333;
 }
+
+
+/* ESTILOS ESPECÍFICOS PARA CENTRALIZAÇÃO */
+.center-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 20px 0;
+}
+
+.center-form-group {
+  margin-bottom: 15px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.center-form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #2c3e50;
+  text-align: center;
+}
+
+.center-form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  text-align: center;
+  transition: border 0.3s;
+}
+
+.center-form-group input:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn-submit {
+  background: #27ae60;
+  color: white;
+}
+
+.btn-submit:hover {
+  background: #219653;
+}
+
+.btn-update {
+  background: #3498db;
+  color: white;
+}
+
+.btn-update:hover {
+  background: #2980b9;
+}
+
+.btn-reset {
+  background: #e74c3c;
+  color: white;
+}
+
+.btn-reset:hover {
+  background: #c0392b;
+}
+
+.center-actions .btn-submit {
+  margin-top: 26px; /* Esta linha desce o botão */
+}
+
+.nomeclicss{
+  
+}

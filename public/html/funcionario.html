@@ -23,6 +23,7 @@
         <li class=links>Cadastro de Funcionário</li></a>
         <a href="cliente.html"class=links><li >Cadastro de Cliente</li></a>     
         <a href="fornecedor.html"class="links"><li>Cadastro de Fornecedor</li></a>
+        <a href="vendas.html" class="links"><li>Vendas</li></a>
 
         
       </ul> 
@@ -38,7 +39,7 @@
       
           <div class="form-group">
             <label for="cpf">CPF:</label>
-            <input type="text" id="cpfunc" name="cpf" required placeholder="000.000.000-00" maxlength="14">
+            <input type="text" id="cpfunc" name="cpf" placeholder="000.000.000-00" maxlength="14" required>
           </div>
       
           <div class="form-group">
@@ -46,8 +47,15 @@
             <input type="date" id="dataNascfunc" name="dataNasc" required>
           </div>
           <div class="form-group">
-            <label for="cargo">Cargo</label>
-            <input type="text" id="cargofunc" name="cargo" required>
+              <label for="cargofunc">Cargo <span class="required">*</span></label>
+              <select id="cargofunc" name="cargo" required>
+                  <option value="">Selecione...</option>
+                  <option value="gerente">Gerente</option>
+                  <option value="atendente">Atendente</option>
+                  <option value="estoquista">Estoquista</option>
+                  <option value="caixa">Caixa</option>
+                  <option value="outros">Outros</option>
+              </select>
           </div>
           <div class="form-group">
             <label>Gênero:</label>
@@ -66,7 +74,7 @@
       
           <div class="form-group">
             <label for="telefone">Telefone:</label>
-            <input type="tel" id="telefonefunc" name="telefone" placeholder="(00) 00000-0000" required maxlength="14">
+            <input type="tel" id="telefonefunc" name="telefone" placeholder="(00) 00000-0000" required maxlength="15">
           </div>
       
           <div class="form-group">
@@ -144,9 +152,9 @@
             <button type="reset" onclick="atualizarFuncionario()" class="btn-update">Atualizar</button>
           </div>
         </form>
-        <h2>Consultar Funcionário</h2> 
-    
-    <table>
+        <h2>Consultar Funcionário</h2>
+        <button type="button" onclick="listarFuncionarios()" class="btn-submit">Listar Funcionários</button>
+      <table border="1" class="table-clientes">
         <thead>
             <tr>
                 <th>ID</th>
@@ -157,12 +165,12 @@
                 <th>Endereço</th>
                 <th>Cargo</th>
             </tr>
-        </thead>
         <tbody id="tabela-funcionarios">
             <!-- Linhas serão preenchidas pelo JavaScript -->
         </tbody>
     </table>
-    <button type="button" onclick="listarFuncionarios()" class="btn-submit">Listar Funcionários</button>
+    
+      </section>
       </section>
     </main>
   </div>
