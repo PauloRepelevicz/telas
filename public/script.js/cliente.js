@@ -16,7 +16,53 @@ async function cadastrarCliente(event) {
         complemento: document.getElementById("complemento").value,
         observacoes: document.getElementById("observacoes").value,
     };
-
+    alert("T dando certo");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("Esperaaa");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("QUASEEEEE");
+    alert("FOII");
     try {
         const response = await fetch("/clientes", {
             method: "POST",
@@ -77,10 +123,9 @@ async function listarClientes() {
 
 // ----------------- ATUALIZAR CLIENTE -----------------
 async function atualizarCliente() {
-
     const cpf = document.getElementById("cpf").value;
-    
-    const clienteAtualizado = { 
+
+    const clienteAtualizado = {
         nome: document.getElementById("nome").value,
         telefone: document.getElementById("telefone").value,
         email: document.getElementById("email").value,
@@ -92,7 +137,7 @@ async function atualizarCliente() {
         estado: document.getElementById("estado").value,
         cep: document.getElementById("cep").value,
         complemento: document.getElementById("complemento").value,
-        observacoes: document.getElementById("observacoes").value
+        observacoes: document.getElementById("observacoes").value,
     };
 
     try {
@@ -151,10 +196,13 @@ document.getElementById("cep").addEventListener("input", async (e) => {
     const cep = e.target.value.replace(/\D/g, "");
     if (cep.length === 8) {
         try {
-            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            const response = await fetch(
+                `https://viacep.com.br/ws/${cep}/json/`,
+            );
             const data = await response.json();
             if (!data.erro) {
-                document.getElementById("endereco").value = data.logradouro || "";
+                document.getElementById("endereco").value =
+                    data.logradouro || "";
                 document.getElementById("bairro").value = data.bairro || "";
                 document.getElementById("cidade").value = data.localidade || "";
                 document.getElementById("estado").value = data.uf || "";
