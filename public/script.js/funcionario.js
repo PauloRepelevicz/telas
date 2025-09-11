@@ -41,7 +41,7 @@ async function cadastrarFunc(event) {
     }
 }
 
- 
+
  // Função para listar todos os funcionários ou buscar funcionários por CPF
  async function listarFuncionarios() {
 
@@ -53,7 +53,7 @@ async function cadastrarFunc(event) {
          // Se CPF foi digitado, adiciona o parâmetro de consulta
          url += `?cpf=${cpf}`;
      }
-     
+
      try {
          const response = await fetch(url);
          const funcionarios = await response.json();
@@ -75,7 +75,7 @@ async function cadastrarFunc(event) {
                      <td>${funcionario.func_telefone}</td>
                      <td>${funcionario.func_logradouro}</td>
                      <td>${funcionario.func_cargo}</td>
-                     
+
                  `;
                  tabela.appendChild(linha);
              });
