@@ -106,12 +106,13 @@ db.serialize(() => {
         ven_id INTEGER PRIMARY KEY AUTOINCREMENT,
         ven_data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
         cli_cpf INTEGER,
+        prod_codigo INTEGER,
         prod_quantidade_estoque INTEGER,
-        func_id INTEGER,
         ven_total REAL NOT NULL,
         ven_forma_pagamento TEXT,
         ven_status TEXT DEFAULT 'finalizada',
         FOREIGN KEY (cli_cpf) REFERENCES clientes(cli_cpf),
+        FOREIGN KEY (prod_codigo) REFERENCES produto(prod_codigo),
         FOREIGN KEY (prod_quantidade_estoque) REFERENCES produto(prod_quantidade_estoque)
         )
     `);
@@ -468,11 +469,11 @@ app.post("/fornecedor", (req, res) => {
 // Endpoint para listar todos os fornecedores ou buscar por CNPJ
 app.get("/fornecedor", (req, res) => {
     const cnpj = req.query.cnpj || ""; // Recebe o CNPJ da query string (se houver)
-        if (cnpj) {
-                // Se CNPJ foi passado, busca fornecedores que possuam esse CNPJ
-            const query = `SELECT * FROM fornecedor WHERE forn_cnpj LIKE ?`;
+    if (cnpj) {
+        // Se CNPJ foi passado, busca fornecedores que possuam esse CNPJ
+        const query = `SELECT * FROM fornecedor WHERE forn_cnpj LIKE ?`;
 
-             db.all(query, [`%${cnpj}%`], (err, rows) => {
+        db.all(query, [`%${cnpj}%`], (err, rows) => {
             if (err) {
                 console.error(err);
                 return res
@@ -725,7 +726,7 @@ app.post("/vendas", (req, res) => {
             // Registrar a venda
             db.run(
                 insertSaleQuery,
-                [cliente_cpf, idProduto, quantidade, dataVenda],
+                [cliente_cpf, idProduto, quantidade, produtosSelecionados],
                 function (err) {
                     if (err) {
                         console.error("Erro ao registrar venda:", err.message);
@@ -751,8 +752,10 @@ app.post("/vendas", (req, res) => {
     });
 });
 
-app.get("/clientes/:cpf", (req, res) => {
-    const cpf = req.params.cpf;
+/////////////////////////////// Rotas para Buscar Cliente /////////////////////////////
+
+app.get("/clientes/:cli_cpf", (req, res) => {
+    const cpf = req.params.cli_cpf;
     db.get("SELECT * FROM clientes WHERE cli_cpf = ?", [cpf], (err, row) => {
         if (err) {
             res.status(500).json({ error: "Erro no servidor." });
@@ -763,46 +766,48 @@ app.get("/clientes/:cpf", (req, res) => {
         }
     });
 });
-app.get("/produtos_carrinho/:id", (req, res) => {
-    const id = req.params.id;
-    db.get("SELECT * FROM produtos WHERE id = ? ", [id], (err, row) => {
-        if (err) {
-            res.status(500).json({ error: "Erro no servidor." });
-        } else if (!row) {
-            res.status(404).json({ error: "Produto não encontrado.." });
-        } else {
-            res.json(row);
-        }
-    });
-});
 
-// ROTA PARA BUSCAR TODOS OS PRODUTOS PÁGINA DE VENDAS
-app.get("/buscar-produtos", (req, res) => {
-    db.all(
-        "SELECT prod_nome, prod_codigo, prod_quantidade_estoque FROM produto",
-        [],
-        (err, rows) => {
+///////////////////////////// Rotas para Buscar Produto /////////////////////////////
+
+app.get("/produtos_carrinho/:prod_codigo", (req, res) => {
+    const codigo = req.params.prod_codigo;
+    db.get(
+        "SELECT * FROM produto WHERE prod_codigo = ? ",
+        [codigo],
+        (err, row) => {
             if (err) {
-                console.error("Erro ao buscar produtos:", err);
-                res.status(500).send("Erro ao buscar produtos");
+                res.status(500).json({ error: "Erro no servidor." });
+            } else if (!row) {
+                res.status(404).json({ error: "Produto não encontrado.." });
             } else {
-                res.json(rows); // Retorna os serviços em formato JSON
+                res.json(row);
             }
         },
     );
 });
 
-
-    ///////////////////////////// FIM /////////////////////////////
-    ///////////////////////////// FIM /////////////////////////////
-    ///////////////////////////// FIM /////////////////////////////
-
-    // Teste para verificar se o servidor está rodando
-    app.get('/', (req, res) => {
-        res.send('Servidor está rodando e tabelas criadas!');
+// ROTA PARA BUSCAR TODOS OS PRODUTOS PÁGINA DE VENDAS
+app.get("/buscar-produtos", (req, res) => {
+    db.all("SELECT * FROM produto", [], (err, rows) => {
+        if (err) {
+            console.error("Erro ao buscar produtos:", err);
+            res.status(500).send("Erro ao buscar produto1");
+        } else {
+            res.json(rows); // Retorna os serviços em formato JSON
+        }
     });
+});
 
-    // Iniciando o servidor
-    app.listen(port, () => {
-        console.log(`Servidor rodando na porta ${port}`);
-    });
+///////////////////////////// FIM /////////////////////////////
+///////////////////////////// FIM /////////////////////////////
+///////////////////////////// FIM /////////////////////////////
+
+// Teste para verificar se o servidor está rodando
+app.get("/", (req, res) => {
+    res.send("Servidor está rodando e tabelas criadas!");
+});
+
+// Iniciando o servidor
+app.listen(port, () => {
+    console.log(`Servidor rodando na porta ${port}`);
+});
