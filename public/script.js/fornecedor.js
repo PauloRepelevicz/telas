@@ -27,7 +27,7 @@ async function cadastrarForn(event) {
       const result = await response.json();
       if (response.ok) {
           alert("Fornecedor cadastrado com sucesso!");
-          document.getElementById("FornecedorForm").reset();
+          document.getElementById("FornecedorpForm").reset();
       } else {
           alert(`Erro: ${result.message}`);
       }
@@ -162,4 +162,3 @@ function formatarTelefone(tel) {
 document.getElementById("telefoneforn").addEventListener("input", (e) => {
   e.target.value = formatarTelefone(e.target.value);
 });
-
