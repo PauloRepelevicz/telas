@@ -48,10 +48,7 @@
                 />
               </div>
               <div class="center-actions">
-                <button
-                  type="button"
-                  onclick="buscarCliente()"
-                  class="btn-submit"
+                <button type="button" onclick="buscarCliente()" class="btn-submit"
                 >
                   Buscar Cliente
                 </button>
@@ -72,7 +69,7 @@
 
             <div class="form-group">
               <label for="dataNasc">Data:</label>
-              <input type="date" id="dataVen" name="dataVenda" required />
+              <input type="date" id="dataVen" name="dataVen" required />
             </div>
 
             <div class="form-group">
@@ -124,6 +121,27 @@
               </tbody>
             </table>
           </table>
+
+          <div id="total-venda" data-total="0">Total: R$ 0,00</div>
+
+          <h2>Consultar Histórico</h2> 
+          <button type="button" onclick="listarHistorico()" class="btn-submit">Listar Histórico</button>
+          <table border="1" class="table-clientes">
+          <thead>
+              <tr>
+                  <th>Código Produto</th>
+                  <th>CPF Cliente</th>
+                  <th>Data/Hora</th>
+                  <th>Quantidade</th>
+                  <th>Preço Unitário</th>
+                  <th>Total</th>
+              </tr>
+          </thead>
+          <tbody id="table-clientes">
+              <!-- Linhas serão preenchidas pelo JavaScript -->
+          </tbody>
+          </table>
+          
         </section>
       </main>
     </div>
@@ -138,7 +156,8 @@
         <a href="#">Política de Privacidade</a>
       </p>
     </footer>
-
+    
+    <script src="../../index.js"></script>
     <script src="../script.js/vendas.js"></script>
   </body>
 </html>
