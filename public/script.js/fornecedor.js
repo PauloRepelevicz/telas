@@ -33,7 +33,7 @@ async function cadastrarForn(event) {
       }
   } catch (err) {
       console.error("Erro na solicitação:", err);
-      alert("Erro ao cadastrar fornecedor.fornecedor.js");
+      //alert("Erro ao cadastrar fornecedor.fornecedor.js");
   }
 }
 
