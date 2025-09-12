@@ -1,3 +1,7 @@
+//listar historico
+//listar clientes
+//tabela cargo
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
@@ -49,7 +53,6 @@ db.serialize(() => {
          func_email VARCHAR(100),
          func_datanascimento DATE,
          func_genero VARCHAR(2),
-         func_cargo	VARCHAR(30),
          func_logradouro TEXT,
          func_numero INTEGER,
          func_bairro TEXT,
@@ -105,16 +108,24 @@ db.serialize(() => {
     CREATE TABLE IF NOT EXISTS vendas(
         ven_id INTEGER PRIMARY KEY AUTOINCREMENT,
         ven_data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
-        cli_cpf INTEGER,
+        cli_cpf VARCHAR(14) NOT NULL,
         prod_codigo INTEGER,
-        prod_quantidade_estoque INTEGER,
+        ven_quantidade INTEGER,
+        ven_preco_unitario REAL,
         ven_total REAL NOT NULL,
-        ven_forma_pagamento TEXT,
+        ven_forma_pagamento TEXT, 
         ven_status TEXT DEFAULT 'finalizada',
         FOREIGN KEY (cli_cpf) REFERENCES clientes(cli_cpf),
-        FOREIGN KEY (prod_codigo) REFERENCES produto(prod_codigo),
-        FOREIGN KEY (prod_quantidade_estoque) REFERENCES produto(prod_quantidade_estoque)
+        FOREIGN KEY (prod_codigo) REFERENCES produto(prod_codigo)
         )
+    `);
+    db.run(`
+    CREATE TABLE IF NOT EXISTS cargo{
+        car_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        car_nome VARCHAR(50) NOT NULL UNIQUE,
+        car_descricao TEXT,
+        car_codigo INTEGER UNIQUE
+    }
     `);
 
     console.log("Tabelas criadas com sucesso.");
@@ -629,7 +640,8 @@ app.get("/produto", (req, res) => {
         });
     } else {
         // Se ID não foi passado, retorna todos os produtos
-        const query = `SELECT
+        const query = `
+                            SELECT
                             produto.prod_id,
                             produto.prod_nome,
                             produto.prod_codigo,
@@ -639,7 +651,8 @@ app.get("/produto", (req, res) => {
                             fornecedor.forn_nome AS forn_nome
                             FROM produto
                             JOIN fornecedor ON produto.forn_id = fornecedor.forn_id
-                            WHERE 1=1`;
+                            WHERE 1=1
+                        `;
 
         db.all(query, (err, rows) => {
             if (err) {
@@ -707,52 +720,105 @@ app.post("/vendas", (req, res) => {
     }
 
     const dataVenda = new Date().toISOString();
+    let errors = [];
+    let processed = 0;
 
-    db.serialize(() => {
-        const insertSaleQuery = `INSERT INTO vendas (cli_cpf, prod_id, prod_quantidade_estoque, ven_data_hora) VALUES (?, ?, ?, ?)`;
-        const updateStockQuery = `UPDATE produto SET prod_quantidade_estoque = prod_quantidade_estoque - ? WHERE ven_id = ?`;
+    itens.forEach((item) => {
+        const codigoProduto = item.idProduto;
+        const quantidade = item.quantidade;
 
-        let erroOcorrido = false;
-
-        itens.forEach(({ idProduto, quantidade }) => {
-            if (!idProduto || !quantidade || quantidade <= 0) {
-                console.error(
-                    `Dados inválidos para o produto ID: ${idProduto}, quantidade: ${quantidade}`,
-                );
-                erroOcorrido = true;
-                return;
-            }
-
-            // Registrar a venda
-            db.run(
-                insertSaleQuery,
-                [cliente_cpf, idProduto, quantidade, produtosSelecionados],
-                function (err) {
-                    if (err) {
-                        console.error("Erro ao registrar venda:", err.message);
-                        erroOcorrido = true;
-                    }
-                },
-            );
-
-            // Atualizar o estoque
-            db.run(updateStockQuery, [quantidade, idProduto], function (err) {
-                if (err) {
-                    console.error("Erro ao atualizar estoque:", err.message);
-                    erroOcorrido = true;
-                }
-            });
-        });
-
-        if (erroOcorrido) {
-            res.status(500).send("Erro ao processar a venda.");
-        } else {
-            res.status(201).send({ message: "Venda registrada com sucesso." });
+        if (!codigoProduto || !quantidade) {
+            errors.push("Item inválido");
+            processed++;
+            checkFinished();
+            return;
         }
+
+        db.get(
+            `SELECT prod_preco_venda, prod_quantidade_estoque FROM produto WHERE prod_codigo = ?`,
+            [codigoProduto],
+            (err, produto) => {
+                if (err) {
+                    errors.push(`Erro no banco: ${err.message}`);
+                    processed++;
+                    checkFinished();
+                    return;
+                }
+
+                if (!produto) {
+                    errors.push(`Produto ${codigoProduto} não existe`);
+                    processed++;
+                    checkFinished();
+                    return;
+                }
+
+                if (produto.prod_quantidade_estoque < quantidade) {
+                    errors.push(
+                        `Estoque insuficiente para produto ${codigoProduto}`,
+                    );
+                    processed++;
+                    checkFinished();
+                    return;
+                }
+
+                const precoUnitario = produto.prod_preco_venda;
+                const subtotal = precoUnitario * quantidade;
+
+                // INSERIR VENDA
+                db.run(
+                    `INSERT INTO vendas (cli_cpf, prod_codigo, ven_quantidade, ven_preco_unitario, ven_total, ven_data_hora) 
+                       VALUES (?, ?, ?, ?, ?, ?)`,
+                    [
+                        cliente_cpf,
+                        codigoProduto,
+                        quantidade,
+                        precoUnitario,
+                        subtotal,
+                        dataVenda,
+                    ],
+                    function (err) {
+                        if (err) {
+                            errors.push(`Erro ao salvar venda: ${err.message}`);
+                            console.error("Erro INSERT:", err);
+                        }
+
+                        // ATUALIZAR ESTOQUE
+                        db.run(
+                            `UPDATE produto SET prod_quantidade_estoque = prod_quantidade_estoque - ? WHERE prod_codigo = ?`,
+                            [quantidade, codigoProduto],
+                            function (err) {
+                                if (err) {
+                                    errors.push(
+                                        `Erro ao atualizar estoque: ${err.message}`,
+                                    );
+                                    console.error("Erro UPDATE:", err);
+                                }
+                                processed++;
+                                checkFinished();
+                            },
+                        );
+                    },
+                );
+            },
+        );
     });
+
+    function checkFinished() {
+        if (processed === itens.length) {
+            if (errors.length > 0) {
+                console.error("❌ Erros:", errors);
+                res.status(500).send(errors.join(", "));
+            } else {
+                console.log("✅ Venda registrada com sucesso");
+                res.status(201).send({
+                    message: "Venda registrada com sucesso.",
+                });
+            }
+        }
+    }
 });
 
-/////////////////////////////// Rotas para Buscar Cliente /////////////////////////////
+// /////////////////////////////// Rotas para Buscar Cliente /////////////////////////////
 
 app.get("/clientes/:cli_cpf", (req, res) => {
     const cpf = req.params.cli_cpf;
@@ -797,6 +863,73 @@ app.get("/buscar-produtos", (req, res) => {
         }
     });
 });
+
+// ///////////////////////////// Rotas para Historico /////////////////////////////
+// // Endpoint para listar todo historico
+app.get("/historico", (req, res) => {
+    const codprodigo = req.query.codprodigo || ""; // Recebe o CPF da query string (se houver)
+    if (codprodigo) {
+        // Se o código foi passado, busca clientes que possuam esse CPF ou parte dele
+        const query = `SELECT * FROM vendas WHERE prod_codigo LIKE ?`;
+
+        db.all(query, [`%${codprodigo}%`], (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res
+                    .status(500)
+                    .json({ message: "Erro ao buscar histórico." });
+            }
+            res.json(rows); // Retorna as vendas encontradas ou um array vazio
+        });
+    } else {
+        // Se CPF não foi passado, retorna todos as vendas
+        const query = `SELECT 
+                        * 
+                        FROM 
+                        vendas`;
+
+        db.all(query, (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res
+                    .status(500)
+                    .json({ message: "Erro ao buscar últimas vendas." });
+            }
+            res.json(rows); // Retorna todos as vendas
+        });
+    }
+});
+
+// app.get("/funcionario", (req, res) => {
+//     const cpf = req.query.cpf || ""; // Recebe o CPF da query string (se houver)
+//     if (cpf) {
+//         // Se CPF foi passado, busca funcionários que possuam esse CPF ou parte dele
+//         const query = `SELECT * FROM funcionario WHERE func_cpf LIKE ?`;
+
+//         db.all(query, [`%${cpf}%`], (err, rows) => {
+//             if (err) {
+//                 console.error(err);
+//                 return res
+//                     .status(500)
+//                     .json({ message: "Erro ao buscar funcionários." });
+//             }
+//             res.json(rows); // Retorna os funcionários encontrados ou um array vazio
+//         });
+//     } else {
+//         // Se CPF não foi passado, retorna todos os funcionários
+//         const query = `SELECT * FROM funcionario`;
+
+//         db.all(query, (err, rows) => {
+//             if (err) {
+//                 console.error(err);
+//                 return res
+//                     .status(500)
+//                     .json({ message: "Erro ao buscar funcionarios." });
+//             }
+//             res.json(rows); // Retorna todos os funcionários
+//         });
+//     }
+// });
 
 ///////////////////////////// FIM /////////////////////////////
 ///////////////////////////// FIM /////////////////////////////
