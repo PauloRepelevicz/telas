@@ -1,7 +1,5 @@
 // Função para buscar cliente pelo CPF
 function buscarCliente() {
-  console.log("oxi");
-  alert("alguém me ajuda");
   const cpf = document.getElementById("cpfcliente").value;
   if (!cpf) {
     alert("Por favor, insira o CPF do cliente.");
@@ -29,7 +27,6 @@ function buscarCliente() {
 // Função para buscar produto e adicioná-lo ao carrinho
 function adicionarProdutoAoCarrinho() {
   const id = document.getElementById("produtosSelecionados").value;
-  alert(id);
   const quantidade = parseInt(
     document.getElementById("produtoQuantidade").value,
   );
@@ -49,6 +46,7 @@ function adicionarProdutoAoCarrinho() {
       return response.json();
     })
     .then((produto) => {
+      console.log("Produto retornado:", produto); // ← VERIFIQUE A ESTRUTURA AQUI
       adicionarProdutoNaTabela(produto, quantidade);
     })
     .catch((error) => {
@@ -86,21 +84,22 @@ function removerProduto(botao, subtotal) {
 }
 
 // Função para atualizar o total da venda
-// function atualizarTotalVenda(valor) {
-//   const totalVendaElement = document.getElementById("total-venda");
-//   const valorAtual = parseFloat(totalVendaElement.getAttribute("data-total")) || 0;
-//   const novoTotal = valorAtual + valor;
+function atualizarTotalVenda(valor) {
+  const totalVendaElement = document.getElementById("total-venda");
 
-//   totalVendaElement.setAttribute("data-total", novoTotal);
-//   totalVendaElement.textContent = `Total: R$ ${novoTotal.toFixed(2)}`;
-// }
+  const valorAtual =
+    parseFloat(totalVendaElement.getAttribute("data-total")) || 0;
+  const novoTotal = valorAtual + valor;
+
+  totalVendaElement.setAttribute("data-total", novoTotal);
+  totalVendaElement.textContent = `Total: R$ ${novoTotal.toFixed(2)}`;
+}
 
 //Função para finalizar a venda
 function finalizarVenda() {
   const cpfCliente = document.getElementById("cpfcliente").value;
   const carrinhoRows = document.querySelectorAll("#carrinho tr");
-  //const totalVenda = parseFloat(document.getElementById("total-venda").getAttribute("dataVen"));
-  alert("declarou a variavel");
+  //const totalVenda = parseFloat(document.getElementById("total-venda").getAttribute("data-total"),);
   if (!cpfCliente) {
     alert("Por favor, insira o CPF do cliente.");
     return;
@@ -113,13 +112,16 @@ function finalizarVenda() {
 
   const itens = [];
   carrinhoRows.forEach((row) => {
-    const idProduto = row.getAttribute("produtosSelecionados");
+    const idProduto = row.getAttribute("dataVenda");
+    //console.log(idProduto);
     const quantidade = parseInt(row.children[2].textContent); // Quantidade está na 3ª coluna
+
     if (!idProduto || isNaN(quantidade) || quantidade <= 0) {
       console.error("Produto ou quantidade inválidos:", idProduto, quantidade);
       return;
     }
     itens.push({ idProduto, quantidade });
+    // alert(itens.quantidade );
   });
 
   const venda = {
@@ -134,7 +136,9 @@ function finalizarVenda() {
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error("Erro ao finalizar a venda. Verifique os dados.");
+        throw new Error(
+          "Erro ao finalizar a venda. Verifique os dados.111111111",
+        );
       }
       return response.json();
     })
@@ -179,47 +183,84 @@ function buscarProdutos() {
     });
 }
 
-// Função para buscar o relatório com filtros
-function buscarRelatorio() {
-  const cpf = document.getElementById("cpf").value;
-  const produto = document.getElementById("produto").value;
-  const dataInicio = document.getElementById("dataInicio").value;
-  const dataFim = document.getElementById("dataFim").value;
+// // Função para buscar o relatório com filtros
+// function buscarRelatorio() {
+//   const cpf = document.getElementById("cpf").value;
+//   const produto = document.getElementById("produto").value;
+//   const dataInicio = document.getElementById("dataInicio").value;
+//   const dataFim = document.getElementById("dataFim").value;
 
-  // Construir a URL com os parâmetros de filtro
-  let url = `/relatorios?`;
-  if (cpf) url += `cpf=${cpf}&`;
-  if (produto) url += `produto=${produto}&`;
-  if (dataInicio) url += `dataInicio=${dataInicio}&`;
-  if (dataFim) url += `dataFim=${dataFim}&`;
+//   // Construir a URL com os parâmetros de filtro
+//   let url = `/relatorios?`;
+//   if (cpf) url += `cpf=${cpf}&`;
+//   if (produto) url += `produto=${produto}&`;
+//   if (dataInicio) url += `dataInicio=${dataInicio}&`;
+//   if (dataFim) url += `dataFim=${dataFim}&`;
 
-  // Remover o último "&" se presente
-  url = url.slice(0, -1);
+//   // Remover o último "&" se presente
+//   url = url.slice(0, -1);
 
-  // Fazer a requisição para o servidor
-  fetch(url)
-    .then((response) => response.json())
-    .then((data) => {
-      // Limpar a tabela
-      const tabelaVendas = document.getElementById("tabela-vendas");
-      tabelaVendas.innerHTML = "";
+//   // Fazer a requisição para o servidor
+//   fetch(url)
+//     .then((response) => response.json())
+//     .then((data) => {
+//       // Limpar a tabela
+//       const tabelaVendas = document.getElementById("tabela-vendas");
+//       tabelaVendas.innerHTML = "";
 
-      // Preencher a tabela com os dados
-      data.forEach((vendas) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-                  <td>${produto.prod_codigo}</td>
-                  <td>${produto.prod_nome}</td>
-                  <td>${vendas.prod_nome}</td>
-                  <td>${vendas.prod_quantidade_estoque}</td>
-                  <td>${new Date(vendas.data).toLocaleString()}</td>f
-              `;
-        tabelaVendas.appendChild(tr);
+//       // Preencher a tabela com os dados
+//       data.forEach((vendas) => {
+//         const tr = document.createElement("tr");
+//         tr.innerHTML = `
+//                   <td>${produto.prod_codigo}</td>
+//                   <td>${produto.prod_nome}</td>
+//                   <td>${vendas.prod_nome}</td>
+//                   <td>${vendas.prod_quantidade_estoque}</td>
+//                   <td>${new Date(vendas.data).toLocaleString()}</td>f
+//               `;
+//         tabelaVendas.appendChild(tr);
+//       });
+//     })
+//     .catch((error) => {
+//       console.error("Erro ao buscar relatórios:", error);
+//     });
+// }
+
+async function listarHistorico() {
+  const codprodigo = document
+    .getElementById("produtosSelecionados")
+    .value.trim();
+  let url = "/historico";
+
+  if (codprodigo) url += `?codprodigo=${codprodigo}`;
+
+  try {
+    const response = await fetch(url);
+    const venda = await response.json();
+
+    const tabela = document.getElementById("table-clientes");
+    tabela.innerHTML = "";
+
+    if (venda.length === 0) {
+      tabela.innerHTML =
+        '<tr><td colspan="6">Nenhuma venda encontrada.</td></tr>';
+    } else {
+      venda.forEach((vendas) => {
+        const linha = document.createElement("tr");
+        linha.innerHTML = `
+                    <td>${vendas.prod_codigo}</td>
+                    <td>${vendas.cli_cpf}</td>
+                    <td>${vendas.ven_data_hora}</td>
+                    <td>${vendas.ven_quantidade}</td>
+                    <td>${vendas.ven_preco_unitario}</td>
+                    <td>${vendas.ven_total}</td>
+                `;
+        tabela.appendChild(linha);
       });
-    })
-    .catch((error) => {
-      console.error("Erro ao buscar relatórios:", error);
-    });
+    }
+  } catch (error) {
+    console.error("Erro ao listar vendas", error);
+  }
 }
 
 // ----------------- FORMATAÇÕES ----------------- //
