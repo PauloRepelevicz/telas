@@ -16,53 +16,6 @@ async function cadastrarCliente(event) {
         complemento: document.getElementById("complemento").value,
         observacoes: document.getElementById("observacoes").value,
     };
-    alert("T dando certo");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("Esperaaa");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("QUASEEEEE");
-    alert("FOII");
     try {
         const response = await fetch("/clientes", {
             method: "POST",
@@ -89,7 +42,6 @@ async function cadastrarCliente(event) {
 async function listarClientes() {
     const cpf = document.getElementById("cpf").value.trim();
     let url = "/clientes";
-
     if (cpf) url += `?cpf=${cpf}`;
 
     try {
@@ -103,15 +55,15 @@ async function listarClientes() {
             tabela.innerHTML =
                 '<tr><td colspan="6">Nenhum cliente encontrado.</td></tr>';
         } else {
-            clientes.forEach((cliente) => {
+            clientes.forEach((clientes) => {
                 const linha = document.createElement("tr");
                 linha.innerHTML = `
-                    <td>${cliente.cli_id}</td>
-                    <td>${cliente.cli_nome}</td>
-                    <td>${formatarCPF(cliente.cli_cpf)}</td>
-                    <td>${cliente.cli_email}</td>
-                    <td>${formatarTelefone(cliente.cli_telefone || "")}</td>
-                    <td>${formatarCEP(cliente.cli_cep || "")}</td>
+                    <td>${clientes.cli_id}</td>
+                    <td>${clientes.cli_nome}</td>
+                    <td>${formatarCPF(clientes.cli_cpf)}</td>
+                    <td>${clientes.cli_email}</td>
+                    <td>${formatarTelefone(clientes.cli_telefone || "")}</td>
+                    <td>${formatarCEP(clientes.cli_cep || "")}</td>
                 `;
                 tabela.appendChild(linha);
             });
