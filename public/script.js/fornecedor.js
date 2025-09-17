@@ -1,6 +1,5 @@
 async function cadastrarForn(event) {
   event.preventDefault();
-
   const fornecedor = {
       nome: document.getElementById("nomeforn").value,
       cnpj: document.getElementById("cnpjforn").value,
@@ -23,11 +22,10 @@ async function cadastrarForn(event) {
           },
           body: JSON.stringify(fornecedor),
       });
-
       const result = await response.json();
       if (response.ok) {
           alert("Fornecedor cadastrado com sucesso!");
-          document.getElementById("FornecedorpForm").reset();
+          document.getElementById("FornecedorForm").reset();
       } else {
           alert(`Erro: ${result.message}`);
       }
