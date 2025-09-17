@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="../css/style.css">
   <link rel="shortcut icon" type="image/jp" href="../imagens/UI.png"/>
 </head>
-<body>
+<body onload = "buscarCargos()">
   <header>
     <h1>Sistema de Mercado Maguila</h1>
     <img src="../imagens/UI.png" alt="Logo Maguila">
@@ -23,6 +23,7 @@
         <li class=links>Cadastro de Funcionário</li></a>
         <a href="cliente.html"class=links><li >Cadastro de Cliente</li></a>     
         <a href="fornecedor.html"class="links"><li>Cadastro de Fornecedor</li></a>
+        <a href="cargo.html" class="links"><li>Cadastro de Cargo</li></a>
         <a href="vendas.html" class="links"><li>Vendas</li></a>
 
 
@@ -47,14 +48,9 @@
             <input type="date" id="dataNascfunc" name="dataNasc" required>
           </div>
           <div class="form-group">
-              <label for="cargofunc">Cargo <span class="required">*</span></label>
+              <label for="cargo-func">Cargo:</label>
               <select id="cargofunc" name="cargo" required>
                   <option value="">Selecione...</option>
-                  <option value="gerente">Gerente</option>
-                  <option value="atendente">Atendente</option>
-                  <option value="estoquista">Estoquista</option>
-                  <option value="caixa">Caixa</option>
-                  <option value="outros">Outros</option>
               </select>
           </div>
           <div class="form-group">
