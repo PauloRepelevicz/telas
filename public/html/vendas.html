@@ -26,6 +26,7 @@
           <a href="fornecedor.html" class="links"
             ><li>Cadastro de Fornecedor</li></a
           >
+          <a href="cargo.html" class="links"><li>Cadastro de Cargo</li></a>
           <a href="vendas.html" class="links active"><li>Vendas</li></a>
         </ul>
       </nav>
@@ -123,8 +124,21 @@
           </table>
 
           <div id="total-venda" data-total="0">Total: R$ 0,00</div>
-
-          <h2>Consultar Histórico</h2> 
+          <h2>Consultar Histórico</h2>
+          
+          <div class="center-container">
+            <form id="clienteForm">
+              <div class="center-form-group">
+                <label for="codi-prod">Cógido do Produto:</label>
+                <input
+                  type="text"
+                  id="codiprodi"
+                  name="codigo produto"
+                  placeholder="Digite o código do produto"
+                  maxlength="14"
+                  required
+                />
+              </div>
           <button type="button" onclick="listarHistorico()" class="btn-submit">Listar Histórico</button>
           <table border="1" class="table-clientes">
           <thead>
