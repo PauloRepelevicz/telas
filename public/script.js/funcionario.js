@@ -30,7 +30,7 @@ async function cadastrarFunc(event) {
 
         const result = await response.json();
         if (response.ok) {
-            alert("Funcionário cadastrado com sucesso!");
+            alert("Funcionário cadastrado com sucesso!");  78 
             document.getElementById("funcForm").reset();
         } else {
             alert(`Erro: ${result.message}`);
@@ -74,7 +74,7 @@ async function cadastrarFunc(event) {
                      <td>${funcionario.func_email}</td>
                      <td>${funcionario.func_telefone}</td>
                      <td>${funcionario.func_logradouro}</td>
-                     <td>${funcionario.func_cargo}</td>
+                     <td>${funcionario.car_nome}</td>
 
                  `;
                  tabela.appendChild(linha);
@@ -84,6 +84,31 @@ async function cadastrarFunc(event) {
          console.error('Erro ao listar funcionários:', error);
      }
  }
+
+///////////////////////////// BUSCAR CARGOS /////////////////////////////
+
+function buscarCargos() {
+    fetch("/buscar-cargos")
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Erro ao buscar cargos");
+            }
+            return response.json();
+        })
+        .then((servicos) => {
+            const select = document.getElementById("cargofunc");
+            servicos.forEach((funcionario) => {
+                const option = document.createElement("option");
+                option.value = funcionario.car_id; // Usa o id como valor
+                option.textContent = funcionario.car_nome; // Nome do serviço exibido
+                select.appendChild(option);
+            });
+        })
+        .catch((error) => {
+            console.error("Erro ao carregar os cargos:", error);
+        });
+}
+
 
 async function atualizarFuncionario() {
 
@@ -136,8 +161,9 @@ async function limpaFunc() {
     document.getElementById('endereco').value = '';
 }
 
-
-// ----------------- FORMATAÇÕES -----------------
+/////////////////////--FORMATAÇÕES--/////////////////////
+/////////////////////--FORMATAÇÕES--/////////////////////
+/////////////////////--FORMATAÇÕES--////////////////////
 
 // CPF
 function formatarCPF(cpfunc) {
