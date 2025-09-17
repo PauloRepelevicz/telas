@@ -1,7 +1,3 @@
-//listar historico
-//listar clientes
-//tabela cargo
-
 const express = require("express");
 const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
@@ -60,8 +56,11 @@ db.serialize(() => {
          func_estado TEXT,
          func_cep VARCHAR(10),
          func_complemento TEXT,
-         func_observacoes TEXT
-         )
+         func_observacoes TEXT,
+         car_id INTEGER,
+         car_nome VARCHAR(50),   
+         FOREIGN KEY (car_id) REFERENCES cargo(car_id)
+        )
     `);
     db.run(`
     CREATE TABLE IF NOT EXISTS categoria(
@@ -120,12 +119,14 @@ db.serialize(() => {
         )
     `);
     db.run(`
-    CREATE TABLE IF NOT EXISTS cargo{
+    CREATE TABLE IF NOT EXISTS cargo(
         car_id INTEGER PRIMARY KEY AUTOINCREMENT,
         car_nome VARCHAR(50) NOT NULL UNIQUE,
+        car_salario REAL,
         car_descricao TEXT,
+        car_observacoes TEXT,
         car_codigo INTEGER UNIQUE
-    }
+    )
     `);
 
     console.log("Tabelas criadas com sucesso.");
@@ -281,7 +282,6 @@ app.post("/funcionario", (req, res) => {
         nome,
         cpf,
         telefone,
-        cargo,
         email,
         data_nascimento,
         genero,
@@ -293,13 +293,14 @@ app.post("/funcionario", (req, res) => {
         cep,
         complemento,
         observacoes,
+        cargo,
     } = req.body;
 
     if (!nome || !cpf) {
         return res.status(400).send("Nome e CPF são obrigatórios.");
     }
 
-    const query = `INSERT INTO funcionario (func_nome, func_cpf, func_telefone, func_email, func_datanascimento, func_genero, func_cargo, func_logradouro, func_numero, func_bairro, func_cidade, func_estado, func_cep, func_complemento, func_observacoes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO funcionario (func_nome, func_cpf, func_telefone, func_email, func_datanascimento, func_genero,  func_logradouro, func_numero, func_bairro, func_cidade, func_estado, func_cep, func_complemento, func_observacoes, car_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     db.run(
         query,
@@ -310,7 +311,6 @@ app.post("/funcionario", (req, res) => {
             email,
             data_nascimento,
             genero,
-            cargo,
             logradouro,
             numero,
             bairro,
@@ -319,6 +319,7 @@ app.post("/funcionario", (req, res) => {
             cep,
             complemento,
             observacoes,
+            cargo,
         ],
 
         function (err) {
@@ -339,7 +340,17 @@ app.get("/funcionario", (req, res) => {
     const cpf = req.query.cpf || ""; // Recebe o CPF da query string (se houver)
     if (cpf) {
         // Se CPF foi passado, busca funcionários que possuam esse CPF ou parte dele
-        const query = `SELECT * FROM funcionario WHERE func_cpf LIKE ?`;
+        const query = `SELECT  
+                            funcionario.func_id,
+                            funcionario.func_nome,
+                            funcionario.func_cpf,
+                            funcionario.func_email,
+                            funcionario.func_telefone,
+                            funcionario.func_logradouro,
+                            cargo.car_nome AS car_nome
+                            FROM funcionario
+                            JOIN cargo ON funcionario.car_id = cargo.car_id
+                            WHERE 1=1`;
 
         db.all(query, [`%${cpf}%`], (err, rows) => {
             if (err) {
@@ -350,6 +361,7 @@ app.get("/funcionario", (req, res) => {
             }
             res.json(rows); // Retorna os funcionários encontrados ou um array vazio
         });
+        alert("SUJOU MEU PAU FOI DE COCOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
     } else {
         // Se CPF não foi passado, retorna todos os funcionários
         const query = `SELECT * FROM funcionario`;
@@ -374,7 +386,6 @@ app.put("/funcionario/cpf/:cpf", (req, res) => {
         telefone,
         email,
         data_nascimento,
-        cargo,
         logradouro,
         numero,
         bairro,
@@ -383,9 +394,10 @@ app.put("/funcionario/cpf/:cpf", (req, res) => {
         cep,
         complemento,
         observacoes,
+        cargo,
     } = req.body;
 
-    const query = `UPDATE funcionario SET func_nome = ?, func_telefone = ?, func_email = ?, func_datanascimento = ?, func_cargo = ?, func_logradouro = ?, func_numero = ?, func_bairro = ?, func_cidade = ?, func_estado = ?, func_cep = ?, func_complemento = ?, func_observacoes = ? WHERE func_cpf = ?`;
+    const query = `UPDATE funcionario SET func_nome = ?, func_telefone = ?, func_email = ?, func_datanascimento = ?, func_logradouro = ?, func_numero = ?, func_bairro = ?, func_cidade = ?, func_estado = ?, func_cep = ?, func_complemento = ?, func_observacoes = ?, func_cargo = ? WHERE func_cpf = ?`;
     db.run(
         query,
         [
@@ -393,7 +405,6 @@ app.put("/funcionario/cpf/:cpf", (req, res) => {
             telefone,
             email,
             data_nascimento,
-            cargo,
             logradouro,
             numero,
             bairro,
@@ -402,6 +413,7 @@ app.put("/funcionario/cpf/:cpf", (req, res) => {
             cep,
             complemento,
             observacoes,
+            cargo,
             cpf,
         ],
         function (err) {
@@ -421,7 +433,6 @@ app.put("/funcionario/cpf/:cpf", (req, res) => {
 ///////////////////////////// Rotas para Fornecedores /////////////////////////////
 ///////////////////////////// Rotas para Fornecedores /////////////////////////////
 ///////////////////////////// Rotas para Fornecedores /////////////////////////////
-
 // Cadastrar fornecedor
 app.post("/fornecedor", (req, res) => {
     console.log("Recebendo requisição de cadastro de Fornecedor");
@@ -555,6 +566,87 @@ app.put("/fornecedor/cnpj/:cnpj", (req, res) => {
             res.send("fornecedor atualizado com sucesso.");
         },
     );
+});
+
+///////////////////////////// Rotas para Cargo /////////////////////////////
+///////////////////////////// Rotas para Cargo /////////////////////////////
+///////////////////////////// Rotas para Cargo /////////////////////////////
+
+// Cadastrar Cargo
+app.post("/cargo", (req, res) => {
+    console.log("Recebendo requisição de cadastro de Cargo");
+    const { nome, salario, descricao, observacoes } = req.body;
+
+    if (!nome || !salario) {
+        return res.status(400).send("Nome e Salário são obrigatórios.");
+    }
+
+    const query = `INSERT INTO cargo (car_nome, car_salario, car_descricao, car_observacoes) VALUES (?, ?, ?, ?)`;
+
+    db.run(
+        query,
+        [nome, salario, descricao, observacoes],
+
+        function (err) {
+            if (err) {
+                return res.status(500).send("Erro ao cadastrar Cargo.");
+            }
+            res.status(201).send({
+                id: this.lastID,
+                message: "Cargo cadastrado com sucesso.",
+            });
+        },
+    );
+});
+
+// Listar CARGO
+// Endpoint para listar todos os cargo ou buscar por NOME
+app.get("/cargo", (req, res) => {
+    const nome = req.query.nome || ""; // Recebe o nome da query string (se houver)
+    if (nome) {
+        // Se NOME foi passado, busca CARGOS que possuam esse NOME
+        const query = `SELECT * FROM cargo WHERE car_nome LIKE ?`;
+
+        db.all(query, [`%${nome}%`], (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res
+                    .status(500)
+                    .json({ message: "Erro ao buscar fornecedores." });
+            }
+            res.json(rows); // Retorna os CARGO encontrados ou um array vazio
+        });
+    } else {
+        // Se NOME não foi passado, retorna todos os cargos
+        const query = `SELECT * FROM cargo`;
+
+        db.all(query, (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res
+                    .status(500)
+                    .json({ message: "Erro ao buscar cargos." });
+            }
+            res.json(rows); // Retorna todos os cargos
+        });
+    }
+});
+
+// Atualizar cargos
+app.put("/cargo/nome/:nome", (req, res) => {
+    const { nome } = req.params;
+    const { salario, descricao, observacoes } = req.body;
+
+    const query = `UPDATE cargo SET car_salario = ?, car_descricao = ?, car_observacoes = ? WHERE car_nome = ?`;
+    db.run(query, [salario, descricao, observacoes, nome], function (err) {
+        if (err) {
+            return res.status(500).send("ERRO ao atualizar cargo.666666");
+        }
+        if (this.changes === 0) {
+            return res.status(404).send("CARGO não encontrado.");
+        }
+        res.send("CARGO atualizado com sucesso.");
+    });
 });
 
 ////////////////////////// Rotas para Produtos /////////////////////////////
@@ -867,9 +959,9 @@ app.get("/buscar-produtos", (req, res) => {
 // ///////////////////////////// Rotas para Historico /////////////////////////////
 // // Endpoint para listar todo historico
 app.get("/historico", (req, res) => {
-    const codprodigo = req.query.codprodigo || ""; // Recebe o CPF da query string (se houver)
+    const codprodigo = req.query.codprodigo || ""; // Recebe o Código do produto da query string (se houver)
     if (codprodigo) {
-        // Se o código foi passado, busca clientes que possuam esse CPF ou parte dele
+        // Se o código foi passado, busca produtos que possuam esse código ou parte dele
         const query = `SELECT * FROM vendas WHERE prod_codigo LIKE ?`;
 
         db.all(query, [`%${codprodigo}%`], (err, rows) => {
@@ -898,6 +990,18 @@ app.get("/historico", (req, res) => {
             res.json(rows); // Retorna todos as vendas
         });
     }
+});
+
+// ROTA PARA BUSCAR TODOS OS CARGOS PÁGINA DE FUNCIONARIO
+app.get("/buscar-cargos", (req, res) => {
+    db.all("SELECT * FROM cargo", [], (err, rows) => {
+        if (err) {
+            console.error("Erro ao buscar cargos:", err);
+            res.status(500).send("Erro ao buscar cargo1");
+        } else {
+            res.json(rows); // Retorna os serviços em formato JSON
+        }
+    });
 });
 
 // app.get("/funcionario", (req, res) => {
