@@ -58,7 +58,6 @@ db.serialize(() => {
          func_complemento TEXT,
          func_observacoes TEXT,
          car_id INTEGER,
-         car_nome VARCHAR(50),   
          FOREIGN KEY (car_id) REFERENCES cargo(car_id)
         )
     `);
@@ -300,7 +299,7 @@ app.post("/funcionario", (req, res) => {
         return res.status(400).send("Nome e CPF são obrigatórios.");
     }
 
-    const query = `INSERT INTO funcionario (func_nome, func_cpf, func_telefone, func_email, func_datanascimento, func_genero,  func_logradouro, func_numero, func_bairro, func_cidade, func_estado, func_cep, func_complemento, func_observacoes, car_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO funcionario (func_nome, func_cpf, func_telefone, func_email, func_datanascimento, func_genero, func_logradouro, func_numero, func_bairro, func_cidade, func_estado, func_cep, func_complemento, func_observacoes, car_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     db.run(
         query,
@@ -350,7 +349,7 @@ app.get("/funcionario", (req, res) => {
                             cargo.car_nome AS car_nome
                             FROM funcionario
                             JOIN cargo ON funcionario.car_id = cargo.car_id
-                            WHERE 1=1`;
+                            WHERE func_cpf LIKE ?`;
 
         db.all(query, [`%${cpf}%`], (err, rows) => {
             if (err) {
@@ -364,7 +363,17 @@ app.get("/funcionario", (req, res) => {
         alert("SUJOU MEU PAU FOI DE COCOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
     } else {
         // Se CPF não foi passado, retorna todos os funcionários
-        const query = `SELECT * FROM funcionario`;
+        const query = `SELECT  
+                            funcionario.func_id,
+                            funcionario.func_nome,
+                            funcionario.func_cpf,
+                            funcionario.func_email,
+                            funcionario.func_telefone,
+                            funcionario.func_logradouro,
+                            cargo.car_nome AS car_nome
+                            FROM funcionario
+                            JOIN cargo ON funcionario.car_id = cargo.car_id
+                            `;
 
         db.all(query, (err, rows) => {
             if (err) {
@@ -397,7 +406,7 @@ app.put("/funcionario/cpf/:cpf", (req, res) => {
         cargo,
     } = req.body;
 
-    const query = `UPDATE funcionario SET func_nome = ?, func_telefone = ?, func_email = ?, func_datanascimento = ?, func_logradouro = ?, func_numero = ?, func_bairro = ?, func_cidade = ?, func_estado = ?, func_cep = ?, func_complemento = ?, func_observacoes = ?, func_cargo = ? WHERE func_cpf = ?`;
+    const query = `UPDATE funcionario SET func_nome = ?, func_telefone = ?, func_email = ?, func_datanascimento = ?, func_logradouro = ?, func_numero = ?, func_bairro = ?, func_cidade = ?, func_estado = ?, func_cep = ?, func_complemento = ?, func_observacoes = ?, car_id = ? WHERE func_cpf = ?`;
     db.run(
         query,
         [
