@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="../css/style.css">
   <link rel="shortcut icon" type="image/jp" href="../imagens/UI.png"/>
 </head>
-<body onload = "buscarCargos()">
+<body>
   <header>
     <h1>Sistema de Mercado Maguila</h1>
     <img src="../imagens/UI.png" alt="Logo Maguila">
@@ -19,93 +19,71 @@
       <h2>Menu</h2>
       <ul>
         <a href="../index.html"class="links"><li>Dashboard</li></a>
-        <a href="estoque.html" class=links><li>Estoque</li></a>
-        <li class=links>Cadastro de Funcionário</li></a>
-        <a href="cliente.html"class=links><li >Cadastro de Cliente</li></a>     
-        <a href="fornecedor.html"class="links"><li>Cadastro de Fornecedor</li></a>
+        <a href="estoque.html"class=links><li >Estoque</li></a>
+        <a href="funcionario.html"class=links><li>Cadastro de Funcionário</li></a>
+        <a href="cliente.html"class=links><li >Cadastro de Cliente</li</a>       
+        <li class=links>Cadastro de Fornecedor</li></a>
         <a href="cargo.html" class="links"><li>Cadastro de Cargo</li></a>
         <a href="vendas.html" class="links"><li>Vendas</li></a>
-
-
       </ul> 
     </nav>
     <main class="main">
       <section class="card">
-        <h2>Cadastro de Funcionário</h2>
-        <form id="funcForm">
+        <h2>Cadastro de Fornecedor</h2>
+        <form id="FornecedorForm">
           <div class="form-group">
-            <label for="nome">Nome Completo:</label>
-            <input type="text" id="nomefunc" name="nome" required>
+            <label for="nome">Nome Completo do Fornecedor:</label>
+            <input type="text" id="nomeforn" name="nome" required>
           </div>
 
           <div class="form-group">
-            <label for="cpf">CPF:</label>
-            <input type="text" id="cpfunc" name="cpf" placeholder="000.000.000-00" maxlength="14" required>
-          </div>
-
-          <div class="form-group">
-            <label for="dataNasc">Data de Nascimento:</label>
-            <input type="date" id="dataNascfunc" name="dataNasc" required>
-          </div>
-          <div class="form-group">
-              <label for="cargo-func">Cargo:</label>
-              <select id="cargofunc" name="cargo" required>
-                  <option value="">Selecione...</option>
-              </select>
-          </div>
-          <div class="form-group">
-            <label>Gênero:</label>
-            <div class="radio-group">
-              <input type="radio" id="generofunc" name="genero" value="masculino">
-              <label for="masculino">Masculino</label>
-              <input type="radio" id="generofunc" name="genero" value="feminino">
-              <label for="feminino">Feminino</label>
-            </div>
+            <label for="cnpj">CNPJ:</label>
+            <input type="text" id="cnpjforn" name="cnpj" placeholder="00.000.000/0001-00" maxlength="18" required>
           </div>
 
           <div class="form-group">
             <label for="email">E-mail:</label>
-            <input type="email" id="emailfunc" name="email" required>
+            <input type="email" id="emailforn" name="email" required>
           </div>
 
           <div class="form-group">
             <label for="telefone">Telefone:</label>
-            <input type="tel" id="telefonefunc" name="telefone" placeholder="(00) 00000-0000" required maxlength="15">
+            <input type="tel" id="telefoneforn" name="telefone" placeholder="(00) 00000-0000" required maxlength="15" pattern="\(\d{2}\) \d{4,5}-\d{4}">
           </div>
 
           <div class="form-group">
             <label for="cep">CEP:</label>
-            <input type="text" id="cepfunc" name="cep" placeholder="00000-000" required maxlength="9">
+            <input type="text" id="cepforn" name="cep" placeholder="00000-000" required maxlength="9">
           </div>
 
           <div class="form-group">
             <label for="endereco">Endereço:</label>
-            <input type="text" id="enderecofunc" name="endereco" required>
+            <input type="text" id="enderecoforn" name="endereco" required>
           </div>
 
           <div class="form-group">
             <label for="numero">Número:</label>
-            <input type="text" id="numerofunc" name="numero" required>
+            <input type="text" id="numeroforn" name="numero" required>
           </div>
 
           <div class="form-group">
             <label for="complemento">Complemento:</label>
-            <input type="text" id="complementofunc" name="complemento">
+            <input type="text" id="complementoforn" name="complemento">
           </div>
 
           <div class="form-group">
             <label for="bairro">Bairro:</label>
-            <input type="text" id="bairrofunc" name="bairro" required>
+            <input type="text" id="bairroforn" name="bairro" required>
           </div>
 
           <div class="form-group">
             <label for="cidade">Cidade:</label>
-            <input type="text" id="cidadefunc" name="cidade" required>
+            <input type="text" id="cidadeforn" name="cidade" required>
           </div>
 
           <div class="form-group">
             <label for="estado">Estado:</label>
-            <select id="estadofunc" name="estado" required>
+            <select id="estadoforn" name="estado" required>
               <option value="">Selecione...</option>
               <option value="AC">Acre</option>
               <option value="AL">Alagoas</option>
@@ -139,45 +117,33 @@
 
           <div class="form-group">
             <label for="observacoes">Observações:</label>
-            <textarea id="observacoesfunc" name="observacoes" rows="3"></textarea>
+            <textarea id="observacoesforn" name="observacoes" rows="3"></textarea>
           </div>
 
           <div class="form-actions">
-            <button type="button" onclick="cadastrarFunc(event)" class="btn-submit">Cadastrar</button>
-            <button type="reset" onclick="limpaFunc()" class="btn-reset">Limpar</button>
-            <button type="reset" onclick="atualizarFuncionario()" class="btn-update">Atualizar</button>
+            <button type="button" onclick="cadastrarForn(event)" class="btn-submit">Cadastrar</button>
+            <button type="reset" onclick="limpaForn()" class="btn-reset">Limpar</button>
+            <button type="reset" onclick="atualizarFornecedor()" class="btn-update">Atualizar</button>
           </div>
         </form>
-        <h2>Consultar Funcionário</h2>
-        <div class="form-group">
-          <label for="cpf">CPF Funcionário:</label>
-          <input
-            type="text"
-            id="cpffunc"
-            name="cpf"
-            required
-            placeholder="000.000.000-00"
-            maxlength="14"
-          />
-        </div>
-        <button type="button" onclick="listarFuncionarios()" class="btn-submit">Listar Funcionários</button>
-      <table border="1" class="table-clientes">
+        <h2>Consultar Fornecedor</h2> 
+
+    <table border="1" class="table-clientes">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>CPF</th>
-                <th>Email</th>
-                <th>Telefone</th>
-                <th>Endereço</th>
-                <th>Cargo</th>
+                <th>ID: </th>
+                <th>Nome: </th>
+                <th>CNPJ: </th>
+                <th>Email: </th>
+                <th>Telefone: </th>
+                <th>Endereço: </th>
             </tr>
-        <tbody id="tabela-funcionarios">
+        </thead>
+        <tbody id="tabela-fornecedores">
             <!-- Linhas serão preenchidas pelo JavaScript -->
         </tbody>
     </table>
-
-      </section>
+    <button type="button" onclick="listarFornecedor()" class="btn-submit">Listar Fornecedores</button>
       </section>
     </main>
   </div>
@@ -191,6 +157,6 @@
   </footer>
 
   <script src="../../index.js"></script>
-  <script src="../script.js/funcionario.js"></script>
+  <script src="../script.js/fornecedor.js"></script>
 </body>
 </html>
