@@ -46,18 +46,18 @@ async function cadastrarFunc(event) {
  async function listarFuncionarios() {
 
      const cpf = document.getElementById('cpfunc').value.trim();  // Pega o valor do CPF digitado no input
-
+    alert("passei de puxar cpf")
      let url = '/funcionario';  // URL padrão para todos os funcionarios
 
      if (cpf) {
          // Se CPF foi digitado, adiciona o parâmetro de consulta
          url += `?cpf=${cpf}`;
      }
-
+    alert("to aq no if do cpf")
      try {
          const response = await fetch(url);
          const funcionarios = await response.json();
-
+        alert("to aq no meio dos const")
          const tabela = document.getElementById('tabela-funcionarios');
          tabela.innerHTML = ''; // Limpa a tabela antes de preencher
 
