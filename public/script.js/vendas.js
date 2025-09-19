@@ -263,6 +263,63 @@ async function listarHistorico() {
   }
 }
 
+
+///////////////////////////// EDITAR FUNCIONÁRIO /////////////////////////////
+async function editarFuncionario(cpf) {
+    try {
+        const response = await fetch(`/funcionario?cpf=${cpf}`);
+        const funcionarios = await response.json();
+
+        if (funcionarios.length === 0) {
+            alert("Funcionário não encontrado!");
+            return;
+        }
+
+        const funcionario = funcionarios[0];
+
+        // Preenche os campos do formulário
+        document.getElementById("nomefunc").value = 
+            funcionario.func_nome || "";
+        document.getElementById("cpfunc").value = 
+            funcionario.func_cpf || "";
+        document.getElementById("telefonefunc").value =
+            funcionario.func_telefone || "";
+        document.getElementById("cargofunc").value = 
+            funcionario.car_id || "";
+        document.getElementById("emailfunc").value =
+            funcionario.func_email || "";
+        document.getElementById("dataNascfunc").value =
+            funcionario.func_datanascimento || "";
+        document.getElementById("generofunc").value =
+            funcionario.func_genero || "";
+        document.getElementById("enderecofunc").value =
+            funcionario.func_logradouro || "";
+        document.getElementById("numerofunc").value =
+            funcionario.func_numero || "";
+        document.getElementById("bairrofunc").value =
+            funcionario.func_bairro || "";
+        document.getElementById("cidadefunc").value =
+            funcionario.func_cidade || "";
+        document.getElementById("estadofunc").value =
+            funcionario.func_estado || "";
+        document.getElementById("cepfunc").value = 
+            funcionario.func_cep || "";
+        document.getElementById("complementofunc").value =
+            funcionario.func_complemento || "";
+        document.getElementById("observacoesfunc").value =
+            funcionario.func_observacoes || "";
+
+        // Rola a página para o formulário
+        document.getElementById("vendasForm").scrollIntoView();
+    } catch (error) {
+        console.error("Erro ao carregar dados do histórico de vendas:", error);
+        alert("Erro ao carregar o histórico.");
+    }
+}
+
+
+
+
 // ----------------- FORMATAÇÕES ----------------- //
 
 // CPF
