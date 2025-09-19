@@ -53,12 +53,40 @@ async function listarCargos() {
                   <td>${cargo.car_id}</td>
                   <td>${cargo.car_nome}</td>
                   <td>${cargo.car_salario}</td>
+                  <td><button onclick="editarCargos('${cargo.car_nome}')">Editar</button></td>
               `;
                 tabela.appendChild(linha);
             });
         }
     } catch (error) {
         console.error("Erro ao listar cargo:", error);
+    }
+}
+
+///////////////////////////// EDITAR FUNCIONÁRIO /////////////////////////////
+async function editarCargos(nome) {
+    try {
+        const response = await fetch(`/cargo?nome=${nome}`);
+        const cargos = await response.json();
+
+        if (cargos.length === 0) {
+            alert("Cargo não encontrado!");
+            return;
+        }
+
+        const cargo = cargos[0];
+
+        // Preenche os campos do formulário
+        document.getElementById("nomecargo").value = cargo.car_nome || "";
+        document.getElementById("salariocargo").value = cargo.car_salario || "";
+        document.getElementById("descricaocargo").value = cargo.car_descricao || "";
+        document.getElementById("observacoescargo").value = cargo.car_observacoes || "";
+        
+        // Rola a página para o formulário
+        document.getElementById("cargoForm").scrollIntoView();
+    } catch (error) {
+        console.error("Erro ao carregar dados do cargos:", error);
+        alert("Erro ao carregar dados do cargo.");
     }
 }
 
