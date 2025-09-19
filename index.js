@@ -1,4 +1,4 @@
-=const express = require("express");
+const express = require("express");
 const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
 
@@ -1225,62 +1225,62 @@ app.get("/buscar-cargos", (req, res) => {
 //     });
 // });
 
-// Alternar menu em dispositivos móveis
-document.addEventListener("DOMContentLoaded", function () {
-    const toggleBtn = document.querySelector(".toggle-btn");
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.createElement("div");
+// // Alternar menu em dispositivos móveis
+// document.addEventListener("DOMContentLoaded", function () {
+//     const toggleBtn = document.querySelector(".toggle-btn");
+//     const sidebar = document.getElementById("sidebar");
+//     const overlay = document.createElement("div");
 
-    // Criar overlay
-    overlay.classList.add("overlay");
-    document.body.appendChild(overlay);
+//     // Criar overlay
+//     overlay.classList.add("overlay");
+//     document.body.appendChild(overlay);
 
-    // Função para abrir o menu
-    function openMenu() {
-        sidebar.classList.add("active");
-        overlay.classList.add("active");
-        document.body.style.overflow = "hidden"; // Impede scroll no body
-    }
+//     // Função para abrir o menu
+//     function openMenu() {
+//         sidebar.classList.add("active");
+//         overlay.classList.add("active");
+//         document.body.style.overflow = "hidden"; // Impede scroll no body
+//     }
 
-    // Função para fechar o menu
-    function closeMenu() {
-        sidebar.classList.remove("active");
-        overlay.classList.remove("active");
-        document.body.style.overflow = ""; // Restaura scroll
-    }
+//     // Função para fechar o menu
+//     function closeMenu() {
+//         sidebar.classList.remove("active");
+//         overlay.classList.remove("active");
+//         document.body.style.overflow = ""; // Restaura scroll
+//     }
 
-    // Evento de clique no botão toggle
-    if (toggleBtn && sidebar) {
-        toggleBtn.addEventListener("click", function (e) {
-            e.stopPropagation();
-            if (sidebar.classList.contains("active")) {
-                closeMenu();
-            } else {
-                openMenu();
-            }
-        });
-    }
+//     // Evento de clique no botão toggle
+//     if (toggleBtn && sidebar) {
+//         toggleBtn.addEventListener("click", function (e) {
+//             e.stopPropagation();
+//             if (sidebar.classList.contains("active")) {
+//                 closeMenu();
+//             } else {
+//                 openMenu();
+//             }
+//         });
+//     }
 
-    // Fechar menu ao clicar no overlay
-    overlay.addEventListener("click", closeMenu);
+//     // Fechar menu ao clicar no overlay
+//     overlay.addEventListener("click", closeMenu);
 
-    // Fechar menu ao clicar em um link (em mobile)
-    const menuLinks = document.querySelectorAll(".sidebar a");
-    menuLinks.forEach((link) => {
-        link.addEventListener("click", function () {
-            if (window.innerWidth <= 768) {
-                closeMenu();
-            }
-        });
-    });
+//     // Fechar menu ao clicar em um link (em mobile)
+//     const menuLinks = document.querySelectorAll(".sidebar a");
+//     menuLinks.forEach((link) => {
+//         link.addEventListener("click", function () {
+//             if (window.innerWidth <= 768) {
+//                 closeMenu();
+//             }
+//         });
+//     });
 
-    // Fechar menu ao redimensionar a janela para tamanho maior
-    window.addEventListener("resize", function () {
-        if (window.innerWidth > 768) {
-            closeMenu();
-        }
-    });
-});
+//     // Fechar menu ao redimensionar a janela para tamanho maior
+//     window.addEventListener("resize", function () {
+//         if (window.innerWidth > 768) {
+//             closeMenu();
+//         }
+//     });
+// });
 
 ///////////////////////////// FIM /////////////////////////////
 ///////////////////////////// FIM /////////////////////////////
