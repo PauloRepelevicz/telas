@@ -24,11 +24,14 @@ header {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  position: relative;
 }
 
 header h1 {
   font-size: 1.5rem;
   margin: 0.5rem;
+  flex: 1;
+  text-align: center;
 }
 
 header img {
@@ -36,10 +39,21 @@ header img {
   height: auto;
 }
 
+.toggle-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  position: absolute;
+  left: 1rem;
+  z-index: 1001;
+}
+
 .container {
   display: flex;
   flex: 1;
-  flex-wrap: wrap;
 }
 
 .sidebar {
@@ -57,6 +71,29 @@ header img {
   margin: 0;
 }
 
+.center-form-group {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+
+}
+
+.coisacli {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.center-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
 .sidebar ul {
   list-style: none;
   padding: 0;
@@ -71,17 +108,6 @@ header img {
 
 .sidebar ul li:hover {
   background-color: #444;
-}
-
-.toggle-btn {
-  display: none;
-  background-color: #444;
-  color: #fff;
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin: 0.5rem;
 }
 
 .main {
@@ -265,130 +291,61 @@ form {
   transition: 0.3s;
 }
 
-/* ESTILOS ESPECÍFICOS PARA CENTRALIZAÇÃO */
-.center-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  margin: 20px 0;
-}
-
-.center-form-group {
-  margin-bottom: 15px;
+/* Overlay para mobile */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  max-width: 400px;
-  text-align: center;
-}
-
-.center-form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #2c3e50;
-}
-
-.center-form-group input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 1rem;
-  text-align: center;
-  transition: border 0.3s;
-}
-
-.center-form-group input:focus {
-  border-color: #3498db;
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-}
-
-.center-actions {
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
 }
 
 /* Media Queries para Responsividade */
-
-/* Tablets (768px a 1024px) */
-@media (min-width: 768px) {
-  header h1 {
-    font-size: 2rem;
-  }
-
-  header img {
-    width: 100px;
-  }
-
-  form {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .form-actions {
-    grid-column: span 2;
-  }
-
-  .card {
-    padding: 2rem;
-  }
-}
-
-/* Computadores (acima de 1024px) */
-@media (min-width: 1024px) {
+@media (max-width: 1024px) {
   .sidebar {
-    position: static;
-    transform: translateX(0);
-    min-height: calc(100vh - 200px);
+    width: 220px;
   }
 
-  .main {
-    padding: 2rem;
-  }
-
-  form {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .form-group-full {
-    grid-column: span 2;
+  .table-clientes {
+    min-width: 500px;
   }
 }
 
-/* Celulares (até 767px) */
-@media (max-width: 767px) {
-  header {
-    flex-direction: column;
-    text-align: center;
+@media (max-width: 768px) {
+  header h1 {
+    margin-left: 2rem;
   }
 
   .toggle-btn {
     display: block;
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    z-index: 1001;
   }
 
   .sidebar {
     position: fixed;
-    transform: translateX(-100%);
     height: 100%;
-    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
   }
 
   .sidebar.active {
     transform: translateX(0);
+    box-shadow: 3px 0 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .overlay.active {
+    display: block;
   }
 
   .main {
+    width: 100%;
     padding: 1rem 0.5rem;
   }
 
   .card {
     padding: 1rem;
-    margin-bottom: 1rem;
   }
 
   .form-actions {
@@ -403,26 +360,8 @@ form {
     max-width: 250px;
     margin-bottom: 0.5rem;
   }
-
-  .table-clientes {
-    font-size: 0.8rem;
-  }
-
-  .table-clientes th,
-  .table-clientes td {
-    padding: 0.5rem;
-  }
-
-  footer {
-    padding: 1rem;
-  }
-
-  footer img {
-    width: 50px;
-  }
 }
 
-/* Melhorias para elementos específicos em mobile */
 @media (max-width: 480px) {
   header h1 {
     font-size: 1.2rem;
@@ -450,83 +389,7 @@ form {
     flex-direction: column;
     gap: 0.5rem;
   }
-}
 
-/* Responsividade para mobile */
-@media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    transform: translateX(-100%);
-    z-index: 1000;
-    width: 250px;
-    height: 100vh;
-    overflow-y: auto;
-    transition: transform 0.3s ease-in-out;
-  }
-
-  .sidebar.active {
-    transform: translateX(0);
-    box-shadow: 3px 0 15px rgba(0, 0, 0, 0.2);
-  }
-
-  .toggle-btn {
-    display: block;
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    z-index: 1001;
-    background-color: #444;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 1.2rem;
-  }
-
-  .main {
-    margin-left: 0;
-    padding: 1rem;
-    width: 100%;
-  }
-
-  /* Overlay para quando o menu estiver aberto */
-  .overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-  }
-
-  .overlay.active {
-    display: block;
-  }
-
-  /* Ajustes para formulários em mobile */
-  #clienteForm,
-  #funcForm,
-  #cargoForm,
-  #produtoForm {
-    grid-template-columns: 1fr;
-  }
-
-  .form-actions {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .btn-submit,
-  .btn-reset,
-  .btn-update {
-    width: 100%;
-    margin-bottom: 0.5rem;
-  }
-
-  /* Melhorias para tabelas em mobile */
   .table-clientes {
     font-size: 0.8rem;
   }
@@ -534,31 +397,5 @@ form {
   .table-clientes th,
   .table-clientes td {
     padding: 0.5rem;
-  }
-}
-
-/* Para telas muito pequenas (menos de 480px) */
-@media (max-width: 480px) {
-  header h1 {
-    font-size: 1.5rem;
-    margin-left: 50px;
-  }
-
-  .toggle-btn {
-    top: 12px;
-    left: 12px;
-    padding: 8px 12px;
-  }
-
-  .card {
-    padding: 0.8rem;
-    margin-bottom: 0.8rem;
-  }
-
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    padding: 0.6rem;
-    font-size: 0.9rem;
   }
 }
