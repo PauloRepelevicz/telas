@@ -100,9 +100,17 @@ CREATE TABLE IF NOT EXISTS historico (
     hist_quantidade INTEGER NOT NULL CHECK(hist_quantidade > 0),
     hist_preco_unitario REAL NOT NULL CHECK(hist_preco_unitario > 0),
     hist_subtotal REAL NOT NULL CHECK(hist_subtotal > 0),
-    
     FOREIGN KEY (ven_id) REFERENCES vendas(ven_id) ON DELETE CASCADE,
     FOREIGN KEY (prod_id) REFERENCES produtos(prod_id) ON DELETE RESTRICT
+);
+
+CREATE TABLE IF NOT EXISTS cargo(
+car_id INTEGER PRIMARY KEY AUTOINCREMENT,
+car_nome VARCHAR(50) NOT NULL UNIQUE,
+car_salario REAL,
+car_descricao TEXT,
+car_observacoes TEXT,
+car_codigo INTEGER UNIQUE
 );
 
 /*INNER JOIN livros 	on emprestimos.id_livro=livros.id_livro*/
