@@ -3,7 +3,10 @@ const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
+
+// Configure trust proxy for Replit environment
+app.set("trust proxy", true);
 
 // Serve os arquivos estáticos da pasta "public"
 app.use(express.static("public"));
@@ -29,7 +32,7 @@ db.serialize(() => {
         cli_cpf VARCHAR(14) NOT NULL UNIQUE,
         cli_telefone VARCHAR(15),
         cli_data_nascimento DATE,
-        cli_email TEXT NOT NULL,	
+        cli_email TEXT NOT NULL,        
         cli_logradouro TEXT,
         cli_numero INTEGER,
         cli_bairro TEXT,
@@ -1292,6 +1295,6 @@ app.get("/", (req, res) => {
 });
 
 // Iniciando o servidor
-app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
+app.listen(port, "0.0.0.0", () => {
+    console.log(`Servidor rodando em 0.0.0.0:${port}`);
 });
