@@ -374,11 +374,14 @@ async function editarFuncionario(cpf) {
         const funcionario = funcionarios[0];
 
         // Preenche os campos do formulário
-        document.getElementById("nomefunc").value = funcionario.func_nome || "";
-        document.getElementById("cpfunc").value = funcionario.func_cpf || "";
+        document.getElementById("nomefunc").value = 
+            funcionario.func_nome || "";
+        document.getElementById("cpfunc").value = 
+            funcionario.func_cpf || "";
         document.getElementById("telefonefunc").value =
             funcionario.func_telefone || "";
-        document.getElementById("cargofunc").value = funcionario.car_id || "";
+        document.getElementById("cargofunc").value = 
+            funcionario.car_id || "";
         document.getElementById("emailfunc").value =
             funcionario.func_email || "";
         document.getElementById("dataNascfunc").value =
@@ -395,7 +398,8 @@ async function editarFuncionario(cpf) {
             funcionario.func_cidade || "";
         document.getElementById("estadofunc").value =
             funcionario.func_estado || "";
-        document.getElementById("cepfunc").value = funcionario.func_cep || "";
+        document.getElementById("cepfunc").value = 
+            funcionario.func_cep || "";
         document.getElementById("complementofunc").value =
             funcionario.func_complemento || "";
         document.getElementById("observacoesfunc").value =
