@@ -1,4 +1,4 @@
-const express = require("express");
+=const express = require("express");
 const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
 
@@ -274,6 +274,173 @@ app.put("/clientes/cpf/:cpf", (req, res) => {
 ///////////////////////////// Rotas para Funcionarios /////////////////////////////
 ///////////////////////////// Rotas para Funcionarios /////////////////////////////
 
+// // Cadastrar funcionario
+// app.post("/funcionario", (req, res) => {
+//     console.log("Recebendo requisição de cadastro de Funcionário");
+//     const {
+//         nome,
+//         cpf,
+//         telefone,
+//         email,
+//         data_nascimento,
+//         genero,
+//         logradouro,
+//         numero,
+//         bairro,
+//         cidade,
+//         estado,
+//         cep,
+//         complemento,
+//         observacoes,
+//         cargo,
+//     } = req.body;
+
+//     if (!nome || !cpf) {
+//         return res.status(400).send("Nome e CPF são obrigatórios.");
+//     }
+
+//     const query = `INSERT INTO funcionario (func_nome, func_cpf, func_telefone, func_email, func_datanascimento, func_genero, func_logradouro, func_numero, func_bairro, func_cidade, func_estado, func_cep, func_complemento, func_observacoes, car_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+//     db.run(
+//         query,
+//         [
+//             nome,
+//             cpf,
+//             telefone,
+//             email,
+//             data_nascimento,
+//             genero,
+//             logradouro,
+//             numero,
+//             bairro,
+//             cidade,
+//             estado,
+//             cep,
+//             complemento,
+//             observacoes,
+//             cargo,
+//         ],
+
+//         function (err) {
+//             if (err) {
+//                 return res.status(500).send("Erro ao cadastrar funcionario..");
+//             }
+//             res.status(201).send({
+//                 id: this.lastID,
+//                 message: "Funcionário cadastrado com sucesso.",
+//             });
+//         },
+//     );
+// });
+
+// // Listar funcionários
+// // Endpoint para listar todos os funcionários ou buscar por CPF
+// app.get("/funcionario", (req, res) => {
+//     const cpf = req.query.cpf || ""; // Recebe o CPF da query string (se houver)
+//     if (cpf) {
+//         // Se CPF foi passado, busca funcionários que possuam esse CPF ou parte dele
+//         const query = `SELECT
+//                             funcionario.func_id,
+//                             funcionario.func_nome,
+//                             funcionario.func_cpf,
+//                             funcionario.func_email,
+//                             funcionario.func_telefone,
+//                             funcionario.func_logradouro,
+//                             cargo.car_nome AS car_nome
+//                             FROM funcionario
+//                             JOIN cargo ON funcionario.car_id = cargo.car_id
+//                             WHERE func_cpf LIKE ?`;
+
+//         db.all(query, [`%${cpf}%`], (err, rows) => {
+//             if (err) {
+//                 console.error(err);
+//                 return res
+//                     .status(500)
+//                     .json({ message: "Erro ao buscar funcionários." });
+//             }
+//             res.json(rows); // Retorna os funcionários encontrados ou um array vazio
+//         });
+//         //alert("SUJOU MEU PAU FOI DE COCOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+//     } else {
+//         // Se CPF não foi passado, retorna todos os funcionários
+//         const query = `SELECT
+//                             funcionario.func_id,
+//                             funcionario.func_nome,
+//                             funcionario.func_cpf,
+//                             funcionario.func_email,
+//                             funcionario.func_telefone,
+//                             funcionario.func_logradouro,
+//                             cargo.car_nome AS car_nome
+//                             FROM funcionario
+//                             JOIN cargo ON funcionario.car_id = cargo.car_id
+//                             `;
+
+//         db.all(query, (err, rows) => {
+//             if (err) {
+//                 console.error(err);
+//                 return res
+//                     .status(500)
+//                     .json({ message: "Erro ao buscar funcionarios." });
+//             }
+//             res.json(rows); // Retorna todos os funcionários
+//         });
+//     }
+// });
+
+// // Atualizar funcionário
+// app.put("/funcionario/cpf/:cpf", (req, res) => {
+//     const { cpf } = req.params;
+//     const {
+//         nome,
+//         telefone,
+//         email,
+//         data_nascimento,
+//         logradouro,
+//         numero,
+//         bairro,
+//         cidade,
+//         estado,
+//         cep,
+//         complemento,
+//         observacoes,
+//         cargo,
+//     } = req.body;
+
+//     const query = `UPDATE funcionario SET func_nome = ?, func_telefone = ?, func_email = ?, func_datanascimento = ?, func_logradouro = ?, func_numero = ?, func_bairro = ?, func_cidade = ?, func_estado = ?, func_cep = ?, func_complemento = ?, func_observacoes = ?, car_id = ? WHERE func_cpf = ?`;
+//     db.run(
+//         query,
+//         [
+//             nome,
+//             telefone,
+//             email,
+//             data_nascimento,
+//             logradouro,
+//             numero,
+//             bairro,
+//             cidade,
+//             estado,
+//             cep,
+//             complemento,
+//             observacoes,
+//             cargo,
+//             cpf,
+//         ],
+//         function (err) {
+//             if (err) {
+//                 return res
+//                     .status(500)
+//                     .send("Erro ao atualizar funcionário.~~~~~~");
+//             }
+//             if (this.changes === 0) {
+//                 return res.status(404).send("Funcionário não encontrado.");
+//             }
+//             res.send("Funcionário atualizado com sucesso.");
+//         },
+//     );
+// });
+
+///////////////////////////// Rotas para Funcionarios /////////////////////////////
+
 // Cadastrar funcionario
 app.post("/funcionario", (req, res) => {
     console.log("Recebendo requisição de cadastro de Funcionário");
@@ -334,35 +501,26 @@ app.post("/funcionario", (req, res) => {
 });
 
 // Listar funcionários
-// Endpoint para listar todos os funcionários ou buscar por CPF
 app.get("/funcionario", (req, res) => {
-    const cpf = req.query.cpf || ""; // Recebe o CPF da query string (se houver)
+    const cpf = req.query.cpf || "";
     if (cpf) {
-        // Se CPF foi passado, busca funcionários que possuam esse CPF ou parte dele
         const query = `SELECT  
-                            funcionario.func_id,
-                            funcionario.func_nome,
-                            funcionario.func_cpf,
-                            funcionario.func_email,
-                            funcionario.func_telefone,
-                            funcionario.func_logradouro,
+                            funcionario.*,
                             cargo.car_nome AS car_nome
                             FROM funcionario
                             JOIN cargo ON funcionario.car_id = cargo.car_id
-                            WHERE func_cpf LIKE ?`;
+                            WHERE func_cpf = ?`;
 
-        db.all(query, [`%${cpf}%`], (err, rows) => {
+        db.all(query, [cpf], (err, rows) => {
             if (err) {
                 console.error(err);
                 return res
                     .status(500)
                     .json({ message: "Erro ao buscar funcionários." });
             }
-            res.json(rows); // Retorna os funcionários encontrados ou um array vazio
+            res.json(rows);
         });
-        alert("SUJOU MEU PAU FOI DE COCOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
     } else {
-        // Se CPF não foi passado, retorna todos os funcionários
         const query = `SELECT  
                             funcionario.func_id,
                             funcionario.func_nome,
@@ -382,7 +540,7 @@ app.get("/funcionario", (req, res) => {
                     .status(500)
                     .json({ message: "Erro ao buscar funcionarios." });
             }
-            res.json(rows); // Retorna todos os funcionários
+            res.json(rows);
         });
     }
 });
@@ -395,6 +553,7 @@ app.put("/funcionario/cpf/:cpf", (req, res) => {
         telefone,
         email,
         data_nascimento,
+        genero,
         logradouro,
         numero,
         bairro,
@@ -406,7 +565,7 @@ app.put("/funcionario/cpf/:cpf", (req, res) => {
         cargo,
     } = req.body;
 
-    const query = `UPDATE funcionario SET func_nome = ?, func_telefone = ?, func_email = ?, func_datanascimento = ?, func_logradouro = ?, func_numero = ?, func_bairro = ?, func_cidade = ?, func_estado = ?, func_cep = ?, func_complemento = ?, func_observacoes = ?, car_id = ? WHERE func_cpf = ?`;
+    const query = `UPDATE funcionario SET func_nome = ?, func_telefone = ?, func_email = ?, func_datanascimento = ?, func_genero = ?, func_logradouro = ?, func_numero = ?, func_bairro = ?, func_cidade = ?, func_estado = ?, func_cep = ?, func_complemento = ?, func_observacoes = ?, car_id = ? WHERE func_cpf = ?`;
     db.run(
         query,
         [
@@ -414,6 +573,7 @@ app.put("/funcionario/cpf/:cpf", (req, res) => {
             telefone,
             email,
             data_nascimento,
+            genero,
             logradouro,
             numero,
             bairro,
@@ -427,9 +587,7 @@ app.put("/funcionario/cpf/:cpf", (req, res) => {
         ],
         function (err) {
             if (err) {
-                return res
-                    .status(500)
-                    .send("Erro ao atualizar funcionário.~~~~~~");
+                return res.status(500).send("Erro ao atualizar funcionário.");
             }
             if (this.changes === 0) {
                 return res.status(404).send("Funcionário não encontrado.");
@@ -1043,6 +1201,86 @@ app.get("/buscar-cargos", (req, res) => {
 //         });
 //     }
 // });
+
+// //RESPONSIVIDADE
+// // Alternar menu em dispositivos móveis
+// document.addEventListener("DOMContentLoaded", function () {
+//     const toggleBtn = document.querySelector(".toggle-btn");
+//     const sidebar = document.getElementById("sidebar");
+
+//     if (toggleBtn && sidebar) {
+//         toggleBtn.addEventListener("click", function () {
+//             sidebar.classList.toggle("active");
+//         });
+//     }
+
+//     // Fechar menu ao clicar em um link (em mobile)
+//     const menuLinks = document.querySelectorAll(".sidebar a");
+//     menuLinks.forEach((link) => {
+//         link.addEventListener("click", function () {
+//             if (window.innerWidth <= 767) {
+//                 sidebar.classList.remove("active");
+//             }
+//         });
+//     });
+// });
+
+// Alternar menu em dispositivos móveis
+document.addEventListener("DOMContentLoaded", function () {
+    const toggleBtn = document.querySelector(".toggle-btn");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.createElement("div");
+
+    // Criar overlay
+    overlay.classList.add("overlay");
+    document.body.appendChild(overlay);
+
+    // Função para abrir o menu
+    function openMenu() {
+        sidebar.classList.add("active");
+        overlay.classList.add("active");
+        document.body.style.overflow = "hidden"; // Impede scroll no body
+    }
+
+    // Função para fechar o menu
+    function closeMenu() {
+        sidebar.classList.remove("active");
+        overlay.classList.remove("active");
+        document.body.style.overflow = ""; // Restaura scroll
+    }
+
+    // Evento de clique no botão toggle
+    if (toggleBtn && sidebar) {
+        toggleBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            if (sidebar.classList.contains("active")) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        });
+    }
+
+    // Fechar menu ao clicar no overlay
+    overlay.addEventListener("click", closeMenu);
+
+    // Fechar menu ao clicar em um link (em mobile)
+    const menuLinks = document.querySelectorAll(".sidebar a");
+    menuLinks.forEach((link) => {
+        link.addEventListener("click", function () {
+            if (window.innerWidth <= 768) {
+                closeMenu();
+            }
+        });
+    });
+
+    // Fechar menu ao redimensionar a janela para tamanho maior
+    window.addEventListener("resize", function () {
+        if (window.innerWidth > 768) {
+            closeMenu();
+        }
+    });
+});
 
 ///////////////////////////// FIM /////////////////////////////
 ///////////////////////////// FIM /////////////////////////////
