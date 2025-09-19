@@ -8,6 +8,9 @@
 body {
   background-color: #f3d89b;
   color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 header {
@@ -17,14 +20,25 @@ header {
   text-align: center;
   border-bottom: solid 2px whitesmoke;
   box-shadow: 0 0px 15px rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+header h1 {
+  font-size: 1.5rem;
+  margin: 0.5rem;
 }
 
 header img {
-  width: 120px;
+  width: 80px;
+  height: auto;
 }
 
 .container {
   display: flex;
+  flex: 1;
   flex-wrap: wrap;
 }
 
@@ -32,24 +46,27 @@ header img {
   width: 275px;
   background-color: #2c2c2c;
   color: #fff;
-  min-height: 100vh;
   transition: transform 0.3s ease;
+  z-index: 1000;
 }
 
 .sidebar h2 {
   text-align: center;
   padding: 1rem 0;
   background-color: #444;
+  margin: 0;
 }
 
 .sidebar ul {
   list-style: none;
+  padding: 0;
 }
 
 .sidebar ul li {
   padding: 15px 20px;
   border-bottom: 1px solid #555;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .sidebar ul li:hover {
@@ -62,74 +79,67 @@ header img {
   color: #fff;
   padding: 10px;
   border: none;
+  border-radius: 4px;
   cursor: pointer;
+  margin: 0.5rem;
 }
 
 .main {
   flex: 1;
-  padding: 2rem;
+  padding: 1rem;
+  min-height: calc(100vh - 200px);
 }
 
 .card {
   background-color: #fff;
-  padding: 1rem;
-  margin-bottom: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
   border-left: 5px solid #000000;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-
+  overflow-x: auto;
 }
 
 footer {
   text-align: center;
   background-color: #333;
   color: #fff;
-  padding: 2rem 1rem;
+  padding: 1.5rem 1rem;
+  margin-top: auto;
 }
 
 footer a {
   color: #fff;
   text-decoration: none;
+  margin: 0 0.5rem;
 }
 
 footer img {
-  width: 70px;
+  width: 60px;
+  height: auto;
+  margin: 0 0.5rem;
 }
 
-@media (max-width: 768px) {
-  .sidebar {
-    position: absolute;
-    transform: translateX(-100%);
-    z-index: 999;
-  }
-
-  .sidebar.active {
-    transform: translateX(0);
-  }
-
-  .toggle-btn {
-    display: block;
-    margin: 1rem;
-  }
+footer p {
+  margin: 0.5rem 0;
 }
 
 .links {
   text-decoration: none;
   color: white;
-  text-align: center;
+  display: block;
 }
 
-
-/* Estilos para o formulário de cadastro */
+/* Estilos para formulários */
 .card h2 {
   margin-bottom: 1.5rem;
   color: #333;
   text-align: center;
 }
 
-#clienteForm {
+form {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 1rem;
 }
 
@@ -163,6 +173,7 @@ footer img {
   display: flex;
   gap: 1rem;
   margin-top: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .radio-group label {
@@ -173,11 +184,11 @@ footer img {
 }
 
 .form-actions {
-  grid-column: span 2;
   display: flex;
   justify-content: center;
   gap: 1rem;
   margin-top: 1rem;
+  flex-wrap: wrap;
 }
 
 .btn-submit,
@@ -189,14 +200,16 @@ footer img {
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s;
+  min-width: 120px;
 }
 
 .btn-update {
   background-color: #007BFF;
   color: white;
 }
-.btn-update:hover{
-  background-color: #0056b3
+
+.btn-update:hover {
+  background-color: #0056b3;
 }
 
 .btn-submit {
@@ -217,17 +230,7 @@ footer img {
   background-color: #d32f2f;
 }
 
-@media (max-width: 768px) {
-  #clienteForm {
-    grid-template-columns: 1fr;
-  }
-
-  .form-actions {
-    grid-column: span 1;
-  }
-}
-
-/* Estilo para tabela de clientes */
+/* Estilo para tabelas */
 .table-clientes {
   width: 100%;
   border-collapse: collapse;
@@ -236,6 +239,7 @@ footer img {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  min-width: 600px;
 }
 
 .table-clientes th {
@@ -258,18 +262,8 @@ footer img {
 
 .table-clientes tr:hover {
   background-color: #f3d89b40;
-  /* tom puxando pro seu amarelo do fundo */
   transition: 0.3s;
 }
-
-.table-clientes caption {
-  caption-side: top;
-  text-align: center;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  color: #333;
-}
-
 
 /* ESTILOS ESPECÍFICOS PARA CENTRALIZAÇÃO */
 .center-container {
@@ -292,7 +286,6 @@ footer img {
   margin-bottom: 8px;
   font-weight: 600;
   color: #2c3e50;
-  text-align: center;
 }
 
 .center-form-group input {
@@ -311,46 +304,261 @@ footer img {
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
-button {
-  padding: 12px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s;
+.center-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
 }
 
-.btn-submit {
-  background: #27ae60;
-  color: white;
+/* Media Queries para Responsividade */
+
+/* Tablets (768px a 1024px) */
+@media (min-width: 768px) {
+  header h1 {
+    font-size: 2rem;
+  }
+
+  header img {
+    width: 100px;
+  }
+
+  form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .form-actions {
+    grid-column: span 2;
+  }
+
+  .card {
+    padding: 2rem;
+  }
 }
 
-.btn-submit:hover {
-  background: #219653;
+/* Computadores (acima de 1024px) */
+@media (min-width: 1024px) {
+  .sidebar {
+    position: static;
+    transform: translateX(0);
+    min-height: calc(100vh - 200px);
+  }
+
+  .main {
+    padding: 2rem;
+  }
+
+  form {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .form-group-full {
+    grid-column: span 2;
+  }
 }
 
-.btn-update {
-  background: #3498db;
-  color: white;
+/* Celulares (até 767px) */
+@media (max-width: 767px) {
+  header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .toggle-btn {
+    display: block;
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1001;
+  }
+
+  .sidebar {
+    position: fixed;
+    transform: translateX(-100%);
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .main {
+    padding: 1rem 0.5rem;
+  }
+
+  .card {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .btn-submit,
+  .btn-reset,
+  .btn-update {
+    width: 100%;
+    max-width: 250px;
+    margin-bottom: 0.5rem;
+  }
+
+  .table-clientes {
+    font-size: 0.8rem;
+  }
+
+  .table-clientes th,
+  .table-clientes td {
+    padding: 0.5rem;
+  }
+
+  footer {
+    padding: 1rem;
+  }
+
+  footer img {
+    width: 50px;
+  }
 }
 
-.btn-update:hover {
-  background: #2980b9;
+/* Melhorias para elementos específicos em mobile */
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 1.2rem;
+  }
+
+  .card h2 {
+    font-size: 1.2rem;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  .btn-submit,
+  .btn-reset,
+  .btn-update {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .radio-group {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 }
 
-.btn-reset {
-  background: #e74c3c;
-  color: white;
+/* Responsividade para mobile */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    transform: translateX(-100%);
+    z-index: 1000;
+    width: 250px;
+    height: 100vh;
+    overflow-y: auto;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+    box-shadow: 3px 0 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .toggle-btn {
+    display: block;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1001;
+    background-color: #444;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 1.2rem;
+  }
+
+  .main {
+    margin-left: 0;
+    padding: 1rem;
+    width: 100%;
+  }
+
+  /* Overlay para quando o menu estiver aberto */
+  .overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+
+  .overlay.active {
+    display: block;
+  }
+
+  /* Ajustes para formulários em mobile */
+  #clienteForm,
+  #funcForm,
+  #cargoForm,
+  #produtoForm {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .btn-submit,
+  .btn-reset,
+  .btn-update {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Melhorias para tabelas em mobile */
+  .table-clientes {
+    font-size: 0.8rem;
+  }
+
+  .table-clientes th,
+  .table-clientes td {
+    padding: 0.5rem;
+  }
 }
 
-.btn-reset:hover {
-  background: #c0392b;
-}
+/* Para telas muito pequenas (menos de 480px) */
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 1.5rem;
+    margin-left: 50px;
+  }
 
-.center-actions .btn-submit {
-  margin-top: 26px; /* Esta linha desce o botão */
-}
+  .toggle-btn {
+    top: 12px;
+    left: 12px;
+    padding: 8px 12px;
+  }
 
-.nomeclicss{
+  .card {
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
 
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
 }
