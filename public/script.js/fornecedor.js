@@ -62,8 +62,8 @@ async function listarFornecedor() {
                   <td>${fornecedor.forn_email}</td>
                   <td>${formatarTelefone(fornecedor.forn_telefone || "")}</td>
                   <td>${formatarCEP(fornecedor.forn_cep || "")}</td>
-                  <td><button onclick="editarFornecedores('${fornecedor.forn_cnpj}')">Editar</button></td>
-              `;
+                  <td><button class="btn-update" onclick="editarFornecedores('${fornecedor.forn_cnpj}')">Editar</button></td>
+              `; 
               tabela.appendChild(linha);
           });
       }
