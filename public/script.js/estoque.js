@@ -77,6 +77,7 @@ async function listarProdutos() {
                     <td>${produto.cat_nome}</td>
                     <td>${produto.prod_quantidade_estoque}</td>
                     <td>${produto.forn_nome}</td>
+                    <td><button onclick="editarProdutos('${produto.prod_codigo}')">Editar</button></td>
                 `;
                 tabela.appendChild(linha);
             });
@@ -88,6 +89,49 @@ async function listarProdutos() {
         alert("Erro ao listar produtos3333333333333.");
     }
 }
+
+
+///////////////////////////// EDITAR ESTOQUE /////////////////////////////
+async function editarProdutos(codigo) {
+    try {
+        const response = await fetch(`/produto?codigo=${codigo}`);
+        const produtos = await response.json();
+
+        if (produtos.length === 0) {
+            alert("Produto não encontrado!");
+            return;
+        }
+
+        const produto = produtos[0];
+
+        // Preenche os campos do formulário
+        document.getElementById("nomeprod").value = 
+            produto.prod_nome || "";
+        document.getElementById("codprod").value = 
+            produto.prod_codigo || "";
+        document.getElementById("precoprod").value =
+            produto.prod_preco_venda || "";
+        document.getElementById("descricaoprod").value = 
+            produto.prod_descricao || "";
+        document.getElementById("categoriaprod").value =
+            produto.cat_nome || "";
+        document.getElementById("quantidadeprod").value =
+            produto.prod_quantidade_estoque || "";
+        document.getElementById("emergenciaprod").value =
+            produto.prod_quantidade_minimo || "";
+        document.getElementById("unidademedidaprod").value =
+            produto.prod_unidade_medida|| "";
+        document.getElementById("fornecedoresSelecionados").value =
+            produto.forn_id || "";
+        
+        // Rola a página para o formulário
+        document.getElementById("nomeprod").scrollIntoView();
+    } catch (error) {
+        console.error("Erro ao carregar dados do produtos:", error);
+        alert("Erro ao carregar dados do produto.");
+    }
+}
+  
 
 // ----------------- LIMPAR CAMPO -----------------
 
