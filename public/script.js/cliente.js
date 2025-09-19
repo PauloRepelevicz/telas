@@ -64,6 +64,7 @@ async function listarClientes() {
                     <td>${clientes.cli_email}</td>
                     <td>${formatarTelefone(clientes.cli_telefone || "")}</td>
                     <td>${formatarCEP(clientes.cli_cep || "")}</td>
+                    <td><button onclick="editarCliente('${clientes.cli_cpf}')">Editar</button></td>
                 `;
                 tabela.appendChild(linha);
             });
@@ -119,6 +120,56 @@ async function limpaCliente() {
     document.getElementById("email").value = "";
     document.getElementById("telefone").value = "";
     document.getElementById("endereco").value = "";
+}
+
+
+///////////////////////////// EDITAR CLIENTE /////////////////////////////
+async function editarCliente(cpf) {
+    try {
+        const response = await fetch(`/clientes?cpf=${cpf}`);
+        const cliente = await response.json();
+
+        if (cliente.length === 0) {
+            alert("Cliente não encontrado!");
+            return;
+        }
+
+        const clientes = cliente[0];
+
+        // Preenche os campos do formulário
+        document.getElementById("nome").value = 
+            clientes.cli_nome || "";
+        document.getElementById("cpf").value = 
+            clientes.cli_cpf || "";
+        document.getElementById("dataNasc").value =
+            clientes.cli_data_nascimento || "";
+        document.getElementById("email").value =
+            clientes.cli_email || "";
+        document.getElementById("telefone").value =
+            clientes.cli_telefone || "";
+        document.getElementById("cep").value = 
+            clientes.cli_cep || "";
+        document.getElementById("endereco").value =
+            clientes.cli_logradouro || "";
+        document.getElementById("numero").value =
+            clientes.cli_numero || "";
+        document.getElementById("complemento").value =
+            clientes.cli_complemento || "";
+        document.getElementById("bairro").value =
+            clientes.cli_bairro || "";
+        document.getElementById("cidade").value =
+            clientes.cli_cidade || "";
+        document.getElementById("estado").value =
+            clientes.cli_estado || "";
+        document.getElementById("observacoes").value =
+            clientes.cli_observacoes || "";
+
+        // Rola a página para o formulário
+        document.getElementById("clienteForm").scrollIntoView();
+    } catch (error) {
+        console.error("Erro ao carregar dados do cliente:", error);
+        alert("Erro ao carregar dados do cliente.");
+    }
 }
 
 // ----------------- FORMATAÇÕES -----------------
