@@ -53,7 +53,7 @@ async function listarCargos() {
                   <td>${cargo.car_id}</td>
                   <td>${cargo.car_nome}</td>
                   <td>${cargo.car_salario}</td>
-                  <td><button class="btn-update" onclick="editarCargos('${cargo.car_nome}')">Editar</button></td>
+                  <td><button onclick="editarCargos('${cargo.car_nome}')">Editar</button></td>
               `;
                 tabela.appendChild(linha);
             });
