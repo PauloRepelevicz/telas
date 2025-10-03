@@ -4,133 +4,845 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MAGUILA - Cadastro de Produtos</title>
-  <link rel="stylesheet" href="../css/style.css">
   <link rel="shortcut icon" type="image/jp" href="../imagens/UI.png"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
 
+    body {
+      background-color: #f3d89b;
+      color: #333;
+      min-width: 200px;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+      border-bottom: solid 2px whitesmoke;
+      box-shadow: 0 0px 15px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    header h1 {
+      font-size: clamp(1.2rem, 4vw, 2rem);
+      margin: 0.5rem 0;
+    }
+
+    header img {
+      width: 120px;
+      max-width: 30vw;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .sidebar {
+      width: 275px;
+      background-color: #2c2c2c;
+      color: #fff;
+      min-height: 100vh;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      padding: 1rem 0;
+      background-color: #444;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar ul li {
+      border-bottom: 1px solid #444;
+    }
+
+    .sidebar ul li a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .sidebar ul li a:hover {
+      background-color: #f3d89b;
+      color: #2c2c2c;
+      font-weight: bold;
+      border-radius: 6px;
+    }
+
+    .sidebar ul li a:active {
+      background-color: #dcbf7a;
+    }
+
+    .toggle-btn {
+      display: none;
+      background-color: #444;
+      color: #fff;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      position: absolute;
+      left: 1rem;
+      top: 1rem;
+      z-index: 1000;
+      min-width: 44px;
+      min-height: 44px;
+    }
+
+    .main {
+      flex: 1;
+      padding: 2rem;
+      min-width: 0;
+      transition: margin-left 0.3s ease;
+    }
+
+    .card {
+      background-color: #fff;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border-left: 5px solid #000000;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    button {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    footer {
+      text-align: center;
+      background-color: #333;
+      color: #fff;
+      padding: 2rem 1rem;
+    }
+
+    footer a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    footer img {
+      width: 70px;
+      max-width: 20vw;
+    }
+
+    .links {
+      text-decoration: none;
+      color: white;
+      text-align: center;
+    }
+
+    /* Estilos para o formulário de cadastro */
+    .card h2 {
+      margin-bottom: 1.5rem;
+      color: #333;
+      text-align: center;
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+    }
+
+    #produtoForm {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      color: #555;
+      font-size: clamp(0.9rem, 2vw, 1rem);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: clamp(0.9rem, 2vw, 1rem);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-actions {
+      grid-column: span 2;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-submit,
+    .btn-reset,
+    .btn-update {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      font-size: clamp(0.9rem, 2vw, 1rem);
+      cursor: pointer;
+      transition: background-color 0.3s;
+      min-width: 120px;
+      min-height: 44px;
+    }
+
+    .btn-update {
+      background-color: #007BFF;
+      color: white;
+    }
+    .btn-update:hover{
+      background-color: #0056b3
+    }
+
+    .btn-submit {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .btn-submit:hover {
+      background-color: #45a049;
+    }
+
+    .btn-reset {
+      background-color: #f44336;
+      color: white;
+    }
+
+    .btn-reset:hover {
+      background-color: #d32f2f;
+    }
+
+    /* Estilo para tabela de produtos */
+    .table-clientes {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.5rem;
+      background-color: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      font-size: clamp(0.8rem, 1.5vw, 1rem);
+    }
+
+    .table-clientes th {
+      background-color: #333;
+      color: #fff;
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: bold;
+    }
+
+    .table-clientes td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #ddd;
+      color: #555;
+    }
+
+    .table-clientes tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .table-clientes tr:hover {
+      background-color: #f3d89b40;
+      transition: 0.3s;
+    }
+
+    .table-clientes caption {
+      caption-side: top;
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    /* Novos estilos para melhor organização */
+    .estoque-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .form-section {
+      padding: 1rem;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      border-left: 3px solid #333;
+    }
+
+    .form-section h3 {
+      margin-bottom: 1rem;
+      color: #333;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 0.5rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin: 1rem 0;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-header h2 {
+      margin: 0;
+    }
+
+    .toggle-form {
+      background: #666;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .toggle-form:hover {
+      background: #555;
+    }
+
+    .estoque-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .info-box {
+      background-color: #f3d89b;
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+      border: 1px solid #dcbf7a;
+    }
+
+    .info-box h4 {
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    /* Media Queries para responsividade */
+    @media (max-width: 1200px) {
+      .sidebar {
+        width: 230px;
+      }
+    }
+
+    @media (max-width: 968px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      #produtoForm {
+        grid-template-columns: 1fr;
+      }
+
+      .form-actions {
+        grid-column: span 1;
+      }
+
+      .sidebar {
+        width: 200px;
+      }
+
+      .main {
+        padding: 1.5rem;
+      }
+
+      .form-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        transform: translateX(-100%);
+        z-index: 999;
+        height: 100%;
+        width: 275px;
+        top: 0;
+        left: 0;
+      }
+
+      .sidebar.active {
+        transform: translateX(0);
+        box-shadow: 3px 0 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .toggle-btn {
+        display: block;
+      }
+
+      .main {
+        padding: 1rem;
+        width: 100%;
+        margin-left: 0 !important;
+      }
+
+      .card {
+        padding: 1rem;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        padding: 0.6rem;
+      }
+
+      .btn-submit,
+      .btn-reset,
+      .btn-update {
+        padding: 0.6rem 1.2rem;
+      }
+
+      .table-clientes th,
+      .table-clientes td {
+        padding: 0.5rem;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .action-buttons button {
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .estoque-actions {
+        flex-direction: column;
+      }
+
+      .form-actions {
+        flex-direction: column;
+      }
+
+      .form-actions button {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding: 0.8rem;
+      }
+
+      header h1 {
+        font-size: 1.4rem;
+      }
+
+      header img {
+        width: 90px;
+      }
+
+      .main {
+        padding: 0.8rem;
+      }
+
+      .card {
+        padding: 0.8rem;
+        margin-bottom: 1rem;
+      }
+
+      .form-group {
+        margin-bottom: 0.8rem;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        padding: 0.5rem;
+      }
+
+      .btn-submit,
+      .btn-reset,
+      .btn-update {
+        padding: 0.5rem 1rem;
+        min-width: 100px;
+      }
+
+      .table-clientes {
+        font-size: 0.75rem;
+      }
+
+      .table-clientes th,
+      .table-clientes td {
+        padding: 0.4rem;
+      }
+
+      footer {
+        padding: 1.5rem 0.8rem;
+      }
+
+      footer img {
+        width: 50px;
+      }
+    }
+
+    @media (max-width: 320px) {
+      header h1 {
+        font-size: 1.2rem;
+      }
+
+      header img {
+        width: 70px;
+      }
+
+      .toggle-btn {
+        padding: 8px;
+        min-width: 40px;
+        min-height: 40px;
+      }
+
+      .card h2 {
+        font-size: 1.2rem;
+      }
+
+      .form-group label {
+        font-size: 0.9rem;
+      }
+
+      .btn-submit,
+      .btn-reset,
+      .btn-update {
+        font-size: 0.9rem;
+        padding: 0.5rem 0.8rem;
+      }
+
+      .table-clientes {
+        font-size: 0.7rem;
+      }
+
+      .table-clientes th,
+      .table-clientes td {
+        padding: 0.3rem;
+      }
+    }
+
+    /* Ajustes para telas muito pequenas (até 200px) */
+    @media (max-width: 200px) {
+      header h1 {
+        font-size: 1rem;
+      }
+
+      header img {
+        width: 60px;
+      }
+
+      .toggle-btn {
+        padding: 6px;
+        min-width: 36px;
+        min-height: 36px;
+        font-size: 12px;
+      }
+
+      .card {
+        padding: 0.5rem;
+      }
+
+      .card h2 {
+        font-size: 1rem;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        padding: 0.4rem;
+        font-size: 14px;
+      }
+
+      .btn-submit,
+      .btn-reset,
+      .btn-update {
+        padding: 0.4rem 0.6rem;
+        font-size: 12px;
+        min-width: 80px;
+        min-height: 36px;
+      }
+
+      .table-clientes th,
+      .table-clientes td {
+        padding: 0.3rem;
+        font-size: 10px;
+      }
+
+      footer {
+        padding: 1rem 0.5rem;
+        font-size: 0.8rem;
+      }
+
+      footer img {
+        width: 40px;
+      }
+    }
+  </style>
 </head>
-  <body onload="buscarFornecedores()">
+<body onload="buscarFornecedores()">
   <header>
     <h1>Sistema de Mercado Maguila</h1>
     <img src="../imagens/UI.png" alt="Logo Maguila">
-    <button class="toggle-btn">☰ Menu</button>
+    <button class="toggle-btn" id="toggleBtn">☰ Menu</button>
   </header>
+
+  <div class="overlay" id="overlay"></div>
 
   <div class="container">
     <nav class="sidebar" id="sidebar">
       <h2>Menu</h2>
       <ul>
-        <a href="../index.html" class="links"><li>Dashboard</li></a>
-        <a href="estoque.html" class="links"><li>Estoque</li></a>
-        <a href="funcionario.html" class="links"><li>Cadastro de Funcionário</li></a>
-        <a href="cliente.html" class="links"><li>Cadastro de Cliente</li></a>
-        <a href="fornecedor.html" class="links"><li>Cadastro de Fornecedor</li></a>
-        <a href="cargo.html" class="links"><li>Cadastro de Cargo</li></a>
-        <a href="vendas.html" class="links"><li>Vendas</li></a>
+        <li><a href="../index.html">📊 Dashboard</a></li>
+        <li><a href="estoque.html" class="active">📦 Estoque</a></li>
+        <li><a href="funcionario.html">👨‍💼 Funcionários</a></li>
+        <li><a href="cliente.html">🧑‍🤝‍🧑 Clientes</a></li>
+        <li><a href="fornecedor.html">🚚 Fornecedores</a></li>
+        <li><a href="cargo.html">💼 Cargos</a></li>
+        <li><a href="vendas.html">💰 Vendas</a></li>
       </ul> 
     </nav>
-    <main class="main">
-    <section class="card">
-      <h2>Produtos em Estoque</h2> 
 
-        <table class="table-clientes">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nome</th>
-              <th>Código</th>
-              <th>Preço</th>
-              <th>Categoria</th>
-              <th>Quantidade</th>
-              <th>Fornecedor</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody id="table-clientes">
-            <!-- Linhas serão preenchidas pelo JavaScript -->
-            <tr>
-              <td>Nenhum produto cadastrado</td>
-            </tr>
-          </tbody>
-        </table>
-       </section>
-
-      <section class="card">
-        <h2>Cadastro de Produto</h2>
-        <form id="produtoForm">
-          <div class="form-group">
-            <label for="nome">Nome do Produto:</label>
-            <input type="text" id="nomeprod" name="nome" required>
-          </div>
-          <div class="form-group">
-            <label for="codigoprod">Código do Produto//</label>
-            <input type="text" id="codprod" name="codigo" required>
+    <main class="main" id="mainContent">
+      <div class="estoque-container">
+        <section class="card">
+          <div class="form-header">
+            <h2>Produtos em Estoque</h2>
           </div>
 
-          <div class="form-group">
-            <label for="preco">Preço (R$):</label>
-            <input type="number" id="precoprod" name="preco" step="0.01" min="0" placeholder="R$0,00" required>
+          <div class="table-container">
+            <table class="table-clientes">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>Código</th>
+                  <th>Preço</th>
+                  <th>Categoria</th>
+                  <th>Quantidade</th>
+                  <th>Fornecedor</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="table-clientes">
+                <tr>
+                  <td colspan="7" style="text-align: center;">Nenhum produto cadastrado</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
-          <div class="form-group">
-            <label for="descricao">Descrição:</label>
-            <input type="text" id="descricaoprod" name="descricao" required>
+          <div class="estoque-actions">
+            <button type="button" onclick="listarProdutos()" class="btn-submit">
+              🔄 Atualizar Lista
+            </button>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="form-header">
+            <h2>Cadastro de Produto</h2>
           </div>
 
-          <div class="form-group">
-            <label for="categoria">Categoria:</label>
-            <select id="categoriaprod" name="categoria" required>
-              <option value="">Selecione...</option>
-              <option value="alimentos">Alimentos</option>
-              <option value="bebidas">Bebidas</option>
-              <option value="limpeza">Limpeza</option>
-              <option value="hortifruti">Hortifruti</option>
-              <option value="padaria">Padaria</option>
-              <option value="carnes">Carnes</option>
-              <option value="laticinios">Laticínios</option>
-              <option value="outros">Outros</option>
-            </select>
-          </div>
+          <form id="produtoForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="nomeprod">Nome do Produto:</label>
+                <input type="text" id="nomeprod" name="nome" required>
+              </div>
 
-          <div class="form-group">
-            <label for="quantidade">Quantidade em Estoque:</label>
-            <input type="number" id="quantidadeprod" name="quantidade" min="0" required>
-          </div>
-
-          <div class="form-group">
-            <label for="quantidadeemergencia">Estoque de emergência:</label>
-            <input type="number" id="emergenciaprod" name="quantidadeemergencia" min="0" required>
-          </div>
-
-          <div class="form-group">
-            <label for="medida">Unidade de Medida:</label>
-            <select type="text" id="unidademedidaprod" name="unidademedida" required>
-              <option value="">Selecione...</option>
-              <option value="unidade">Unidade</option>
-              <option value="litro">Litro</option>
-              <option value="kg">Kg</option>
-              <option value="grama">Grama</option>
-              <option value="ml">Ml</option>
-              <option value="outros">Outros</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label  for="fornecedoresSelecionados" >Fornecedor:</label>
-            <select id="fornecedoresSelecionados" name="fornecedor" required>
-              <option value="">Selecione...</option>
-              <!-- Os produtos serão carregados dinamicamente via JavaScript -->
-            </select>
-            <div class="form-actions" style="margin-top: 20px;">
-              <button type="button" onclick="cadastrarProduto(event)" class="btn-submit">Cadastrar</button>
-              <button type="button" onclick="atualizarProduto()" class="btn-update">Atualizar</button>
-              <button type="button" onclick="limpaform()" class="btn-reset">Limpar</button>
-              <button type="button" onclick="listarProdutos()" class="btn-submit">Listar Produtos</button>
+              <div class="form-group">
+                <label for="codprod">Código do Produto:</label>
+                <input type="text" id="codprod" name="codigo" required>
+              </div>
             </div>
-          </div>
-        </form>
-      </section>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="precoprod">Preço (R$):</label>
+                <input type="number" id="precoprod" name="preco" step="0.01" min="0" placeholder="R$0,00" required>
+              </div>
+
+              <div class="form-group">
+                <label for="categoriaprod">Categoria:</label>
+                <select id="categoriaprod" name="categoria" required>
+                  <option value="">Selecione...</option>
+                  <option value="alimentos">Alimentos</option>
+                  <option value="bebidas">Bebidas</option>
+                  <option value="limpeza">Limpeza</option>
+                  <option value="hortifruti">Hortifruti</option>
+                  <option value="padaria">Padaria</option>
+                  <option value="carnes">Carnes</option>
+                  <option value="laticinios">Laticínios</option>
+                  <option value="outros">Outros</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="quantidadeprod">Quantidade em Estoque:</label>
+                <input type="number" id="quantidadeprod" name="quantidade" min="0" required>
+              </div>
+
+              <div class="form-group">
+                <label for="emergenciaprod">Estoque de emergência:</label>
+                <input type="number" id="emergenciaprod" name="quantidadeemergencia" min="0" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="unidademedidaprod">Unidade de Medida:</label>
+                <select id="unidademedidaprod" name="unidademedida" required>
+                  <option value="">Selecione...</option>
+                  <option value="unidade">Unidade</option>
+                  <option value="litro">Litro</option>
+                  <option value="kg">Kg</option>
+                  <option value="grama">Grama</option>
+                  <option value="ml">Ml</option>
+                  <option value="outros">Outros</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="fornecedoresSelecionados">Fornecedor:</label>
+                <select id="fornecedoresSelecionados" name="fornecedor" required>
+                  <option value="">Selecione...</option>
+                  <!-- Os fornecedores serão carregados dinamicamente via JavaScript -->
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="descricaoprod">Descrição:</label>
+              <textarea id="descricaoprod" name="descricao" rows="3" required></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" onclick="cadastrarProduto(event)" class="btn-submit">
+                📝 Cadastrar
+              </button>
+              <button type="button" onclick="atualizarProduto()" class="btn-update">
+                🔄 Atualizar
+              </button>
+              <button type="button" onclick="limpaform()" class="btn-reset">
+                🗑️ Limpar
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
     </main>
   </div>
+  <script>
+    // Função para o menu retrátil
+    const toggleBtn = document.getElementById('toggleBtn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const mainContent = document.getElementById('mainContent');
+
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+
+      // Impede a rolagem do corpo quando o menu está aberto
+      if (sidebar.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'auto';
+      }
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    });
+
+    // Fechar menu ao clicar em um link (para dispositivos móveis)
+    document.querySelectorAll('.sidebar a').forEach(link => {
+      link.addEventListener('click', () => {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      });
+    });
+
+    // Fechar menu ao redimensionar a janela para um tamanho maior
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
+    });
+  </script>
 
   <footer>
     <img src="../imagens/ccmlogo.jpeg" alt="">
@@ -141,8 +853,5 @@
   </footer>
 
   <script src="../script.js/estoque.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="/index.js"></script>
-  <script src="../script.js/menu.js"></script>
-
+</body>
 </html>
