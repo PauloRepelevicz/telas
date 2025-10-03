@@ -3,10 +3,7 @@ const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
 
 const app = express();
-const port = process.env.PORT || 5000;
-
-// Configure trust proxy for Replit environment
-app.set("trust proxy", true);
+const port = process.env.PORT || 3000;
 
 // Serve os arquivos estáticos da pasta "public"
 app.use(express.static("public"));
@@ -32,7 +29,7 @@ db.serialize(() => {
         cli_cpf VARCHAR(14) NOT NULL UNIQUE,
         cli_telefone VARCHAR(15),
         cli_data_nascimento DATE,
-        cli_email TEXT NOT NULL,        
+        cli_email TEXT NOT NULL,	
         cli_logradouro TEXT,
         cli_numero INTEGER,
         cli_bairro TEXT,
@@ -1174,120 +1171,6 @@ app.get("/buscar-cargos", (req, res) => {
     });
 });
 
-// app.get("/funcionario", (req, res) => {
-//     const cpf = req.query.cpf || ""; // Recebe o CPF da query string (se houver)
-//     if (cpf) {
-//         // Se CPF foi passado, busca funcionários que possuam esse CPF ou parte dele
-//         const query = `SELECT * FROM funcionario WHERE func_cpf LIKE ?`;
-
-//         db.all(query, [`%${cpf}%`], (err, rows) => {
-//             if (err) {
-//                 console.error(err);
-//                 return res
-//                     .status(500)
-//                     .json({ message: "Erro ao buscar funcionários." });
-//             }
-//             res.json(rows); // Retorna os funcionários encontrados ou um array vazio
-//         });
-//     } else {
-//         // Se CPF não foi passado, retorna todos os funcionários
-//         const query = `SELECT * FROM funcionario`;
-
-//         db.all(query, (err, rows) => {
-//             if (err) {
-//                 console.error(err);
-//                 return res
-//                     .status(500)
-//                     .json({ message: "Erro ao buscar funcionarios." });
-//             }
-//             res.json(rows); // Retorna todos os funcionários
-//         });
-//     }
-// });
-
-// //RESPONSIVIDADE
-// // Alternar menu em dispositivos móveis
-// document.addEventListener("DOMContentLoaded", function () {
-//     const toggleBtn = document.querySelector(".toggle-btn");
-//     const sidebar = document.getElementById("sidebar");
-
-//     if (toggleBtn && sidebar) {
-//         toggleBtn.addEventListener("click", function () {
-//             sidebar.classList.toggle("active");
-//         });
-//     }
-
-//     // Fechar menu ao clicar em um link (em mobile)
-//     const menuLinks = document.querySelectorAll(".sidebar a");
-//     menuLinks.forEach((link) => {
-//         link.addEventListener("click", function () {
-//             if (window.innerWidth <= 767) {
-//                 sidebar.classList.remove("active");
-//             }
-//         });
-//     });
-// });
-
-// // Alternar menu em dispositivos móveis
-// document.addEventListener("DOMContentLoaded", function () {
-//     const toggleBtn = document.querySelector(".toggle-btn");
-//     const sidebar = document.getElementById("sidebar");
-//     const overlay = document.createElement("div");
-
-//     // Criar overlay
-//     overlay.classList.add("overlay");
-//     document.body.appendChild(overlay);
-
-//     // Função para abrir o menu
-//     function openMenu() {
-//         sidebar.classList.add("active");
-//         overlay.classList.add("active");
-//         document.body.style.overflow = "hidden"; // Impede scroll no body
-//     }
-
-//     // Função para fechar o menu
-//     function closeMenu() {
-//         sidebar.classList.remove("active");
-//         overlay.classList.remove("active");
-//         document.body.style.overflow = ""; // Restaura scroll
-//     }
-
-//     // Evento de clique no botão toggle
-//     if (toggleBtn && sidebar) {
-//         toggleBtn.addEventListener("click", function (e) {
-//             e.stopPropagation();
-//             if (sidebar.classList.contains("active")) {
-//                 closeMenu();
-//             } else {
-//                 openMenu();
-//             }
-//         });
-//     }
-
-//     // Fechar menu ao clicar no overlay
-//     overlay.addEventListener("click", closeMenu);
-
-//     // Fechar menu ao clicar em um link (em mobile)
-//     const menuLinks = document.querySelectorAll(".sidebar a");
-//     menuLinks.forEach((link) => {
-//         link.addEventListener("click", function () {
-//             if (window.innerWidth <= 768) {
-//                 closeMenu();
-//             }
-//         });
-//     });
-
-//     // Fechar menu ao redimensionar a janela para tamanho maior
-//     window.addEventListener("resize", function () {
-//         if (window.innerWidth > 768) {
-//             closeMenu();
-//         }
-//     });
-// });
-
-///////////////////////////// FIM /////////////////////////////
-///////////////////////////// FIM /////////////////////////////
-///////////////////////////// FIM /////////////////////////////
 
 // Teste para verificar se o servidor está rodando
 app.get("/", (req, res) => {
@@ -1295,6 +1178,6 @@ app.get("/", (req, res) => {
 });
 
 // Iniciando o servidor
-app.listen(port, "0.0.0.0", () => {
-    console.log(`Servidor rodando em 0.0.0.0:${port}`);
+app.listen(port, () => {
+    console.log(`Servidor rodando na porta ${port}`);
 });
