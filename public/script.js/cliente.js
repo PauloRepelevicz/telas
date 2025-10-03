@@ -64,7 +64,7 @@ async function listarClientes() {
                     <td>${clientes.cli_email}</td>
                     <td>${formatarTelefone(clientes.cli_telefone || "")}</td>
                     <td>${formatarCEP(clientes.cli_cep || "")}</td>
-                    <td><button class="btn-update" onclick="editarCliente('${clientes.cli_cpf}')">Editar</button></td>
+                    <td><button onclick="editarCliente('${clientes.cli_cpf}')">Editar</button></td>
                 `;
                 tabela.appendChild(linha);
             });
