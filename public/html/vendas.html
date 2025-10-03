@@ -1,165 +1,844 @@
+<!DOCTYPE html>
 <html lang="pt-br">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MAGUILA - Sistema de Vendas</title>
-    <link rel="stylesheet" href="../css/style.css" />
     <link rel="shortcut icon" type="image/jp" href="../imagens/UI.png" />
-  </head>
-  <body onload="buscarProdutos()">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f3d89b;
+            color: #333;
+            min-width: 200px;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+            border-bottom: solid 2px whitesmoke;
+            box-shadow: 0 0px 15px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+
+        header h1 {
+            font-size: clamp(1.2rem, 4vw, 2rem);
+            margin: 0.5rem 0;
+        }
+
+        header img {
+            width: 120px;
+            max-width: 30vw;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .sidebar {
+            width: 275px;
+            background-color: #2c2c2c;
+            color: #fff;
+            min-height: 100vh;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            padding: 1rem 0;
+            background-color: #444;
+            font-size: clamp(1rem, 2vw, 1.5rem);
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar ul li {
+            border-bottom: 1px solid #444;
+        }
+
+        .sidebar ul li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 20px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #f3d89b;
+            color: #2c2c2c;
+            font-weight: bold;
+            border-radius: 6px;
+        }
+
+        .sidebar ul li a:active {
+            background-color: #dcbf7a;
+        }
+
+        .toggle-btn {
+            display: none;
+            background-color: #444;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            position: absolute;
+            left: 1rem;
+            top: 1rem;
+            z-index: 1000;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .main {
+            flex: 1;
+            padding: 2rem;
+            min-width: 0;
+            transition: margin-left 0.3s ease;
+        }
+
+        .card {
+            background-color: #fff;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid #000000;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            text-align: center;
+            background-color: #333;
+            color: #fff;
+            padding: 2rem 1rem;
+        }
+
+        footer a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        footer img {
+            width: 70px;
+            max-width: 20vw;
+        }
+
+        /* Estilos específicos para a página de vendas */
+        .vendas-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-section {
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 3px solid #333;
+        }
+
+        .form-section h3 {
+            margin-bottom: 1rem;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 0.5rem;
+        }
+
+        .center-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin: 20px 0;
+        }
+
+        .center-form-group {
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .center-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .center-form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            text-align: center;
+            transition: border 0.3s;
+        }
+
+        .center-form-group input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .center-actions {
+            margin-top: 1rem;
+        }
+
+        .cliente-info-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f3d89b;
+            border-radius: 6px;
+            border: 1px solid #dcbf7a;
+            text-align: center;
+        }
+
+        .produto-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .produto-actions {
+            margin-top: 1rem;
+        }
+
+        .venda-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .carrinho-section {
+            margin-top: 2rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .table-clientes {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-clientes th {
+            background-color: #333;
+            color: #fff;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .table-clientes td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #ddd;
+            color: #555;
+        }
+
+        .table-clientes tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table-clientes tr:hover {
+            background-color: #f3d89b40;
+            transition: 0.3s;
+        }
+
+        .total-venda-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f3d89b;
+            border-radius: 6px;
+            border: 1px solid #dcbf7a;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .busca-historico {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-submit,
+        .btn-reset,
+        .btn-update {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            min-width: 120px;
+            min-height: 44px;
+        }
+
+        .btn-update {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        .btn-update:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-submit {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background-color: #45a049;
+        }
+
+        .btn-reset {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background-color: #d32f2f;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* Media Queries para responsividade */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 230px;
+            }
+        }
+
+        @media (max-width: 968px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                width: 200px;
+            }
+
+            .main {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                transform: translateX(-100%);
+                z-index: 999;
+                height: 100%;
+                width: 275px;
+                top: 0;
+                left: 0;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+                box-shadow: 3px 0 15px rgba(0, 0, 0, 0.3);
+            }
+
+            .toggle-btn {
+                display: block;
+            }
+
+            .main {
+                padding: 1rem;
+                width: 100%;
+                margin-left: 0 !important;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 0.6rem;
+            }
+
+            .btn-submit,
+            .btn-reset,
+            .btn-update {
+                padding: 0.6rem 1.2rem;
+            }
+
+            .table-clientes th,
+            .table-clientes td {
+                padding: 0.5rem;
+            }
+
+            .venda-actions {
+                flex-direction: column;
+            }
+
+            .venda-actions button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 0.8rem;
+            }
+
+            header h1 {
+                font-size: 1.4rem;
+            }
+
+            header img {
+                width: 90px;
+            }
+
+            .main {
+                padding: 0.8rem;
+            }
+
+            .card {
+                padding: 0.8rem;
+                margin-bottom: 1rem;
+            }
+
+            .form-group {
+                margin-bottom: 0.8rem;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 0.5rem;
+            }
+
+            .btn-submit,
+            .btn-reset,
+            .btn-update {
+                padding: 0.5rem 1rem;
+                min-width: 100px;
+            }
+
+            .table-clientes {
+                font-size: 0.75rem;
+            }
+
+            .table-clientes th,
+            .table-clientes td {
+                padding: 0.4rem;
+            }
+
+            footer {
+                padding: 1.5rem 0.8rem;
+            }
+
+            footer img {
+                width: 50px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            header h1 {
+                font-size: 1.2rem;
+            }
+
+            header img {
+                width: 70px;
+            }
+
+            .toggle-btn {
+                padding: 8px;
+                min-width: 40px;
+                min-height: 40px;
+            }
+
+            .card h2 {
+                font-size: 1.2rem;
+            }
+
+            .form-group label {
+                font-size: 0.9rem;
+            }
+
+            .btn-submit,
+            .btn-reset,
+            .btn-update {
+                font-size: 0.9rem;
+                padding: 0.5rem 0.8rem;
+            }
+
+            .table-clientes {
+                font-size: 0.7rem;
+            }
+
+            .table-clientes th,
+            .table-clientes td {
+                padding: 0.3rem;
+            }
+        }
+
+        /* Ajustes para telas muito pequenas (até 200px) */
+        @media (max-width: 200px) {
+            header h1 {
+                font-size: 1rem;
+            }
+
+            header img {
+                width: 60px;
+            }
+
+            .toggle-btn {
+                padding: 6px;
+                min-width: 36px;
+                min-height: 36px;
+                font-size: 12px;
+            }
+
+            .card {
+                padding: 0.5rem;
+            }
+
+            .card h2 {
+                font-size: 1rem;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 0.4rem;
+                font-size: 14px;
+            }
+
+            .btn-submit,
+            .btn-reset,
+            .btn-update {
+                padding: 0.4rem 0.6rem;
+                font-size: 12px;
+                min-width: 80px;
+                min-height: 36px;
+            }
+
+            .table-clientes th,
+            .table-clientes td {
+                padding: 0.3rem;
+                font-size: 10px;
+            }
+
+            footer {
+                padding: 1rem 0.5rem;
+                font-size: 0.8rem;
+            }
+
+            footer img {
+                width: 40px;
+            }
+        }
+    </style>
+</head>
+<body onload="buscarProdutos()">
     <header>
-      <h1>Sistema de Mercado Maguila</h1>
-      <img src="../imagens/UI.png" alt="Logo Maguila" />
-      <button class="toggle-btn">☰ Menu</button>
+        <h1>Sistema de Mercado Maguila</h1>
+        <img src="../imagens/UI.png" alt="Logo Maguila" />
+        <button class="toggle-btn" id="toggleBtn">☰ Menu</button>
     </header>
+    <div class="overlay" id="overlay"></div>
 
     <div class="container">
-      <nav class="sidebar" id="sidebar">
-        <h2>Menu</h2>
-        <ul>
-          <a href="../index.html" class="links"><li>Dashboard</li></a>
-          <a href="estoque.html" class="links"><li>Estoque</li></a>
-          <a href="funcionario.html" class="links"
-            ><li>Cadastro de Funcionário</li></a
-          >
-          <a href="cliente.html" class="links"><li>Cadastro de Cliente</li></a>
-          <a href="fornecedor.html" class="links"
-            ><li>Cadastro de Fornecedor</li></a
-          >
-          <a href="cargo.html" class="links"><li>Cadastro de Cargo</li></a>
-          <a href="vendas.html" class="links active"><li>Vendas</li></a>
-        </ul>
-      </nav>
-      <main class="main">
-        <section class="card">
-          <h2>Relatório de Vendas</h2>
-          <!-- Busca do Cliente -->
-          <div class="center-container">
-            <form id="clienteForm">
-              <div class="center-form-group">
-                <label for="cpfcliente">CPF do Cliente:</label>
-                <input
-                  class="coisacli"
-                  type="text"
-                  id="cpfcliente"
-                  name="cpfcliente"
-                  placeholder="Digite o CPF do cliente"
-                  maxlength="14"
-                  required
-                />
-              </div>
-              <div class="center-actions">
-                <button type="button" onclick="buscarCliente()" class="btn-submit"
-                >
-                  Buscar Cliente
-                </button>
-              </div>
-            </form>
-            <div id="cliente-info" class="form-group"></div>
-          </div>
+        <nav class="sidebar" id="sidebar">
+            <h2>Menu</h2>
+            <ul>
+                <li><a href="../index.html">📊 Dashboard</a></li>
+                <li><a href="estoque.html">📦 Estoque</a></li>
+                <li><a href="funcionario.html">👨‍💼 Funcionários</a></li>
+                <li><a href="cliente.html">🧑‍🤝‍🧑 Clientes</a></li>
+                <li><a href="fornecedor.html">🚚 Fornecedores</a></li>
+                <li><a href="cargo.html">💼 Cargos</a></li>
+                <li><a href="vendas.html" class="active">💰 Vendas</a></li>
+            </ul>
+        </nav>
 
-          <!-- Adicionar Produto -->
-          <form id="produtoForm">
-            <div class="form-group">
-              <label for="produtos-forSelecionados">Produtos:</label>
-              <select id="produtosSelecionados" name="produtos" required>
-                <option value="">Selecione...</option>
-                <!-- Os produtos serão carregados dinamicamente via JavaScript -->
-              </select>
+        <main class="main" id="mainContent">
+            <div class="vendas-container">
+                <!-- Seção de Nova Venda -->
+                <section class="card venda-form-section">
+                    <h2>Nova Venda</h2>
+
+                    <div class="form-grid">
+                        <!-- Busca do Cliente -->
+                        <div class="form-section cliente-section">
+                            <h3>Dados do Cliente</h3>
+                            <div class="center-container">
+                                <form id="clienteForm">
+                                    <div class="center-form-group">
+                                        <label for="cpfcliente">CPF do Cliente:</label>
+                                        <input
+                                            type="text"
+                                            id="cpfcliente"
+                                            name="cpfcliente"
+                                            placeholder="Digite o CPF do cliente"
+                                            maxlength="14"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="center-actions">
+                                        <button type="button" onclick="buscarCliente()" class="btn-submit">
+                                            Buscar Cliente
+                                        </button>
+                                    </div>
+                                </form>
+                                <div id="cliente-info" class="cliente-info-box"></div>
+                            </div>
+                        </div>
+
+                        <!-- Adicionar Produto -->
+                        <div class="form-section produto-section">
+                            <h3>Adicionar Produto</h3>
+                            <form id="produtoForm" class="produto-form">
+                                <div class="form-group">
+                                    <label for="produtosSelecionados">Produtos:</label>
+                                    <select id="produtosSelecionados" name="produtos" required>
+                                        <option value="">Selecione...</option>
+                                        <!-- Os produtos serão carregados dinamicamente via JavaScript -->
+                                    </select>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="dataVen">Data:</label>
+                                        <input type="date" id="dataVen" name="dataVen" required />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="produtoQuantidade">Quantidade:</label>
+                                        <input
+                                            type="number"
+                                            id="produtoQuantidade"
+                                            name="produto-quantidade"
+                                            placeholder="Quantidade"
+                                            min="1"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <div class="form-actions produto-actions">
+                                    <button type="button" onclick="adicionarProdutoAoCarrinho()" class="btn-submit">
+                                        ➕ Adicionar ao Carrinho
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Finalizar Venda -->
+                    <div class="form-actions venda-actions">
+                        <button type="button" onclick="finalizarVenda()" class="btn-submit">✅ Finalizar Venda</button>
+                        <button type="button" onclick="limparVenda()" class="btn-reset">❌ Cancelar Venda</button>
+                    </div>
+                </section>
+
+                <!-- Carrinho de Compras -->
+                <section class="card carrinho-section">
+                    <h2>Carrinho de Compras</h2>
+                    <div class="table-container">
+                        <table class="table-clientes">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Produto</th>
+                                    <th>Quantidade</th>
+                                    <th>Preço Unitário</th>
+                                    <th>Subtotal</th>
+                                    <th>Opções</th>
+                                </tr>
+                            </thead>
+                            <tbody id="carrinho">
+                                <!-- Preenchido dinamicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="total-venda" class="total-venda-box">
+                        💵 <strong>Total:</strong> R$ 0,00
+                    </div>
+                </section>
+
+                <!-- Histórico de Vendas -->
+                <section class="card historico-section">
+                    <h2>Histórico de Vendas</h2>
+                    <div class="busca-historico">
+                        <div class="center-form-group">
+                            <label for="codiprodi">Código do Produto:</label>
+                            <input
+                                type="text"
+                                id="codiprodi"
+                                name="codigo-produto"
+                                placeholder="Digite o código do produto"
+                                maxlength="14"
+                            />
+                        </div>
+                        <div class="center-actions">
+                            <button type="button" onclick="listarHistorico()" class="btn-update">
+                                🔍 Listar Histórico
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="table-clientes">
+                            <thead>
+                                <tr>
+                                    <th>Código Produto</th>
+                                    <th>CPF Cliente</th>
+                                    <th>Data/Hora</th>
+                                    <th>Quantidade</th>
+                                    <th>Preço Unitário</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-clientes">
+                                <!-- Linhas serão preenchidas pelo JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
             </div>
-
-            <div class="form-group">
-              <label for="dataNasc">Data:</label>
-              <input type="date" id="dataVen" name="dataVen" required />
-            </div>
-
-            <div class="form-group">
-              <label id="produto-quantidade">Quantidade:</label>
-              <input
-                type="number"
-                id="produtoQuantidade"
-                name="produto-quantidade"
-                placeholder="Quantidade"
-                min="1"
-                required
-              />
-            </div>
-          </form>
-
-          <!-- Finalizar Venda -->
-          <div class="form-actions">
-            <button type="button" onclick="finalizarVenda()" class="btn-submit">
-              Finalizar Venda
-            </button>
-            <button type="button" onclick="limparVenda()" class="btn-reset">
-              Cancelar Venda
-            </button>
-            <button
-              type="button"
-              onclick="adicionarProdutoAoCarrinho()"
-              class="btn-submit"
-            >
-              Adicionar ao Carrinho
-            </button>
-          </div>
-        </section>
-        <section class="card">
-          <h2>Carrinho de Compras</h2>
-          <!-- Carrinho -->
-            <table class="table-clientes">
-              <thead>
-                <tr>
-                  <th>Código</th>
-                  <th>Produto</th>
-                  <th>Quantidade</th>
-                  <th>Preço Unitário</th>
-                  <th>Subtotal</th>
-                  <th>Opções</th>
-                </tr>
-              </thead>
-              <tbody id="carrinho">
-                <!-- Preenchido dinamicamente -->
-              </tbody>
-            </table>
-          </table>
-
-          <div id="total-venda" data-total="0">Total: R$ 0,00</div>
-          <h2>Consultar Histórico</h2>
-          
-          <button type="button" onclick="listarHistorico()" class="btn-submit">Listar Histórico</button>
-          <table border="1" class="table-clientes">
-          <thead>
-              <tr>
-                  <th>Código Produto</th>
-                  <th>CPF Cliente</th>
-                  <th>Data/Hora</th>
-                  <th>Quantidade</th>
-                  <th>Preço Unitário</th>
-                  <th>Total</th>
-              </tr>
-          </thead>
-          <tbody id="table-clientes">
-              <!-- Linhas serão preenchidas pelo JavaScript -->
-          </tbody>
-          </table>
-          
-        </section>
-      </main>
+        </main>
     </div>
+    <script>
+        // Função para o menu retrátil
+        const toggleBtn = document.getElementById('toggleBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const mainContent = document.getElementById('mainContent');
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+
+            // Impede a rolagem do corpo quando o menu está aberto
+            if (sidebar.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Fechar menu ao clicar em um link (para dispositivos móveis)
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+
+        // Fechar menu ao redimensionar a janela para um tamanho maior
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
 
     <footer>
-      <img src="../imagens/ccmlogo.jpeg" alt="" />
-      <img src="../imagens/estadologo.png" alt="" />
-      <p>© 2025 MAGUILA - Sistema de Mercado</p>
-      <p>Sistema feito por: PFP'S Enterprises</p>
-      <p>
-        <a href="#">Termos de Serviço</a> |
-        <a href="#">Política de Privacidade</a>
-      </p>
+        <img src="../imagens/ccmlogo.jpeg" alt="" />
+        <img src="../imagens/estadologo.png" alt="" />
+        <p>© 2025 MAGUILA - Sistema de Mercado</p>
+        <p>Sistema feito por: PFP'S Enterprises</p>
+        <p>
+            <a href="#">Termos de Serviço</a> |
+            <a href="#">Política de Privacidade</a>
+        </p>
     </footer>
-    
+
     <script src="../../index.js"></script>
     <script src="../script.js/vendas.js"></script>
-    <script src="../script.js/menu.js"></script>
-  </body>
+</body>
 </html>
