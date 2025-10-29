@@ -1,7 +1,11 @@
+// editar produto - algumas info n vai
+// vendas - finalizar venda nao funciona
+
+// falta login e mexer no dashboard (dps que terminar todos os outros)
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
-
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -29,7 +33,7 @@ db.serialize(() => {
         cli_cpf VARCHAR(14) NOT NULL UNIQUE,
         cli_telefone VARCHAR(15),
         cli_data_nascimento DATE,
-        cli_email TEXT NOT NULL,	
+        cli_email TEXT NOT NULL,
         cli_logradouro TEXT,
         cli_numero INTEGER,
         cli_bairro TEXT,
@@ -111,7 +115,7 @@ db.serialize(() => {
         ven_quantidade INTEGER,
         ven_preco_unitario REAL,
         ven_total REAL NOT NULL,
-        ven_forma_pagamento TEXT, 
+        ven_forma_pagamento TEXT,
         ven_status TEXT DEFAULT 'finalizada',
         FOREIGN KEY (cli_cpf) REFERENCES clientes(cli_cpf),
         FOREIGN KEY (prod_codigo) REFERENCES produto(prod_codigo)
@@ -125,7 +129,7 @@ db.serialize(() => {
         car_descricao TEXT,
         car_observacoes TEXT,
         car_codigo INTEGER UNIQUE
-    )
+        )
     `);
 
     console.log("Tabelas criadas com sucesso.");
@@ -133,8 +137,7 @@ db.serialize(() => {
 
 ///////////////////////////// Rotas para Clientes /////////////////////////////
 ///////////////////////////// Rotas para Clientes /////////////////////////////
-///////////////////////////// Rotas para Clientes /////////////////////////////
-
+///////////////////////////// Rotas para Clientes /////////////////////////////                                                                                                                    
 // Cadastrar cliente //
 app.post("/clientes", (req, res) => {
     console.log("Recebendo requisição de cadastro de cliente");
@@ -158,7 +161,7 @@ app.post("/clientes", (req, res) => {
         return res.status(400).send("Nome e CPF são obrigatórios.");
     }
 
-    const query = `INSERT INTO clientes (cli_nome, cli_cpf, cli_telefone, cli_data_nascimento, cli_email, cli_logradouro, cli_numero, cli_bairro, cli_cidade, cli_estado, cli_cep, cli_complemento, cli_observacoes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO clientes (cli_nome, cli_cpf, cli_telefone, cli_data_nascimento, cli_email, cli_logradouro, cli_numero, cli_bairro, cli_cidade, cli_estado, cli_cep, cli_complemento, cli_observacoes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`; 
 
     db.run(
         query,
@@ -972,9 +975,9 @@ app.put("/produto/codigo/:codigo", (req, res) => {
 ///////////////////////////// Rotas para Vendas /////////////////////////////
 
 app.post("/vendas", (req, res) => {
-    const { cliente_cpf, itens } = req.body;
+    const { cli_cpf, itens } = req.body;
 
-    if (!cliente_cpf || !itens || itens.length === 0) {
+    if (!cli_cpf || !itens || itens.length === 0) {
         return res.status(400).send("Dados da venda incompletos.");
     }
 
@@ -1028,7 +1031,7 @@ app.post("/vendas", (req, res) => {
                     `INSERT INTO vendas (cli_cpf, prod_codigo, ven_quantidade, ven_preco_unitario, ven_total, ven_data_hora) 
                        VALUES (?, ?, ?, ?, ?, ?)`,
                     [
-                        cliente_cpf,
+                        cli_cpf,
                         codigoProduto,
                         quantidade,
                         precoUnitario,
@@ -1078,7 +1081,6 @@ app.post("/vendas", (req, res) => {
 });
 
 // /////////////////////////////// Rotas para Buscar Cliente /////////////////////////////
-
 app.get("/clientes/:cli_cpf", (req, res) => {
     const cpf = req.params.cli_cpf;
     db.get("SELECT * FROM clientes WHERE cli_cpf = ?", [cpf], (err, row) => {
@@ -1171,6 +1173,152 @@ app.get("/buscar-cargos", (req, res) => {
     });
 });
 
+//////EDITAR//////
+app.get("/produto-editar", (req, res) => {
+    const codigo = req.query.codigo || ""; // Recebe o ID da query string (se houver)
+    console.log(codigo);
+    if (codigo) {
+        // Se ID foi passado, busca produtos que possuam esse ID ?`;
+        const query = `
+                        SELECT
+                        produto.prod_id,
+                        produto.prod_nome,
+                        produto.prod_codigo,
+                        produto.prod_preco_venda,
+                        produto.prod_quantidade_estoque,
+                        produto.cat_nome,
+                        fornecedor.forn_nome AS forn_nome
+                        FROM produto
+                        JOIN fornecedor ON produto.forn_id = fornecedor.forn_id
+                        WHERE prod_codigo = ?
+                        `;
+
+        db.all(query, [codigo], (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res
+                    .status(500)
+                    .json({ message: "Erro ao buscar produtosindex.js." });
+            }
+            res.json(rows); // Retorna os produtos encontrados ou um array vazio
+        });
+    }
+});
+
+// app.get("/funcionario", (req, res) => {
+//     const cpf = req.query.cpf || ""; // Recebe o CPF da query string (se houver)
+//     if (cpf) {
+//         // Se CPF foi passado, busca funcionários que possuam esse CPF ou parte dele
+//         const query = `SELECT * FROM funcionario WHERE func_cpf LIKE ?`;
+
+//         db.all(query, [`%${cpf}%`], (err, rows) => {
+//             if (err) {
+//                 console.error(err);
+//                 return res
+//                     .status(500)
+//                     .json({ message: "Erro ao buscar funcionários." });
+//             }
+//             res.json(rows); // Retorna os funcionários encontrados ou um array vazio
+//         });
+//     } else {
+//         // Se CPF não foi passado, retorna todos os funcionários
+//         const query = `SELECT * FROM funcionario`;
+
+//         db.all(query, (err, rows) => {
+//             if (err) {
+//                 console.error(err);
+//                 return res
+//                     .status(500)
+//                     .json({ message: "Erro ao buscar funcionarios." });
+//             }
+//             res.json(rows); // Retorna todos os funcionários
+//         });
+//     }
+// });
+
+// //RESPONSIVIDADE
+// // Alternar menu em dispositivos móveis
+// document.addEventListener("DOMContentLoaded", function () {
+//     const toggleBtn = document.querySelector(".toggle-btn");
+//     const sidebar = document.getElementById("sidebar");
+
+//     if (toggleBtn && sidebar) {
+//         toggleBtn.addEventListener("click", function () {
+//             sidebar.classList.toggle("active");
+//         });
+//     }
+
+//     // Fechar menu ao clicar em um link (em mobile)
+//     const menuLinks = document.querySelectorAll(".sidebar a");
+//     menuLinks.forEach((link) => {
+//         link.addEventListener("click", function () {
+//             if (window.innerWidth <= 767) {
+//                 sidebar.classList.remove("active");
+//             }
+//         });
+//     });
+// });
+
+// // Alternar menu em dispositivos móveis
+// document.addEventListener("DOMContentLoaded", function () {
+//     const toggleBtn = document.querySelector(".toggle-btn");
+//     const sidebar = document.getElementById("sidebar");
+//     const overlay = document.createElement("div");
+
+//     // Criar overlay
+//     overlay.classList.add("overlay");
+//     document.body.appendChild(overlay);
+
+//     // Função para abrir o menu
+//     function openMenu() {
+//         sidebar.classList.add("active");
+//         overlay.classList.add("active");
+//         document.body.style.overflow = "hidden"; // Impede scroll no body
+//     }
+
+//     // Função para fechar o menu
+//     function closeMenu() {
+//         sidebar.classList.remove("active");
+//         overlay.classList.remove("active");
+//         document.body.style.overflow = ""; // Restaura scroll
+//     }
+
+//     // Evento de clique no botão toggle
+//     if (toggleBtn && sidebar) {
+//         toggleBtn.addEventListener("click", function (e) {
+//             e.stopPropagation();
+//             if (sidebar.classList.contains("active")) {
+//                 closeMenu();
+//             } else {
+//                 openMenu();
+//             }
+//         });
+//     }
+
+//     // Fechar menu ao clicar no overlay
+//     overlay.addEventListener("click", closeMenu);
+
+//     // Fechar menu ao clicar em um link (em mobile)
+//     const menuLinks = document.querySelectorAll(".sidebar a");
+//     menuLinks.forEach((link) => {
+//         link.addEventListener("click", function () {
+//             if (window.innerWidth <= 768) {
+//                 closeMenu();
+//             }
+//         });
+//     });
+
+//     // Fechar menu ao redimensionar a janela para tamanho maior
+//     window.addEventListener("resize", function () {
+//         if (window.innerWidth > 768) {
+//             closeMenu();
+//         }
+//     });
+// });
+
+///////////////////////////// FIM /////////////////////////////
+///////////////////////////// FIM /////////////////////////////
+///////////////////////////// FIM /////////////////////////////
 
 // Teste para verificar se o servidor está rodando
 app.get("/", (req, res) => {
