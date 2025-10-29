@@ -82,7 +82,7 @@ async function listarProdutos() {
                 tabela.appendChild(linha);
             });
         } else {
-            alert("Erro ao listar produtos.1111");
+            alert("Erro ao listar produtos.1");
         }
     } catch (error) {
         console.error("Erro ao listar produtos:222222222", error);
@@ -90,11 +90,10 @@ async function listarProdutos() {
     }
 }
 
-
 ///////////////////////////// EDITAR ESTOQUE /////////////////////////////
 async function editarProdutos(codigo) {
     try {
-        const response = await fetch(`/produto?codigo=${codigo}`);
+        const response = await fetch(`/produto-editar?codigo=${codigo}`);
         const produtos = await response.json();
 
         if (produtos.length === 0) {
@@ -105,25 +104,22 @@ async function editarProdutos(codigo) {
         const produto = produtos[0];
 
         // Preenche os campos do formulário
-        document.getElementById("nomeprod").value = 
-            produto.prod_nome || "";
-        document.getElementById("codprod").value = 
-            produto.prod_codigo || "";
+        document.getElementById("nomeprod").value = produto.prod_nome || "";
+        document.getElementById("codprod").value = produto.prod_codigo || "";
         document.getElementById("precoprod").value =
             produto.prod_preco_venda || "";
-        document.getElementById("descricaoprod").value = 
+        document.getElementById("descricaoprod").value =
             produto.prod_descricao || "";
-        document.getElementById("categoriaprod").value =
-            produto.cat_nome || "";
+        document.getElementById("categoriaprod").value = produto.cat_nome || "";
         document.getElementById("quantidadeprod").value =
             produto.prod_quantidade_estoque || "";
         document.getElementById("emergenciaprod").value =
-            produto.prod_quantidade_minimo || "";
+            produto.prod_estoque_minimo || "";
         document.getElementById("unidademedidaprod").value =
-            produto.prod_unidade_medida|| "";
+            produto.prod_unidade_medida || "";
         document.getElementById("fornecedoresSelecionados").value =
             produto.forn_id || "";
-        
+
         // Rola a página para o formulário
         document.getElementById("nomeprod").scrollIntoView();
     } catch (error) {
@@ -131,7 +127,6 @@ async function editarProdutos(codigo) {
         alert("Erro ao carregar dados do produto.");
     }
 }
-  
 
 // ----------------- LIMPAR CAMPO -----------------
 
@@ -179,6 +174,6 @@ async function atualizarProduto() {
         }
     } catch (error) {
         console.error("Erro ao atualizar Produto:", error);
-        alert("Erro ao atualizar Produto.11111111");
+        alert("Erro ao atualizar Produto.11");
     }
 }

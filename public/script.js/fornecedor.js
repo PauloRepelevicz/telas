@@ -94,7 +94,7 @@ async function editarFornecedores(cnpj) {
         document.getElementById("emailforn").value =
             fornecedor.forn_email || "";
         document.getElementById("enderecoforn").value =
-            fornecedor.func_logradouro || "";
+            fornecedor.forn_logradouro || "";
         document.getElementById("numeroforn").value =
             fornecedor.forn_numero || "";
         document.getElementById("bairroforn").value =

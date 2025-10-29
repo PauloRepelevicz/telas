@@ -1,3 +1,5 @@
+// rever linha 101
+
 // Função para buscar cliente pelo CPF
 function buscarCliente() {
   const cpf = document.getElementById("cpfcliente").value;
@@ -69,7 +71,7 @@ function adicionarProdutoNaTabela(produto, quantidade) {
     <td>${quantidade}</td>
     <td>R$ ${produto.prod_preco_venda.toFixed(2)}</td>
     <td>R$ ${subtotal.toFixed(2)}</td>
-    <td><button onclick="removerProduto(this, ${subtotal})">Remover</button></td>
+    <td><button class="btn-update" onclick="removerProduto(this, ${subtotal})">Remover</button></td>
   `;
 
   carrinhoBody.appendChild(novaLinha);
@@ -126,7 +128,7 @@ function finalizarVenda() {
 
   const venda = {
     cliente_cpf: cpfCliente,
-    itens,
+    itens
   };
 
   fetch("/vendas", {
