@@ -24,7 +24,124 @@ const db = new sqlite3.Database("./database.db", (err) => {
     }
 });
 
-// Criação das tabelas
+// // Criação das tabelas
+// db.serialize(() => {
+//     db.run(`
+//     CREATE TABLE IF NOT EXISTS clientes(
+//         cli_id INTEGER PRIMARY KEY AUTOINCREMENT,
+//         cli_nome VARCHAR(100) NOT NULL,
+//         cli_cpf VARCHAR(14) NOT NULL UNIQUE,
+//         cli_telefone VARCHAR(15),
+//         cli_data_nascimento DATE,
+//         cli_email TEXT NOT NULL,
+//         cli_logradouro TEXT,
+//         cli_numero INTEGER,
+//         cli_bairro TEXT,
+//         cli_cidade TEXT,
+//         cli_estado TEXT,
+//         cli_cep VARCHAR(10),
+//         cli_complemento TEXT,
+//         cli_observacoes TEXT
+//         )
+//     `);
+//     db.run(`
+//         CREATE TABLE IF NOT EXISTS login(
+//             login_id INTEGER PRIMARY KEY AUTOINCREMENT,
+//             login_nome VARCHAR(20) NOT NULL,
+//             login_senha VARCHAR(30)
+//             )
+//         `);
+//     db.run(`
+//     CREATE TABLE IF NOT EXISTS funcionario(
+//          func_id INTEGER PRIMARY KEY AUTOINCREMENT,
+//          func_nome VARCHAR(100) NOT NULL,
+//          func_cpf VARCHAR(14) NOT NULL UNIQUE,
+//          func_telefone VARCHAR(15),
+//          func_email VARCHAR(100),
+//          func_datanascimento DATE,
+//          func_genero VARCHAR(2),
+//          func_logradouro TEXT,
+//          func_numero INTEGER,
+//          func_bairro TEXT,
+//          func_cidade TEXT,
+//          func_estado TEXT,
+//          func_cep VARCHAR(10),
+//          func_complemento TEXT,
+//          func_observacoes TEXT,
+//          car_id INTEGER,
+//          FOREIGN KEY (car_id) REFERENCES cargo(car_id)
+//         )
+//     `);
+//     db.run(`
+//     CREATE TABLE IF NOT EXISTS categoria(
+//         cat_id INTEGER PRIMARY KEY AUTOINCREMENT,
+//         cat_nome VARCHAR(50) NOT NULL UNIQUE,
+//         cat_descricao TEXT
+//         )
+//     `);
+//     db.run(`
+//     CREATE TABLE IF NOT EXISTS produto(
+//         prod_id INTEGER PRIMARY KEY AUTOINCREMENT,
+//         prod_nome TEXT NOT NULL,
+//         prod_codigo INTEGER UNIQUE,
+//         prod_descricao TEXT,
+//         prod_preco_venda REAL NOT NULL,
+//         prod_quantidade_estoque INTEGER DEFAULT 0,
+//         cat_nome TEXT NOT NULL,
+//         forn_id INTEGER,
+//         prod_data_validade DATE,
+//         prod_unidade_medida TEXT,
+//         prod_estoque_minimo REAL,
+//         FOREIGN KEY (cat_nome) REFERENCES categoria(cat_nome),
+//         FOREIGN KEY (forn_id) REFERENCES fornecedor(forn_id)
+//         )
+//     `);
+//     db.run(`
+//     CREATE TABLE IF NOT EXISTS fornecedor(
+//         forn_id INTEGER PRIMARY KEY AUTOINCREMENT,
+//         forn_nome TEXT NOT NULL UNIQUE,
+//         forn_cnpj TEXT UNIQUE,
+//         forn_telefone TEXT,
+//         forn_email TEXT,
+//         forn_logradouro TEXT,
+//         forn_numero INTEGER,
+//         forn_bairro TEXT,
+//         forn_cidade TEXT,
+//         forn_estado TEXT,
+//         forn_cep VARCHAR(10),
+//         forn_complemento TEXT,
+//         forn_observacoes TEXT
+//         )
+//     `);
+//     db.run(`
+//     CREATE TABLE IF NOT EXISTS vendas(
+//         ven_id INTEGER PRIMARY KEY AUTOINCREMENT,
+//         ven_data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
+//         cli_cpf VARCHAR(14) NOT NULL,
+//         prod_codigo INTEGER,
+//         ven_quantidade INTEGER,
+//         ven_preco_unitario REAL,
+//         ven_total REAL NOT NULL,
+//         ven_forma_pagamento TEXT,
+//         ven_status TEXT DEFAULT 'finalizada',
+//         FOREIGN KEY (cli_cpf) REFERENCES clientes(cli_cpf),
+//         FOREIGN KEY (prod_codigo) REFERENCES produto(prod_codigo)
+//         )
+//     `);
+//     db.run(`
+//     CREATE TABLE IF NOT EXISTS cargo(
+//         car_id INTEGER PRIMARY KEY AUTOINCREMENT,
+//         car_nome VARCHAR(50) NOT NULL UNIQUE,
+//         car_salario REAL,
+//         car_descricao TEXT,
+//         car_observacoes TEXT,
+//         car_codigo INTEGER UNIQUE
+//         )
+//     `);
+
+//     console.log("Tabelas criadas com sucesso.");
+// });
+
 db.serialize(() => {
     db.run(`
     CREATE TABLE IF NOT EXISTS clientes(
@@ -44,6 +161,14 @@ db.serialize(() => {
         cli_observacoes TEXT
         )
     `);
+    db.run(`
+        CREATE TABLE IF NOT EXISTS login(
+            login_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            login_nome VARCHAR(20) NOT NULL,
+            login_senha VARCHAR(30),
+            login_tipo VARCHAR(20) DEFAULT 'funcionario'
+            )
+        `);
     db.run(`
     CREATE TABLE IF NOT EXISTS funcionario(
          func_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -133,8 +258,47 @@ db.serialize(() => {
     `);
 
     console.log("Tabelas criadas com sucesso.");
+
+    // Inserir usuários de login (funcionário e gerente)
+    const insertLogin = db.prepare(`
+        INSERT OR IGNORE INTO login (login_nome, login_senha, login_tipo) 
+        VALUES (?, ?, ?)
+    `);
+
+    // Inserir funcionário
+    insertLogin.run('funcionario', 'senha123', 'funcionario');
+
+    // Inserir gerente
+    insertLogin.run('gerente', 'admin123', 'gerente');
+
+    insertLogin.finalize();
+
+    console.log("Usuários de login inseridos com sucesso:");
+    console.log("Funcionário - Usuário: funcionario, Senha: senha123");
+    console.log("Gerente - Usuário: gerente, Senha: admin123");
+
+    // Verificar os dados inseridos
+    db.each("SELECT * FROM login", (err, row) => {
+        if (err) {
+            console.error("Erro ao verificar dados:", err);
+        } else {
+            console.log(`Usuário: ${row.login_nome}, Tipo: ${row.login_tipo}`);
+        }
+    });
 });
 
+// Código para verificar os usuários inseridos
+db.all("SELECT * FROM login", (err, rows) => {
+    if (err) {
+        console.error("Erro ao consultar login:", err);
+    } else {
+        console.log("\n=== USUÁRIOS CADASTRADOS NO SISTEMA ===");
+        rows.forEach(row => {
+            console.log(`ID: ${row.login_id} | Usuário: ${row.login_nome} | Tipo: ${row.login_tipo} | Senha: ${row.login_senha}`);
+        });
+        console.log("=====================================\n");
+    }
+});
 ///////////////////////////// Rotas para Clientes /////////////////////////////
 ///////////////////////////// Rotas para Clientes /////////////////////////////
 ///////////////////////////// Rotas para Clientes /////////////////////////////                                                                                                                    
@@ -275,173 +439,6 @@ app.put("/clientes/cpf/:cpf", (req, res) => {
 
 ///////////////////////////// Rotas para Funcionarios /////////////////////////////
 ///////////////////////////// Rotas para Funcionarios /////////////////////////////
-///////////////////////////// Rotas para Funcionarios /////////////////////////////
-
-// // Cadastrar funcionario
-// app.post("/funcionario", (req, res) => {
-//     console.log("Recebendo requisição de cadastro de Funcionário");
-//     const {
-//         nome,
-//         cpf,
-//         telefone,
-//         email,
-//         data_nascimento,
-//         genero,
-//         logradouro,
-//         numero,
-//         bairro,
-//         cidade,
-//         estado,
-//         cep,
-//         complemento,
-//         observacoes,
-//         cargo,
-//     } = req.body;
-
-//     if (!nome || !cpf) {
-//         return res.status(400).send("Nome e CPF são obrigatórios.");
-//     }
-
-//     const query = `INSERT INTO funcionario (func_nome, func_cpf, func_telefone, func_email, func_datanascimento, func_genero, func_logradouro, func_numero, func_bairro, func_cidade, func_estado, func_cep, func_complemento, func_observacoes, car_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-
-//     db.run(
-//         query,
-//         [
-//             nome,
-//             cpf,
-//             telefone,
-//             email,
-//             data_nascimento,
-//             genero,
-//             logradouro,
-//             numero,
-//             bairro,
-//             cidade,
-//             estado,
-//             cep,
-//             complemento,
-//             observacoes,
-//             cargo,
-//         ],
-
-//         function (err) {
-//             if (err) {
-//                 return res.status(500).send("Erro ao cadastrar funcionario..");
-//             }
-//             res.status(201).send({
-//                 id: this.lastID,
-//                 message: "Funcionário cadastrado com sucesso.",
-//             });
-//         },
-//     );
-// });
-
-// // Listar funcionários
-// // Endpoint para listar todos os funcionários ou buscar por CPF
-// app.get("/funcionario", (req, res) => {
-//     const cpf = req.query.cpf || ""; // Recebe o CPF da query string (se houver)
-//     if (cpf) {
-//         // Se CPF foi passado, busca funcionários que possuam esse CPF ou parte dele
-//         const query = `SELECT
-//                             funcionario.func_id,
-//                             funcionario.func_nome,
-//                             funcionario.func_cpf,
-//                             funcionario.func_email,
-//                             funcionario.func_telefone,
-//                             funcionario.func_logradouro,
-//                             cargo.car_nome AS car_nome
-//                             FROM funcionario
-//                             JOIN cargo ON funcionario.car_id = cargo.car_id
-//                             WHERE func_cpf LIKE ?`;
-
-//         db.all(query, [`%${cpf}%`], (err, rows) => {
-//             if (err) {
-//                 console.error(err);
-//                 return res
-//                     .status(500)
-//                     .json({ message: "Erro ao buscar funcionários." });
-//             }
-//             res.json(rows); // Retorna os funcionários encontrados ou um array vazio
-//         });
-//         //alert("SUJOU MEU PAU FOI DE COCOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-//     } else {
-//         // Se CPF não foi passado, retorna todos os funcionários
-//         const query = `SELECT
-//                             funcionario.func_id,
-//                             funcionario.func_nome,
-//                             funcionario.func_cpf,
-//                             funcionario.func_email,
-//                             funcionario.func_telefone,
-//                             funcionario.func_logradouro,
-//                             cargo.car_nome AS car_nome
-//                             FROM funcionario
-//                             JOIN cargo ON funcionario.car_id = cargo.car_id
-//                             `;
-
-//         db.all(query, (err, rows) => {
-//             if (err) {
-//                 console.error(err);
-//                 return res
-//                     .status(500)
-//                     .json({ message: "Erro ao buscar funcionarios." });
-//             }
-//             res.json(rows); // Retorna todos os funcionários
-//         });
-//     }
-// });
-
-// // Atualizar funcionário
-// app.put("/funcionario/cpf/:cpf", (req, res) => {
-//     const { cpf } = req.params;
-//     const {
-//         nome,
-//         telefone,
-//         email,
-//         data_nascimento,
-//         logradouro,
-//         numero,
-//         bairro,
-//         cidade,
-//         estado,
-//         cep,
-//         complemento,
-//         observacoes,
-//         cargo,
-//     } = req.body;
-
-//     const query = `UPDATE funcionario SET func_nome = ?, func_telefone = ?, func_email = ?, func_datanascimento = ?, func_logradouro = ?, func_numero = ?, func_bairro = ?, func_cidade = ?, func_estado = ?, func_cep = ?, func_complemento = ?, func_observacoes = ?, car_id = ? WHERE func_cpf = ?`;
-//     db.run(
-//         query,
-//         [
-//             nome,
-//             telefone,
-//             email,
-//             data_nascimento,
-//             logradouro,
-//             numero,
-//             bairro,
-//             cidade,
-//             estado,
-//             cep,
-//             complemento,
-//             observacoes,
-//             cargo,
-//             cpf,
-//         ],
-//         function (err) {
-//             if (err) {
-//                 return res
-//                     .status(500)
-//                     .send("Erro ao atualizar funcionário.~~~~~~");
-//             }
-//             if (this.changes === 0) {
-//                 return res.status(404).send("Funcionário não encontrado.");
-//             }
-//             res.send("Funcionário atualizado com sucesso.");
-//         },
-//     );
-// });
-
 ///////////////////////////// Rotas para Funcionarios /////////////////////////////
 
 // Cadastrar funcionario
@@ -1205,116 +1202,48 @@ app.get("/produto-editar", (req, res) => {
     }
 });
 
-// app.get("/funcionario", (req, res) => {
-//     const cpf = req.query.cpf || ""; // Recebe o CPF da query string (se houver)
-//     if (cpf) {
-//         // Se CPF foi passado, busca funcionários que possuam esse CPF ou parte dele
-//         const query = `SELECT * FROM funcionario WHERE func_cpf LIKE ?`;
+///////////////////////////// Rotas para Login /////////////////////////////
+///////////////////////////// Rotas para Login /////////////////////////////
+///////////////////////////// Rotas para Login /////////////////////////////
 
-//         db.all(query, [`%${cpf}%`], (err, rows) => {
-//             if (err) {
-//                 console.error(err);
-//                 return res
-//                     .status(500)
-//                     .json({ message: "Erro ao buscar funcionários." });
-//             }
-//             res.json(rows); // Retorna os funcionários encontrados ou um array vazio
-//         });
-//     } else {
-//         // Se CPF não foi passado, retorna todos os funcionários
-//         const query = `SELECT * FROM funcionario`;
+// Rota de login
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
 
-//         db.all(query, (err, rows) => {
-//             if (err) {
-//                 console.error(err);
-//                 return res
-//                     .status(500)
-//                     .json({ message: "Erro ao buscar funcionarios." });
-//             }
-//             res.json(rows); // Retorna todos os funcionários
-//         });
-//     }
-// });
+    console.log('Tentativa de login:', username); // Para debug
 
-// //RESPONSIVIDADE
-// // Alternar menu em dispositivos móveis
-// document.addEventListener("DOMContentLoaded", function () {
-//     const toggleBtn = document.querySelector(".toggle-btn");
-//     const sidebar = document.getElementById("sidebar");
+    // Consultar no banco SQLite
+    db.get(
+        "SELECT * FROM login WHERE login_nome = ? AND login_senha = ?",
+        [username, password],
+        (err, row) => {
+            if (err) {
+                console.error('Erro no login:', err);
+                return res.status(500).json({ 
+                    success: false,
+                    error: 'Erro no servidor' 
+                });
+            }
 
-//     if (toggleBtn && sidebar) {
-//         toggleBtn.addEventListener("click", function () {
-//             sidebar.classList.toggle("active");
-//         });
-//     }
-
-//     // Fechar menu ao clicar em um link (em mobile)
-//     const menuLinks = document.querySelectorAll(".sidebar a");
-//     menuLinks.forEach((link) => {
-//         link.addEventListener("click", function () {
-//             if (window.innerWidth <= 767) {
-//                 sidebar.classList.remove("active");
-//             }
-//         });
-//     });
-// });
-
-// // Alternar menu em dispositivos móveis
-// document.addEventListener("DOMContentLoaded", function () {
-//     const toggleBtn = document.querySelector(".toggle-btn");
-//     const sidebar = document.getElementById("sidebar");
-//     const overlay = document.createElement("div");
-
-//     // Criar overlay
-//     overlay.classList.add("overlay");
-//     document.body.appendChild(overlay);
-
-//     // Função para abrir o menu
-//     function openMenu() {
-//         sidebar.classList.add("active");
-//         overlay.classList.add("active");
-//         document.body.style.overflow = "hidden"; // Impede scroll no body
-//     }
-
-//     // Função para fechar o menu
-//     function closeMenu() {
-//         sidebar.classList.remove("active");
-//         overlay.classList.remove("active");
-//         document.body.style.overflow = ""; // Restaura scroll
-//     }
-
-//     // Evento de clique no botão toggle
-//     if (toggleBtn && sidebar) {
-//         toggleBtn.addEventListener("click", function (e) {
-//             e.stopPropagation();
-//             if (sidebar.classList.contains("active")) {
-//                 closeMenu();
-//             } else {
-//                 openMenu();
-//             }
-//         });
-//     }
-
-//     // Fechar menu ao clicar no overlay
-//     overlay.addEventListener("click", closeMenu);
-
-//     // Fechar menu ao clicar em um link (em mobile)
-//     const menuLinks = document.querySelectorAll(".sidebar a");
-//     menuLinks.forEach((link) => {
-//         link.addEventListener("click", function () {
-//             if (window.innerWidth <= 768) {
-//                 closeMenu();
-//             }
-//         });
-//     });
-
-//     // Fechar menu ao redimensionar a janela para tamanho maior
-//     window.addEventListener("resize", function () {
-//         if (window.innerWidth > 768) {
-//             closeMenu();
-//         }
-//     });
-// });
+            if (row) {
+                console.log('Login bem-sucedido:', row.login_nome, row.login_tipo);
+                res.json({
+                    success: true,
+                    user: {
+                        username: row.login_nome,
+                        tipo: row.login_tipo
+                    }
+                });
+            } else {
+                console.log('Credenciais inválidas para:', username);
+                res.status(401).json({ 
+                    success: false,
+                    error: 'Credenciais inválidas' 
+                });
+            }
+        }
+    );
+});
 
 ///////////////////////////// FIM /////////////////////////////
 ///////////////////////////// FIM /////////////////////////////
